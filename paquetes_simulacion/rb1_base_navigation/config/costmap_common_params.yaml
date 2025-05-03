@@ -1,0 +1,29 @@
+publish_frequency: 1.0
+
+robot_radius: 0.3
+
+inflation_layer:
+  inflation_radius: 0.3
+
+obstacle_layer:
+  obstacle_range: 2.5
+  raytrace_range: 5.5
+  observation_sources: front_laser
+  front_laser:
+    sensor_frame: robot_front_laser_link
+    data_type: LaserScan
+    topic: front_laser/scan
+    marking: true
+    clearing: true
+    observation_persistence: 0.0
+
+rgbd_obstacle_layer:
+  obstacle_range: 2.5
+  raytrace_range: 5.5
+  observation_sources: front_rgbd_to_scan
+  front_rgbd_to_scan:
+    data_type: LaserScan
+    topic: front_rgbd_camera/point_cloud_scan_filtered
+    marking: true
+    clearing: true
+    observation_persistence: 5.0

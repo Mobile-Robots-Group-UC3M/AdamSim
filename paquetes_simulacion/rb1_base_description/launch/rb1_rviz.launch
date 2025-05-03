@@ -1,0 +1,6 @@
+<launch>
+  <arg name="prefix" default="rb1_" />
+  <param name="robot_description" command="$(find xacro)/xacro $(find rb1_base_description)/robots/rb1_dual_ur3.urdf.xacro prefix:=$(arg prefix)"/>
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" />
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find rb1_base_description)/rviz_config.rviz"/>
+</launch>

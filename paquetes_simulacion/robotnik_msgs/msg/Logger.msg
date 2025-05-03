@@ -1,0 +1,11 @@
+string LOG_LEVEL_INFO=INFO
+string LOG_LEVEL_WARNING=WARNING
+string LOG_LEVEL_ERROR=ERROR
+string LOG_LEVEL_DEBUG=DEBUG
+string LOG_LEVEL_USER=USER
+string robot_id
+string date_time
+string component
+string tag
+string log_level
+string description
