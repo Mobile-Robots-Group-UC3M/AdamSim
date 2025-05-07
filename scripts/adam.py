@@ -1,39 +1,42 @@
 import pybullet as p
 import pybullet_data
 import math
-from Adam_sim.scripts.arms_dynamics import ArmsDynamics
-from Adam_sim.scripts.sliders import Sliders
-from Adam_sim.scripts.arms_kinematics import ArmsKinematics
-from Adam_sim.scripts.hands_kinematics import HandsKinematics
+from arms_dynamics import ArmsDynamics
+from sliders import Sliders
+from arms_kinematics import ArmsKinematics
+from hands_kinematics import HandsKinematics
 
 
-#Class for ADAM info
+# Class for ADAM robot
 class ADAM:
     def __init__(self, urdf_path, robot_stl_path, useSimulation, useRealTimeSimulation, used_fixed_base=True):
-        # Cargar las caractersitcias de ADAM
+        
+        # Load ADAM modules
         self.dynamics = ArmsDynamics(self)
         self.kinematics = ArmsKinematics(self)
         self.handkinematics = HandsKinematics(self)
         self.sliders = Sliders(self)
         
-        # Cargar el robot
+        # Load environment
         self.physicsClient = p.connect(p.GUI)
         p.setAdditionalSearchPath(pybullet_data.getDataPath())
         p.setGravity(0, 0, -9.81)
         
-        #Cargar un plano para referencia
+        # Load world plane
         self.planeId = p.loadURDF("plane.urdf")
 
-        #Change simulation mode
+        # Change simulation mode
         self.useSimulation = useSimulation
         self.useRealTimeSimulation = useRealTimeSimulation
-        self.t = 0.1
+        self.t = 0.01
 
+        # Spawn ADAM robot model
         self.robot_id = p.loadURDF(urdf_path, useFixedBase=True, flags=p.URDF_USE_SELF_COLLISION_INCLUDE_PARENT) #flags=p.URDF_USE_SELF_COLLISION,# flags=p.URDF_USE_SELF_COLLISION_INCLUDE_PARENT) # Cambiar la posición si es necesario
         
-        #Creamos el objeto sin hombros
-        #Orientacion del stl
-        rotation_quaternion = p.getQuaternionFromEuler([0, 0, 0])
+        base_position = [-0.10, 0.0, 0.54]
+        base_orientation = p.getQuaternionFromEuler([0, 0, 0])
+        if used_fixed_base: baseMass = 0
+        else: base_mass = 80
 
         self.robot_shape = p.createCollisionShape(shapeType=p.GEOM_MESH,
                                             fileName=robot_stl_path,
@@ -42,11 +45,11 @@ class ADAM:
         self.robot_visual_shape = p.createVisualShape(shapeType=p.GEOM_MESH,
                                                     fileName=robot_stl_path,
                                                     meshScale=[1, 1, 1])  # Ajusta el escalado 
-        self.robot_stl_id = p.createMultiBody(baseMass=0,              
-                                            baseCollisionShapeIndex=self.robot_shape,
-                                            baseVisualShapeIndex=self.robot_visual_shape,
-                                            basePosition=[-0.10, 0.0, 0.54],
-                                            baseOrientation = rotation_quaternion)    # Cambia la posición 
+        self.robot_stl_id = p.createMultiBody(baseMass = base_mass,              
+                                            baseCollisionShapeIndex = self.robot_shape,
+                                            baseVisualShapeIndex = self.robot_visual_shape,
+                                            basePosition = base_position,
+                                            baseOrientation = base_orientation)    # Cambia la posición 
 
         #Definir null space
         #lower limits for null space
@@ -171,12 +174,9 @@ class ADAM:
             if len(contact_points) > 0:
                 body_collision = True
                 self.collision = True
- 
+
         #Que nos devuelva puntos de contacto(articulaciones) y además un true o false
         return left_arm_collision, right_arm_collision, body_collision
-
-
-    
 
 
     def print_robot_info(self):

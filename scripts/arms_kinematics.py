@@ -2,14 +2,13 @@
 import pybullet as p
 import time
 import math
-import rospy
+# import rospy
 
 #Class for kinematics
 class ArmsKinematics:
-    def __init__(self,adam):
+    def __init__(self, adam):
         self.adam = adam
         self.adamDynamics = adam.dynamics
-
 
     # Cinemática directa
     def calculate_arm_forward_kinematics(self, arm):
