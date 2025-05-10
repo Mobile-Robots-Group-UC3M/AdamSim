@@ -5,6 +5,7 @@ from arms_dynamics import ArmsDynamics
 from sliders import Sliders
 from arms_kinematics import ArmsKinematics
 from hands_kinematics import HandsKinematics
+from sensors import Sensors
 
 
 # Class for ADAM robot
@@ -70,7 +71,8 @@ class ADAM:
         self.dynamics = ArmsDynamics(self)
         self.kinematics = ArmsKinematics(self)
         self.handkinematics = HandsKinematics(self)
-        self.sliders = Sliders(self)      
+        self.sliders = Sliders(self)
+        self.sensors = Sensors(self)      
         
         
         #Definir null space

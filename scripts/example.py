@@ -21,26 +21,18 @@ angles = [0.1,0.2,0.3,0.4,0.5,0.6]
 target_pose = [[0.5, 0.5, 0.5], [0.1, 0.2, 0.3]]
 adam.kinematics.move_arm_to_pose('left', target_pose, 'hand')
 
+
 # Main simulation loop
 while True:
 
     if (adam.useSimulation and adam.useRealTimeSimulation==0):
         p.stepSimulation()
 
-        '''print("Current pose (left):")
-        pose = adam.kinematics.get_arm_end_effector_pose('left')
-        print(pose)
+        #pose = adam.kinematics.get_arm_link_pose('left', 'hand')
+        #print(pose)
 
-        print("Current pose (right):")
-        pose = adam.kinematics.get_arm_end_effector_pose('right')
-        print(pose)
-
-        print("PyKDL pose:")
-        pose = adam.kinematics.pykdl.calculate_arm_forward_kinematics('left', angles)
-        print(pose)'''
-
-        pose = adam.kinematics.get_arm_link_pose('left', 'hand')
-        print(pose)
+        rgb = adam.sensors.get_rgb_image_from_link(72, width=640, height=480, fov=80, near=0.01, far=5.0)
+        
 
     if not adam.useRealTimeSimulation:
         time.sleep(adam.t)
