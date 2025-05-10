@@ -11,31 +11,28 @@ from hands_kinematics import HandsKinematics
 class ADAM:
     def __init__(self, urdf_path, robot_stl_path, useSimulation, useRealTimeSimulation, used_fixed_base=True):
         
-        # Load ADAM modules
-        self.dynamics = ArmsDynamics(self)
-        self.kinematics = ArmsKinematics(self)
-        self.handkinematics = HandsKinematics(self)
-        self.sliders = Sliders(self)
-        
         # Load environment
         self.physicsClient = p.connect(p.GUI)
         p.setAdditionalSearchPath(pybullet_data.getDataPath())
         p.setGravity(0, 0, -9.81)
-        
+
         # Load world plane
-        self.planeId = p.loadURDF("plane.urdf")
+        self.plane_id = p.loadURDF("plane.urdf")
+
+        # URDF path
+        self.urdf_path = urdf_path
+
+        # Spawn ADAM robot model
+        self.robot_id = p.loadURDF(urdf_path, useFixedBase=True, flags=p.URDF_USE_SELF_COLLISION_INCLUDE_PARENT)
 
         # Change simulation mode
         self.useSimulation = useSimulation
         self.useRealTimeSimulation = useRealTimeSimulation
         self.t = 0.01
-
-        # Spawn ADAM robot model
-        self.robot_id = p.loadURDF(urdf_path, useFixedBase=True, flags=p.URDF_USE_SELF_COLLISION_INCLUDE_PARENT) #flags=p.URDF_USE_SELF_COLLISION,# flags=p.URDF_USE_SELF_COLLISION_INCLUDE_PARENT) # Cambiar la posición si es necesario
         
         base_position = [-0.10, 0.0, 0.54]
         base_orientation = p.getQuaternionFromEuler([0, 0, 0])
-        if used_fixed_base: baseMass = 0
+        if used_fixed_base: base_mass = 0
         else: base_mass = 80
 
         self.robot_shape = p.createCollisionShape(shapeType=p.GEOM_MESH,
@@ -51,6 +48,31 @@ class ADAM:
                                             basePosition = base_position,
                                             baseOrientation = base_orientation)    # Cambia la posición 
 
+
+        # Arm revolute joint indices
+        self.ur3_right_arm_joints = list(range(20,26))  # Brazo derecho
+        self.ur3_left_arm_joints = list(range(45,51)) # Brazo izquierdo
+
+        self.ur3_right_arm_rev_joints = list(range(2,8))  # Brazo derecho
+        self.ur3_left_arm_rev_joints = list(range(20,26)) # Brazo izquierdo
+
+        # Hand revolute joint indices
+        self.right_hand_joints = list(range(30, 42))
+        self.left_hand_joints = list(range(55,67))
+
+        # Other indices
+        self.ee_index = {'right': 26, 'left': 51}
+        self.hand_base_index = {'right': 28, 'left': 53}
+        self.dummy_index = {'right': 29, 'left': 54}
+
+
+        # ADAM MODULES
+        self.dynamics = ArmsDynamics(self)
+        self.kinematics = ArmsKinematics(self)
+        self.handkinematics = HandsKinematics(self)
+        self.sliders = Sliders(self)      
+        
+        
         #Definir null space
         #lower limits for null space
         self.ll = [-6.28]*6
@@ -62,21 +84,7 @@ class ADAM:
         self.rp = [0]*6
         #joint damping coefficents
         self.jd = [0.1]*21
-
-        # Definir los índices de los brazos (esto depende de tu URDF)
-        self.ur3_right_arm_joints = list(range(20,26))  # Brazo derecho #! +1 ADRI
-        self.ur3_left_arm_joints = list(range(45,51)) # Brazo izquierdo
-
-        # Definir los indices de las manos
-        self.right_hand_joints = list(range(30, 42)) #! +1 ADRI
-        self.left_hand_joints = list(range(55,67)) #! +1 ADRI
-
-        # Definir joints del cuerpo
-        self.body_joints = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,26,27,28,41,50,51] #Cuerpo 
-        self.joints=[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51]
-
-        self.arm_joints = 6
-
+      
 
         #Current pos, vel
         self.pos_act = []
@@ -96,8 +104,6 @@ class ADAM:
 
         # Señal de colision
         self.collision = False
-
-        self.joint_angle = 0.22
 
 
     #Collisions
@@ -180,13 +186,41 @@ class ADAM:
 
 
     def print_robot_info(self):
+        '''
+        Print the structure of the robot, including links and joints.
+        '''
+
         num_joints = p.getNumJoints(self.robot_id)
-        print(f"Robot ID: {self.robot_id}")
-        print("Elementos del robot:")
+        print(f"Robot ID: {self.robot_id}\n")
+        
+        print("=== ADAM LINKS ===")
+        # Agregamos el link base manualmente (ID -1)
+        print(f"Link ID: -1, Nombre: base_link (implícito)")
+        for i in range(num_joints):
+            joint_info = p.getJointInfo(self.robot_id, i)
+            link_name = joint_info[12].decode("utf-8")
+            link_index = joint_info[0]  # También se puede usar i
+            parent_index = joint_info[16]
+            print(f"Link ID: {link_index}, Nombre: {link_name}, Parent Link ID: {parent_index}")
+        
+        print("\n=== ADAM JOINTS ===")
         for i in range(num_joints):
             joint_info = p.getJointInfo(self.robot_id, i)
             joint_id = joint_info[0]
             joint_name = joint_info[1].decode("utf-8")
-            print(f"ID: {joint_id}, Nombre: {joint_name}")
+            joint_type = joint_info[2]
+            
+            joint_type_str = {
+                p.JOINT_REVOLUTE: "Revolute",
+                p.JOINT_PRISMATIC: "Prismatic",
+                p.JOINT_SPHERICAL: "Spherical",
+                p.JOINT_PLANAR: "Planar",
+                p.JOINT_FIXED: "Fixed",
+                p.JOINT_POINT2POINT: "Point2Point",
+                p.JOINT_GEAR: "Gear"
+            }.get(joint_type, "Unknown")
+            
+            print(f"ID: {joint_id}, Nombre: {joint_name}, Tipo: {joint_type_str}")
+
 
 
