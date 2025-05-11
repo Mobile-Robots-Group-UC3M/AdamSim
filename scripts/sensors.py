@@ -2,6 +2,7 @@ import pybullet as p
 import numpy as np
 from PIL import Image
 import os
+import time
 
 class Sensors:
     def __init__(self, adam):
@@ -51,3 +52,13 @@ class Sensors:
         image = Image.fromarray(rgb_array)
         image.save(path)
         print(f"Saved image to {path}")
+
+    def move_camera_angle(self, angle):
+
+        if angle > np.pi/4 or angle < -np.pi/4: raise ValueError("Angle must be between -pi/4 and pi/4")
+
+        camera_joint_index = 69
+
+        p.setJointMotorControl2(self.adam.robot_id, camera_joint_index, p.POSITION_CONTROL, (np.pi + angle))
+        p.stepSimulation()
+        time.sleep(self.adam.t)

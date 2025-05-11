@@ -2281,10 +2281,12 @@
 
   <!-- 2. From shoulder_link to joint_support_link -->
   <link name="joint_support_link"/>
-  <joint name="shoulder_to_support_joint" type="fixed">
+  <joint name="shoulder_to_support_joint" type="revolute">
+    <origin xyz="0.115 0 0.030" rpy="0 0.785398 0" /> <!-- π/4 = 0.785398 -->
     <parent link="shoulder_link"/>
     <child link="joint_support_link"/>
-    <origin xyz="0.115 0 0.030" rpy="0 0.785398 0" /> <!-- π/4 = 0.785398 -->
+    <axis xyz="0 -1 0"/>
+    <limit effort="50" lower="0" upper="1.5708" velocity="1"/>
   </joint>
 
   <!-- 3. From joint_support_link to support_end_link -->
