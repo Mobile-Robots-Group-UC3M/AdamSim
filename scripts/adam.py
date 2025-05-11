@@ -1,15 +1,16 @@
 import pybullet as p
 import pybullet_data
 import math
-from Adam_sim.scripts.arms_dynamics import ArmsDynamics
-from Adam_sim.scripts.sliders import Sliders
-from Adam_sim.scripts.arms_kinematics import ArmsKinematics
-from Adam_sim.scripts.hands_kinematics import HandsKinematics
+from scripts.arms_dynamics import ArmsDynamics
+from scripts.sliders import Sliders
+from scripts.arms_kinematics import ArmsKinematics
+from scripts.hands_kinematics import HandsKinematics
+import time
 
 
 #Class for ADAM info
 class ADAM:
-    def __init__(self, urdf_path, robot_stl_path, useSimulation, useRealTimeSimulation, used_fixed_base=True):
+    def __init__(self, urdf_path, robot_stl_path, useSimulation, useRealTimeSimulation, used_fixed_base=False):
         # Cargar las caractersitcias de ADAM
         self.dynamics = ArmsDynamics(self)
         self.kinematics = ArmsKinematics(self)
@@ -29,7 +30,7 @@ class ADAM:
         self.useRealTimeSimulation = useRealTimeSimulation
         self.t = 0.1
 
-        self.robot_id = p.loadURDF(urdf_path, useFixedBase=True, flags=p.URDF_USE_SELF_COLLISION_INCLUDE_PARENT) #flags=p.URDF_USE_SELF_COLLISION,# flags=p.URDF_USE_SELF_COLLISION_INCLUDE_PARENT) # Cambiar la posición si es necesario
+        self.robot_id = p.loadURDF(urdf_path, useFixedBase=used_fixed_base, flags=p.URDF_USE_SELF_COLLISION_INCLUDE_PARENT) #flags=p.URDF_USE_SELF_COLLISION,# flags=p.URDF_USE_SELF_COLLISION_INCLUDE_PARENT) # Cambiar la posición si es necesario
         
         #Creamos el objeto sin hombros
         #Orientacion del stl
@@ -42,11 +43,32 @@ class ADAM:
         self.robot_visual_shape = p.createVisualShape(shapeType=p.GEOM_MESH,
                                                     fileName=robot_stl_path,
                                                     meshScale=[1, 1, 1])  # Ajusta el escalado 
-        self.robot_stl_id = p.createMultiBody(baseMass=0,              
+        self.robot_stl_id = p.createMultiBody(baseMass=0.01,              
                                             baseCollisionShapeIndex=self.robot_shape,
                                             baseVisualShapeIndex=self.robot_visual_shape,
                                             basePosition=[-0.10, 0.0, 0.54],
-                                            baseOrientation = rotation_quaternion)    # Cambia la posición 
+                                            baseOrientation = rotation_quaternion)    # Cambia la posición
+        
+        
+        #! Fixed ADAM Body
+        parent_link_index = 0  # Cambia este índice si quieres otro link
+
+        # Posición relativa del STL respecto al link del robot
+        parent_frame_pos = [0, 0, 0]
+        child_frame_pos = [+0.10, 0, -0.55]   
+
+        self.body_constraint_id = p.createConstraint(
+            parentBodyUniqueId=self.robot_id,
+            parentLinkIndex=parent_link_index,
+            childBodyUniqueId=self.robot_stl_id,
+            childLinkIndex=-1,  # -1 es el base link del multibody
+            jointType=p.JOINT_FIXED,
+            jointAxis=[0, 0, 0],
+            parentFramePosition=parent_frame_pos,
+            childFramePosition=child_frame_pos
+        )
+        
+        
 
         #Definir null space
         #lower limits for null space
