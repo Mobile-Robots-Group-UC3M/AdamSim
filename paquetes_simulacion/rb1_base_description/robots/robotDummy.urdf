@@ -2272,7 +2272,17 @@
   <!--Fin Parte Manos-->
 
   <!-- 1. From rb1_base_footprint to shoulder_link -->
-  <link name="shoulder_link"/>
+  <link name="shoulder_link">
+    <visual>
+      <origin rpy="0 0 1.57079632" xyz="0.115 0 0"/>
+      <geometry>
+        <mesh filename="package://rb1_base_description/meshes/others/camera_support1.stl" scale="0.0254 0.0254 0.0254"/>
+      </geometry>
+      <material name="">
+        <color rgba="1 1 1 1"/>
+      </material>
+    </visual>
+  </link>
   <joint name="rb1_to_shoulder" type="fixed">
     <parent link="rb1_base_footprint"/>
     <child link="shoulder_link"/>
@@ -2280,7 +2290,17 @@
   </joint>
 
   <!-- 2. From shoulder_link to joint_support_link -->
-  <link name="joint_support_link"/>
+  <link name="joint_support_link">
+    <visual>
+        <origin rpy="1.57079632 0 0" xyz="0 0.02 0"/>
+        <geometry>
+          <mesh filename="package://rb1_base_description/meshes/others/camera_support3.stl" scale="0.0254 0.0254 0.0254"/>
+        </geometry>
+        <material name="">
+          <color rgba="1 1 1 1"/>
+        </material>
+      </visual>
+  </link>
   <joint name="shoulder_to_support_joint" type="revolute">
     <origin xyz="0.115 0 0.030" rpy="0 0.785398 0" /> <!-- π/4 = 0.785398 -->
     <parent link="shoulder_link"/>
@@ -2290,7 +2310,17 @@
   </joint>
 
   <!-- 3. From joint_support_link to support_end_link -->
-  <link name="support_end_link"/>
+  <link name="support_end_link">
+    <visual>
+      <origin rpy="1.57079632 0 -1.57079632" xyz="-0.01 0 0"/>
+      <geometry>
+        <mesh filename="package://rb1_base_description/meshes/others/camera_support2.stl" scale="0.0254 0.0254 0.0254"/>
+      </geometry>
+      <material name="">
+        <color rgba="1 1 1 1"/>
+      </material>
+    </visual>
+  </link>
   <joint name="support_joint_to_end" type="fixed">
     <parent link="joint_support_link"/>
     <child link="support_end_link"/>
@@ -2306,7 +2336,17 @@
   </joint>
 
   <!-- 5. From support_end_link to camera_link -->
-  <link name="camera_link"/>
+  <link name="camera_link">
+    <visual>
+      <origin rpy="0 0 0" xyz="-0.01803 0 -0.0027"/>
+      <geometry>
+        <mesh filename="package://rb1_base_description/meshes/others/D435i_Solid.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="d435i">
+        <color rgba="0.4 0.4 0.4 1"/>
+      </material>
+    </visual>
+  </link>
   <joint name="rgbd_to_camera" type="fixed">
     <parent link="rgbd_link"/>
     <child link="camera_link"/>

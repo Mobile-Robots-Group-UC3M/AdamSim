@@ -58,8 +58,7 @@ class ADAM:
         self.ur3_left_arm_rev_joints = list(range(20,26)) # Brazo izquierdo
 
         # Hand revolute joint indices
-        self.right_hand_joints = list(range(30, 42))
-        self.left_hand_joints = list(range(55,67))
+        self.hand_joint_indices = {'right': list(range(30, 42)), 'left': list(range(55, 67))}
 
         # Other indices
         self.ee_index = {'right': 26, 'left': 51}
@@ -68,9 +67,9 @@ class ADAM:
 
 
         # ADAM MODULES
-        self.dynamics = ArmsDynamics(self)
-        self.kinematics = ArmsKinematics(self)
-        self.handkinematics = HandsKinematics(self)
+        self.arm_dynamics = ArmsDynamics(self)
+        self.arm_kinematics = ArmsKinematics(self)
+        self.hand_kinematics = HandsKinematics(self)
         self.sliders = Sliders(self)
         self.sensors = Sensors(self)      
         

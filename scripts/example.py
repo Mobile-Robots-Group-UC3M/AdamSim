@@ -19,9 +19,11 @@ angles = [0.1,0.2,0.3,0.4,0.5,0.6]
 # adam.kinematics.move_arm_joints_to_angles('left', angles)
 
 target_pose = [[0.5, 0.5, 0.5], [0.1, 0.2, 0.3]]
-adam.kinematics.move_arm_to_pose('left', target_pose, 'hand')
+adam.arm_kinematics.move_arm_to_pose('left', target_pose, 'hand')
 
-
+camera_angle = 0
+adam.sensors.move_camera_angle(camera_angle)
+t = 0
 
 # Main simulation loop
 while True:
@@ -29,13 +31,20 @@ while True:
     if (adam.useSimulation and not adam.useRealTimeSimulation):
         p.stepSimulation()
 
-        #pose = adam.kinematics.get_arm_link_pose('left', 'hand')
-        #print(pose)
+    #pose = adam.kinematics.get_arm_link_pose('left', 'hand')
+    #print(pose)
 
-        rgb = adam.sensors.get_rgb_image_from_link(72, width=640, height=480, fov=80, near=0.01, far=5.0)
+    keys = p.getKeyboardEvents()
 
-        adam.sensors.move_camera_angle(0.77)
+    # Elevator Control (E key)
+    if ord('o') in keys and keys[ord('o')] & p.KEY_WAS_TRIGGERED:
         
+        camera_angle = -45 - camera_angle
+        adam.sensors.move_camera_angle(camera_angle)
+        print("Moving camera to angle:", camera_angle)
+
+    adam.sensors.get_rgb_image_from_link(72, width=640, height=480, fov=60, near=0.01, far=5.0)
 
     if not adam.useRealTimeSimulation:
         time.sleep(adam.t)
+        t += adam.t

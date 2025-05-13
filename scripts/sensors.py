@@ -7,6 +7,10 @@ import time
 class Sensors:
     def __init__(self, adam):
         self.adam = adam
+        self.camera_angle = 0
+        self.camera_joint_index = 69
+
+        self.move_camera_angle(self.camera_angle)
 
 
     def get_rgb_image_from_link(self, link_index, width=640, height=480, fov=60, near=0.01, far=5.0):
@@ -53,12 +57,29 @@ class Sensors:
         image.save(path)
         print(f"Saved image to {path}")
 
+
     def move_camera_angle(self, angle):
 
-        if angle > np.pi/4 or angle < -np.pi/4: raise ValueError("Angle must be between -pi/4 and pi/4")
+        # Save camera angle
+        self.camera_angle = angle
 
-        camera_joint_index = 69
+        angle_rad = np.deg2rad(self.camera_angle)
 
-        p.setJointMotorControl2(self.adam.robot_id, camera_joint_index, p.POSITION_CONTROL, (np.pi + angle))
+        if angle_rad > np.pi/4 or angle_rad < -np.pi/4: raise ValueError("Angle must be between -pi/4 and pi/4")
+
+        # Move camera joint to the specified angle
+        p.setJointMotorControl2(self.adam.robot_id, self.camera_joint_index, p.POSITION_CONTROL, (np.pi/4 + angle_rad))
         p.stepSimulation()
         time.sleep(self.adam.t)
+
+
+    def get_camera_angle(self):
+        '''
+        Get the camera angle.
+        Returns:
+            camera_angle (float): The camera angle in degrees.
+        '''
+
+        joint_state = p.getJointState(self.adam.robot_id, self.camera_joint_index)
+
+        return np.rad2deg(joint_state[0]) - 45

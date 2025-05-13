@@ -7,7 +7,7 @@ from pykdl_kinematics import Kinematics
 class ArmsKinematics:
     def __init__(self, adam):
         self.adam = adam
-        self.adamDynamics = adam.dynamics
+        self.adamDynamics = adam.arm_dynamics
         self.pykdl = Kinematics(adam, adam.urdf_path)
     
     # Calculate the inverse kinematics for the specified arm
@@ -143,8 +143,8 @@ class ArmsKinematics:
                 # Check if collision is detected
                 self.adam.detect_autocollisions()
                 
-                self.move_arm_to_pose('right', poses_arm1, target_link=target_link, accurate=accurate, threshold=threshold)
-                self.move_arm_to_pose('left', poses_arm2, target_link=target_link, accurate=accurate, threshold=threshold)
+                self.move_arm_to_pose('right', pose_right, target_link=target_link, accurate=accurate, threshold=threshold)
+                self.move_arm_to_pose('left', pose_left, target_link=target_link, accurate=accurate, threshold=threshold)
 
                 # Avanzar la simulación para que los movimientos se apliquen
                 if not self.adam.useRealTimeSimulation:
