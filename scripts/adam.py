@@ -1,11 +1,12 @@
 import pybullet as p
 import pybullet_data
 import math
-from arms_dynamics import ArmsDynamics
-from sliders import Sliders
-from arms_kinematics import ArmsKinematics
-from hands_kinematics import HandsKinematics
-from sensors import Sensors
+from scripts.arms_dynamics import ArmsDynamics
+from scripts.sliders import Sliders
+from scripts.arms_kinematics import ArmsKinematics
+from scripts.hands_kinematics import HandsKinematics
+from scripts.sensors import Sensors
+from scripts.navigation import Navigation
 
 
 # Class for ADAM robot
@@ -46,6 +47,10 @@ class ADAM:
         self.ee_index = {'right': 26, 'left': 51}
         self.hand_base_index = {'right': 28, 'left': 53}
         self.dummy_index = {'right': 29, 'left': 54}
+        
+        # Wheel indices
+        self.left_wheel_joint = 4
+        self.right_wheel_joint = 3
 
 
         # ADAM MODULES
@@ -53,7 +58,8 @@ class ADAM:
         self.arm_kinematics = ArmsKinematics(self)
         self.hand_kinematics = HandsKinematics(self)
         self.sliders = Sliders(self)
-        self.sensors = Sensors(self)      
+        self.sensors = Sensors(self)
+        self.navigation = Navigation(self)      
         
         
         #Definir null space

@@ -38,7 +38,7 @@
   <!-- BASE_LINK -->
   <link name="rb1_base_link">
     <inertial>
-      <mass value="100.0"/>
+      <mass value="500.0"/>
       <origin xyz="0 0 0"/>
       <inertia ixx="0.605" ixy="0.0" ixz="0.0" iyy="0.5435" iyz="0.0" izz="0.981"/>
     </inertial>
@@ -222,7 +222,7 @@
     </inertial>
   </link>
   <!-- joint name="joint_${name}_wheel" type="continuous" -->
-  <joint name="rb1_omni_backwheel_joint" type="fixed">
+  <joint name="rb1_omni_backwheel_joint" type="continuous">
     <parent link="rb1_base_link"/>
     <child link="rb1_omni_backwheel_link"/>
     <origin rpy="0 0 0" xyz="-0.195 0.0 0.027"/>

@@ -1,7 +1,7 @@
 import pybullet as p
 import time
 import math
-from pykdl_kinematics import Kinematics
+from scripts.pykdl_kinematics import Kinematics
 
 # Class for kinematics
 class ArmsKinematics:
