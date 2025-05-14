@@ -11,7 +11,7 @@ adam = ADAM(robot_urdf_path, useSimulation=True, useRealTimeSimulation=False, us
 # Print robot information
 adam.print_robot_info()
 
-
+adam.sliders.create_sliders()
 
 # Main simulation loop
 while True:
@@ -20,8 +20,8 @@ while True:
         p.stepSimulation()
 
     # INSERT YOUR CODE HERE
-    collision = adam.detect_autocollisions()
-    print("Collision detected:", collision)
+    adam.sliders.apply_slider_values()
+    
 
     if not adam.useRealTimeSimulation:
         time.sleep(adam.t)

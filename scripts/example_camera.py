@@ -5,11 +5,9 @@ import time
 # URDF robot path
 robot_urdf_path = "/home/gonzalo/Desktop/AdamBulletSimualator/paquetes_simulacion/rb1_base_description/robots/robotDummy.urdf"
 
-# Robot collision body STL path
-robot_stl_path = "/home/gonzalo/Desktop/AdamBulletSimualator/paquetes_simulacion/rb1_base_description/meshes/others/adam_model.stl"
 
 # Create ADAM instance
-adam = ADAM(robot_urdf_path, robot_stl_path, useSimulation=True, useRealTimeSimulation=False, used_fixed_base=True)
+adam = ADAM(robot_urdf_path, useSimulation=True, useRealTimeSimulation=False, used_fixed_base=True)
 
 # Print robot information
 adam.print_robot_info()

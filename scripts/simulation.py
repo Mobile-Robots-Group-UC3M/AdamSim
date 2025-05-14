@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from sliders import Sliders
+from scripts.teleoperation import Sliders
 from arms_kinematics import ArmsKinematics
 from hands_kinematics import HandsKinematics
 from adam import ADAM

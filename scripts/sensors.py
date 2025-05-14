@@ -4,7 +4,7 @@ from PIL import Image
 import os
 import time
 
-class Sensors:
+class Sensors():
     def __init__(self, adam):
         self.adam = adam
         self.camera_angle = 0

@@ -2,10 +2,11 @@ import pybullet as p
 import pybullet_data
 import math
 from arms_dynamics import ArmsDynamics
-from sliders import Sliders
+from scripts.teleoperation import Sliders
 from arms_kinematics import ArmsKinematics
 from hands_kinematics import HandsKinematics
 from sensors import Sensors
+from teleoperation import Teleop
 
 
 # Class for ADAM robot
@@ -52,7 +53,7 @@ class ADAM:
         self.arm_dynamics = ArmsDynamics(self)
         self.arm_kinematics = ArmsKinematics(self)
         self.hand_kinematics = HandsKinematics(self)
-        self.sliders = Sliders(self)
+        self.sliders = Teleop(self)
         self.sensors = Sensors(self)      
         
         
