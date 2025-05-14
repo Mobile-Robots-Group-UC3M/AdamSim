@@ -10,7 +10,7 @@ class Sliders():
     """ def __init__(self, urdf_path, robot_stl_path, useSimulation, useRealTimeSimulation, used_fixed_base=True):
         super().__init__(urdf_path, robot_stl_path, useSimulation, useRealTimeSimulation, used_fixed_base=True) """
     
-    def __init__(self,adam):
+    def __init__(self, adam):
         self.adam = adam
     
     def create_sliders(self):
