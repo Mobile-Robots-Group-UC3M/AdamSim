@@ -10,7 +10,7 @@ from sensors import Sensors
 
 # Class for ADAM robot
 class ADAM:
-    def __init__(self, urdf_path, robot_stl_path, useSimulation, useRealTimeSimulation, used_fixed_base=True):
+    def __init__(self, urdf_path, useSimulation, useRealTimeSimulation, used_fixed_base=True):
         
         # Load environment
         self.physicsClient = p.connect(p.GUI)
@@ -24,30 +24,12 @@ class ADAM:
         self.urdf_path = urdf_path
 
         # Spawn ADAM robot model
-        self.robot_id = p.loadURDF(urdf_path, useFixedBase=True, flags=p.URDF_USE_SELF_COLLISION_INCLUDE_PARENT)
+        self.robot_id = p.loadURDF(urdf_path, useFixedBase=used_fixed_base, flags=p.URDF_USE_SELF_COLLISION_INCLUDE_PARENT)
 
         # Change simulation mode
         self.useSimulation = useSimulation
         self.useRealTimeSimulation = useRealTimeSimulation
         self.t = 0.01
-        
-        base_position = [-0.10, 0.0, 0.54]
-        base_orientation = p.getQuaternionFromEuler([0, 0, 0])
-        if used_fixed_base: base_mass = 0
-        else: base_mass = 80
-
-        self.robot_shape = p.createCollisionShape(shapeType=p.GEOM_MESH,
-                                            fileName=robot_stl_path,
-                                            meshScale=[1, 1, 1],
-                                            flags=p.GEOM_FORCE_CONCAVE_TRIMESH)
-        self.robot_visual_shape = p.createVisualShape(shapeType=p.GEOM_MESH,
-                                                    fileName=robot_stl_path,
-                                                    meshScale=[1, 1, 1])  # Ajusta el escalado 
-        self.robot_stl_id = p.createMultiBody(baseMass = base_mass,              
-                                            baseCollisionShapeIndex = self.robot_shape,
-                                            baseVisualShapeIndex = self.robot_visual_shape,
-                                            basePosition = base_position,
-                                            baseOrientation = base_orientation)    # Cambia la posición 
 
 
         # Arm revolute joint indices
@@ -107,51 +89,43 @@ class ADAM:
         self.collision = False
 
 
+
     #Collisions
     def detect_autocollisions(self):
-        # Colisiones entre los brazos
-        for left_joint in self.ur3_left_arm_joints:
-            for right_joint in self.ur3_right_arm_joints:
-                contact_points = p.getClosestPoints(self.robot_id, self.robot_id, distance=0, linkIndexA=left_joint, linkIndexB=right_joint)
-                if len(contact_points) > 0:
-                    print("Colisión entre brazos detectada")
-                    self.collision = True
-                    return True
+        '''
+        Detect self-collisions between the left and right arms of the robot.
+        Returns:
+            collision_left (bool): True if there is a collision in the left arm.
+            collision_right (bool): True if there is a collision in the right arm.
+        '''
 
-        # Colisiones cuerpo-brazo izquierdo
-        for left_joint in self.ur3_left_arm_joints:
-            contact_points = p.getClosestPoints(self.robot_id, self.robot_stl_id, distance=0.01, linkIndexA=left_joint)
-            if len(contact_points) > 0:
-                print("Colisión entre brazo izq-cuerpo")
-                self.collision = True
-                return True
-        
-        # Colisiones cuerpo-brazo derecho
-        for right_joint in self.ur3_right_arm_joints:
-            contact_points = p.getClosestPoints(self.robot_id, self.robot_stl_id, distance=0.01, linkIndexA=right_joint)
-            if len(contact_points) > 0:
-                print("Colisión entre brazo der-cuerpo")
-                self.collision = True
-                return True
-            
-        # Colisiones cuerpo-mano derecha
-        for right_hand in self.right_hand_joints:
-            contact_points = p.getClosestPoints(self.robot_id, self.robot_stl_id, distance=0.01, linkIndexA=right_hand)
-            if len(contact_points) > 0:
-                print("Colisión entre mano der-cuerpo")
-                self.collision = True
-                return True
+        complete_left_arm_joints = self.ur3_left_arm_joints + self.hand_joint_indices['left']
+        complete_right_arm_joints = self.ur3_right_arm_joints + self.hand_joint_indices['right']
+        torso_index = 17
 
-        # Colisiones cuerpo-mano izquierda
-        for left_hand in self.left_hand_joints:
-            contact_points = p.getClosestPoints(self.robot_id, self.robot_stl_id, distance=0.01, linkIndexA=left_hand)
-            if len(contact_points) > 0:
-                print("Colisión entre mano izq-cuerpo")
-                self.collision = True
-                return True
-            
+        self.collision_left = False
+        self.collision_right = False
 
-        return False  # No hay colisiones
+        # Collisions between left arm and right arm
+        for left_joint in complete_left_arm_joints:
+            for right_joint in complete_right_arm_joints:
+                contact_points = p.getClosestPoints(self.robot_id, self.robot_id, distance=0.0, linkIndexA=left_joint, linkIndexB=right_joint)
+                if contact_points:
+                    self.collision_left = True # Collision detected
+                    self.collision_right = True # Collision detected
+
+        # Collision with the body
+        for left_joint in complete_left_arm_joints:
+            contact_points = p.getClosestPoints(self.robot_id, self.robot_id, distance=0.0, linkIndexA=left_joint, linkIndexB=torso_index)
+            if contact_points: self.collision_left = True
+
+        # Collision with the body
+        for right_joint in complete_right_arm_joints:
+            contact_points = p.getClosestPoints(self.robot_id, self.robot_id, distance=0.0, linkIndexA=right_joint, linkIndexB=torso_index)
+            if contact_points: self.collision_right = True
+
+
+        return self.collision_left, self.collision_right
     
     def detect_collision_with_objects(self, object_id):
         #! TODO: Ver si se quiere dectectar la colision con el rest odel cuerpo

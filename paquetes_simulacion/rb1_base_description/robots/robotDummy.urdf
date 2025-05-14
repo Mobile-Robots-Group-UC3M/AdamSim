@@ -20,6 +20,7 @@
   <!-- Robots Elements -->
   <!-- *************** -->
   <!-- Here we create the robot elements using the xacro:macros imported at the beggining of this file -->
+
   <link name="rb1_base_footprint">
     <inertial>
       <mass value="1.0"/>
@@ -33,10 +34,11 @@
       </geometry>
     </visual>
   </link>
+
   <!-- BASE_LINK -->
   <link name="rb1_base_link">
     <inertial>
-      <mass value="25.0"/>
+      <mass value="100.0"/>
       <origin xyz="0 0 0"/>
       <inertia ixx="0.605" ixy="0.0" ixz="0.0" iyy="0.5435" iyz="0.0" izz="0.981"/>
     </inertial>
@@ -61,6 +63,7 @@
     <parent link="rb1_base_footprint"/>
     <child link="rb1_base_link"/>
   </joint>
+
   <!-- FRONT COVER -->
   <link name="rb1_front_cover_link">
     <inertial>
@@ -89,6 +92,7 @@
     <parent link="rb1_base_link"/>
     <child link="rb1_front_cover_link"/>
   </joint>
+
   <!-- FRONT COVER -->
   <link name="rb1_top_cover_link">
     <inertial>
@@ -117,7 +121,8 @@
     <parent link="rb1_base_footprint"/>
     <child link="rb1_top_cover_link"/>
   </joint>
-  <!-- DOCKING LINK -->
+
+  <!-- DOCKING -->
   <link name="rb1_base_docking_contact_link">
     <inertial>
       <mass value="0.1"/>
@@ -125,30 +130,12 @@
       <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0.0" izz="0.001"/>
     </inertial>
   </link>
-  <!-- DOCKING CONTACTS -->
   <joint name="rb1_base_docking_joint" type="fixed">
     <origin rpy="0 0 0 " xyz="0.030 0.000 0.068"/>
     <parent link="rb1_front_cover_link"/>
     <child link="rb1_base_docking_contact_link"/>
   </joint>
-  <gazebo>
-    <plugin filename="libgazebo_ros_control.so" name="ros_control">
-      <!--robotNamespace>/rb1</robotNamespace-->
-      <robotParam>robot_description</robotParam>
-      <controlPeriod>0.001</controlPeriod>
-      <robotSimType>gazebo_ros_control/DefaultRobotHWSim</robotSimType>
-      <legacyModeNS>true</legacyModeNS>
-    </plugin>
-  </gazebo>
-  <gazebo reference="rb1_base_footprint">
-    <material>Gazebo/Green</material>
-  </gazebo>
-  <gazebo reference="rb1_base_link">
-    <material>Gazebo/Black</material>
-  </gazebo>
-  <gazebo reference="rb1_front_cover_link">
-    <material>Gazebo/Black</material>
-  </gazebo>
+
   <!--WHEEL TIRE -->
   <link name="rb1_right_wheel_link">
     <visual>
@@ -158,9 +145,9 @@
       </geometry>
     </visual>
     <collision>
-      <origin rpy="1.5707963267948966 0 0" xyz="0 0 0"/>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
       <geometry>
-        <cylinder length="0.025" radius="0.076"/>
+        <mesh filename="package://rb1_base_description/meshes/wheels/wheel_rubber_6inch.dae"/>
       </geometry>
     </collision>
     <inertial>
@@ -177,55 +164,7 @@
     <limit effort="100" velocity="100"/>
     <!--joint_properties damping="0.0" friction="0.0"/-->
   </joint>
-  <!-- Transmission is important to link the joints and the controller (see rb1_control/config/rb1_control.yaml)-->
-  <transmission name="rb1_right_wheel_joint_trans">
-    <type>transmission_interface/SimpleTransmission</type>
-    <joint name="rb1_right_wheel_joint">
-      <!-- for the gazebo plugin -->
-      <!--hardwareInterface>EffortJointInterface</hardwareInterface-->
-      <!-- for ros control controller -->
-      <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
-    </joint>
-    <actuator name="rb1_right_wheel_joint_motor">
-      <mechanicalReduction>1</mechanicalReduction>
-      <!--motorTorqueConstant>20</motorTorqueConstant-->
-    </actuator>
-  </transmission>
-  <gazebo reference="rb1_right_wheel_link">
-    <mu1 value="5.0"/>
-    <mu2 value="0.5"/>
-    <kp value="10000000.0"/>
-    <kd value="1.0"/>
-    <fdir1 value="1 0 0"/>
-    <material>Gazebo/Yellow</material>
-    <turnGravityOff>false</turnGravityOff>
-    <!--kp>500000.0</kp>
-			<kd>10.0</kd>
-			<mu1>10</mu1>
-			<mu2>10</mu2>
-			<fdir1>1 0 0</fdir1-->
-    <!--minDepth>0.001</minDepth-->
-    <!--material>Gazebo/Black</material-->
-    <!--mu1 value="10"/>
-			<mu2 value="5"/>
-			<kp value="500000.0" />
-			<kd value="10.0" />
-			<fdir1 value="1 0 0"/>
-			<material>Gazebo/Yellow</material>
-			<turnGravityOff>false</turnGravityOff-->
-  </gazebo>
-  <!--gazebo reference="${name}_wheel_link">
-			<kp>500000.0</kp>
-			<kd>10.0</kd>
-			<mu1>10</mu1>
-			<mu2>10</mu2>
-			<fdir1>1 0 0</fdir1>
-			<maxVel>1.0</maxVel>
-			<minDepth>0.003</minDepth>
-			<material>Gazebo/Yellow</material>
-			<turnGravityOff>false</turnGravityOff>
-			<implicitSpringDamper>1</implicitSpringDamper>
-		</gazebo-->
+
   <!--WHEEL TIRE -->
   <link name="rb1_left_wheel_link">
     <visual>
@@ -235,9 +174,9 @@
       </geometry>
     </visual>
     <collision>
-      <origin rpy="1.5707963267948966 0 0" xyz="0 0 0"/>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
       <geometry>
-        <cylinder length="0.025" radius="0.076"/>
+        <mesh filename="package://rb1_base_description/meshes/wheels/wheel_rubber_6inch.dae"/>
       </geometry>
     </collision>
     <inertial>
@@ -254,55 +193,7 @@
     <limit effort="100" velocity="100"/>
     <!--joint_properties damping="0.0" friction="0.0"/-->
   </joint>
-  <!-- Transmission is important to link the joints and the controller (see rb1_control/config/rb1_control.yaml)-->
-  <transmission name="rb1_left_wheel_joint_trans">
-    <type>transmission_interface/SimpleTransmission</type>
-    <joint name="rb1_left_wheel_joint">
-      <!-- for the gazebo plugin -->
-      <!--hardwareInterface>EffortJointInterface</hardwareInterface-->
-      <!-- for ros control controller -->
-      <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
-    </joint>
-    <actuator name="rb1_left_wheel_joint_motor">
-      <mechanicalReduction>1</mechanicalReduction>
-      <!--motorTorqueConstant>20</motorTorqueConstant-->
-    </actuator>
-  </transmission>
-  <gazebo reference="rb1_left_wheel_link">
-    <mu1 value="5.0"/>
-    <mu2 value="0.5"/>
-    <kp value="10000000.0"/>
-    <kd value="1.0"/>
-    <fdir1 value="1 0 0"/>
-    <material>Gazebo/Yellow</material>
-    <turnGravityOff>false</turnGravityOff>
-    <!--kp>500000.0</kp>
-			<kd>10.0</kd>
-			<mu1>10</mu1>
-			<mu2>10</mu2>
-			<fdir1>1 0 0</fdir1-->
-    <!--minDepth>0.001</minDepth-->
-    <!--material>Gazebo/Black</material-->
-    <!--mu1 value="10"/>
-			<mu2 value="5"/>
-			<kp value="500000.0" />
-			<kd value="10.0" />
-			<fdir1 value="1 0 0"/>
-			<material>Gazebo/Yellow</material>
-			<turnGravityOff>false</turnGravityOff-->
-  </gazebo>
-  <!--gazebo reference="${name}_wheel_link">
-			<kp>500000.0</kp>
-			<kd>10.0</kd>
-			<mu1>10</mu1>
-			<mu2>10</mu2>
-			<fdir1>1 0 0</fdir1>
-			<maxVel>1.0</maxVel>
-			<minDepth>0.003</minDepth>
-			<material>Gazebo/Yellow</material>
-			<turnGravityOff>false</turnGravityOff>
-			<implicitSpringDamper>1</implicitSpringDamper>
-		</gazebo-->
+
   <!--WHEEL TIRE -->
   <link name="rb1_omni_backwheel_link">
     <visual>
@@ -312,9 +203,9 @@
       </geometry>
     </visual>
     <collision>
-      <origin rpy="1.5707963267948966 0 0" xyz="0 0 0"/>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
       <geometry>
-        <cylinder length="0.03" radius="0.051"/>
+        <mesh filename="package://rb1_base_description/meshes/wheels/rb1v2_omniwheel.dae"/>
       </geometry>
     </collision>
     <!--collision>
@@ -339,35 +230,7 @@
     <limit effort="100" velocity="100"/>
     <!--joint_properties damping="0.0" friction="0.0"/-->
   </joint>
-  <!-- transmission name="${name}_wheel_joint_trans">
-      <type>transmission_interface/SimpleTransmission</type>
-      <joint name="joint_${name}_wheel" />
-      <actuator name="${name}_wheel_joint_motor">
-        <hardwareInterface>EffortJointInterface</hardwareInterface>
-        <mechanicalReduction>1</mechanicalReduction>
-      </actuator>
-    </transmission -->
-  <gazebo reference="rb1_omni_backwheel">
-    <mu1 value="0"/>
-    <mu2 value="0"/>
-    <kp value="10000000.0"/>
-    <kd value="1.0"/>
-    <fdir1 value="1 0 0"/>
-    <material>Gazebo/Black</material>
-    <turnGravityOff>false</turnGravityOff>
-  </gazebo>
-  <!--gazebo reference="${name}_wheel">
-		<kp>500000.0</kp>
-		<kd>10.0</kd>
-		<mu1>10</mu1>
-		<mu2>10</mu2>
-		<fdir1>1 0 0</fdir1>
-		<maxVel>1.0</maxVel>
-		<minDepth>0.003</minDepth>
-		<material>Gazebo/Black</material>
-		<turnGravityOff>false</turnGravityOff>
-		<implicitSpringDamper>1</implicitSpringDamper>
-    </gazebo-->
+
   <!--WHEEL TIRE -->
   <link name="rb1_omni_front_leftwheel_link">
     <visual>
@@ -377,9 +240,9 @@
       </geometry>
     </visual>
     <collision>
-      <origin rpy="1.5707963267948966 0 0" xyz="0 0 0"/>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
       <geometry>
-        <cylinder length="0.03" radius="0.051"/>
+        <mesh filename="package://rb1_base_description/meshes/wheels/rb1v2_omniwheel.dae"/>
       </geometry>
     </collision>
     <!--collision>
@@ -395,8 +258,7 @@
       <!-- inertia  ixx="0.001" ixy="0.0"  ixz="0.0"  iyy="0.001"  iyz="0.0"  izz="0.001" / -->
     </inertial>
   </link>
-  <!-- joint name="joint_${name}_wheel" type="continuous" -->
-  <joint name="rb1_omni_front_leftwheel_joint" type="fixed">
+  <joint name="rb1_omni_front_leftwheel_joint" type="continuous">
     <parent link="rb1_base_link"/>
     <child link="rb1_omni_front_leftwheel_link"/>
     <origin rpy="0 0 0" xyz="0.132 0.1535 0.027"/>
@@ -404,35 +266,7 @@
     <limit effort="100" velocity="100"/>
     <!--joint_properties damping="0.0" friction="0.0"/-->
   </joint>
-  <!-- transmission name="${name}_wheel_joint_trans">
-      <type>transmission_interface/SimpleTransmission</type>
-      <joint name="joint_${name}_wheel" />
-      <actuator name="${name}_wheel_joint_motor">
-        <hardwareInterface>EffortJointInterface</hardwareInterface>
-        <mechanicalReduction>1</mechanicalReduction>
-      </actuator>
-    </transmission -->
-  <gazebo reference="rb1_omni_front_leftwheel">
-    <mu1 value="0"/>
-    <mu2 value="0"/>
-    <kp value="10000000.0"/>
-    <kd value="1.0"/>
-    <fdir1 value="1 0 0"/>
-    <material>Gazebo/Black</material>
-    <turnGravityOff>false</turnGravityOff>
-  </gazebo>
-  <!--gazebo reference="${name}_wheel">
-		<kp>500000.0</kp>
-		<kd>10.0</kd>
-		<mu1>10</mu1>
-		<mu2>10</mu2>
-		<fdir1>1 0 0</fdir1>
-		<maxVel>1.0</maxVel>
-		<minDepth>0.003</minDepth>
-		<material>Gazebo/Black</material>
-		<turnGravityOff>false</turnGravityOff>
-		<implicitSpringDamper>1</implicitSpringDamper>
-    </gazebo-->
+
   <!--WHEEL TIRE -->
   <link name="rb1_omni_front_rightwheel_link">
     <visual>
@@ -442,9 +276,9 @@
       </geometry>
     </visual>
     <collision>
-      <origin rpy="1.5707963267948966 0 0" xyz="0 0 0"/>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
       <geometry>
-        <cylinder length="0.03" radius="0.051"/>
+        <mesh filename="package://rb1_base_description/meshes/wheels/rb1v2_omniwheel.dae"/>
       </geometry>
     </collision>
     <!--collision>
@@ -460,8 +294,7 @@
       <!-- inertia  ixx="0.001" ixy="0.0"  ixz="0.0"  iyy="0.001"  iyz="0.0"  izz="0.001" / -->
     </inertial>
   </link>
-  <!-- joint name="joint_${name}_wheel" type="continuous" -->
-  <joint name="rb1_omni_front_rightwheel_joint" type="fixed">
+  <joint name="rb1_omni_front_rightwheel_joint" type="continuous">
     <parent link="rb1_base_link"/>
     <child link="rb1_omni_front_rightwheel_link"/>
     <origin rpy="0 0 0" xyz="0.132 -0.1535 0.027"/>
@@ -469,38 +302,10 @@
     <limit effort="100" velocity="100"/>
     <!--joint_properties damping="0.0" friction="0.0"/-->
   </joint>
-  <!-- transmission name="${name}_wheel_joint_trans">
-      <type>transmission_interface/SimpleTransmission</type>
-      <joint name="joint_${name}_wheel" />
-      <actuator name="${name}_wheel_joint_motor">
-        <hardwareInterface>EffortJointInterface</hardwareInterface>
-        <mechanicalReduction>1</mechanicalReduction>
-      </actuator>
-    </transmission -->
-  <gazebo reference="rb1_omni_front_rightwheel">
-    <mu1 value="0"/>
-    <mu2 value="0"/>
-    <kp value="10000000.0"/>
-    <kd value="1.0"/>
-    <fdir1 value="1 0 0"/>
-    <material>Gazebo/Black</material>
-    <turnGravityOff>false</turnGravityOff>
-  </gazebo>
-  <!--gazebo reference="${name}_wheel">
-		<kp>500000.0</kp>
-		<kd>10.0</kd>
-		<mu1>10</mu1>
-		<mu2>10</mu2>
-		<fdir1>1 0 0</fdir1>
-		<maxVel>1.0</maxVel>
-		<minDepth>0.003</minDepth>
-		<material>Gazebo/Black</material>
-		<turnGravityOff>false</turnGravityOff>
-		<implicitSpringDamper>1</implicitSpringDamper>
-    </gazebo-->
+
   <!-- SENSORS -->
   <link name="rb1_front_laser_link">
-  <inertial>
+    <inertial>
       <mass value="0.0"/>
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <inertia ixx="0.0" ixy="0.0" ixz="0.0" iyy="0.0" iyz="0.0" izz="0.0"/>
@@ -511,11 +316,7 @@
     <child link="rb1_front_laser_link"/>
     <origin rpy="0 3.1416 3.1416" xyz="0.210 0.0 0.159"/>
   </joint>
-  <joint name="rb1_front_laser_base_joint" type="fixed">
-    <origin rpy="0 0 0" xyz="0.00 0 -0.05"/>
-    <parent link="rb1_front_laser_link"/>
-    <child link="rb1_front_laser_base_link"/>
-  </joint>
+
   <link name="rb1_front_laser_base_link">
     <collision>
       <origin rpy="0 0 0" xyz="0 0 0.0"/>
@@ -535,46 +336,12 @@
       <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6"/>
     </inertial>
   </link>
-  <gazebo reference="rb1_front_laser_link">
-    <sensor name="rb1_front_laser_sensor" type="gpu_ray">
-      <pose>0 0 0 0 0 0</pose>
-      <visualize>false</visualize>
-      <update_rate>40</update_rate>
-      <ray>
-        <scan>
-          <horizontal>
-            <samples>1081</samples>
-            <resolution>1</resolution>
-            <min_angle>-2.3562</min_angle>
-            <max_angle>2.3562</max_angle>
-          </horizontal>
-        </scan>
-        <range>
-          <min>0.06</min>
-          <max>10.0</max>
-          <!-- resolution>0.004363323</resolution -->
-          <resolution>0.004359297</resolution>
-          <!-- resolution>0.001</resolution -->
-        </range>
-        <noise>
-          <type>gaussian</type>
-          <mean>0.0</mean>
-          <stddev>0.01</stddev>
-        </noise>
-      </ray>
-      <plugin filename="libgazebo_ros_gpu_laser.so" name="rb1_front_laser_controller">
-        <topicName>front_laser/scan</topicName>
-        <frameName>/rb1_front_laser_link</frameName>
-      </plugin>
-    </sensor>
-  </gazebo>
-  <joint name="rb1_imu_joint" type="fixed">
-    <axis xyz="1 0 0"/>
-    <!--origin xyz="0 0 0.2825"/-->
-    <origin rpy="0 0 0" xyz="0.002 0.053 0.1485"/>
-    <parent link="rb1_base_link"/>
-    <child link="rb1_imu_link"/>
+  <joint name="rb1_front_laser_base_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0.00 0 -0.05"/>
+    <parent link="rb1_front_laser_link"/>
+    <child link="rb1_front_laser_base_link"/>
   </joint>
+  
   <link name="rb1_imu_link">
     <inertial>
       <mass value="0.001"/>
@@ -594,33 +361,14 @@
       </geometry>
     </collision>
   </link>
-  <gazebo>
-    <plugin filename="libhector_gazebo_ros_imu.so" name="rb1_imu_controller">
-      <alwaysOn>true</alwaysOn>
-      <topicName>imu/data</topicName>
-      <serviceName>rb1_imuimu/service</serviceName>
-      <bodyName>rb1_imu_link</bodyName>
-      <frameId>rb1_imu_link</frameId>
-      <updateRate>50.0</updateRate>
-      <gaussianNoise>0.00</gaussianNoise>
-      <yawOffset>0.0</yawOffset>
-      <yawDrift>0.0</yawDrift>
-      <yawGaussianNoise>0.0</yawGaussianNoise>
-      <!-- angular velocities parameters -->
-      <rateOffset>0.0 0.0 0.0</rateOffset>
-      <rateDrift>0.0 0.0 0.0</rateDrift>
-      <rateGaussianNoise>0.0 0.0 0.0</rateGaussianNoise>
-      <!-- linear accelerations parameters -->
-      <accelOffset>0.0 0.0 0.0</accelOffset>
-      <accelDrift>0.0 0.0 0.0</accelDrift>
-      <accelGaussianNoise>0.0 0.0 0.0</accelGaussianNoise>
-    </plugin>
-  </gazebo>
-  <joint name="rb1_front_rgbd_camera_rgb_joint" type="fixed">
-    <origin rpy="0 0 0" xyz="0.234 0.0125 0.107"/>
+  <joint name="rb1_imu_joint" type="fixed">
+    <axis xyz="1 0 0"/>
+    <!--origin xyz="0 0 0.2825"/-->
+    <origin rpy="0 0 0" xyz="0.002 0.053 0.1485"/>
     <parent link="rb1_base_link"/>
-    <child link="rb1_front_rgbd_camera_rgb_base_link"/>
+    <child link="rb1_imu_link"/>
   </joint>
+  
   <link name="rb1_front_rgbd_camera_rgb_base_link">
     <inertial>
       <mass value="0.001"/>
@@ -628,11 +376,12 @@
       <inertia ixx="0.0001" ixy="0.0" ixz="0.0" iyy="0.0001" iyz="0.0" izz="0.0001"/>
     </inertial>
   </link>
-  <joint name="rb1_front_rgbd_camera_rgb_optical_joint" type="fixed">
-    <origin rpy="-1.5707963267948966 0 -1.5707963267948966" xyz="0.0 0.0 0.0"/>
-    <parent link="rb1_front_rgbd_camera_rgb_base_link"/>
-    <child link="rb1_front_rgbd_camera_rgb_optical_frame"/>
+  <joint name="rb1_front_rgbd_camera_rgb_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0.234 0.0125 0.107"/>
+    <parent link="rb1_base_link"/>
+    <child link="rb1_front_rgbd_camera_rgb_base_link"/>
   </joint>
+  
   <link name="rb1_front_rgbd_camera_rgb_optical_frame">
     <inertial>
         <mass value="0.001" />
@@ -642,11 +391,12 @@
           izz="0.0001" />
       </inertial>
   </link>
-  <joint name="rb1_front_rgbd_camera_joint" type="fixed">
-    <origin rpy="0.0 0 0" xyz="0.0 -0.0125 -0.015"/>
+  <joint name="rb1_front_rgbd_camera_rgb_optical_joint" type="fixed">
+    <origin rpy="-1.5707963267948966 0 -1.5707963267948966" xyz="0.0 0.0 0.0"/>
     <parent link="rb1_front_rgbd_camera_rgb_base_link"/>
-    <child link="rb1_front_rgbd_camera_link"/>
+    <child link="rb1_front_rgbd_camera_rgb_optical_frame"/>
   </joint>
+  
   <link name="rb1_front_rgbd_camera_link">
     <visual>
       <origin rpy="0 0 0" xyz="0 0 0"/>
@@ -674,11 +424,12 @@
       <inertia ixx="0.003881243" ixy="0.0" ixz="0.0" iyy="0.000498940" iyz="0.0" izz="0.003879257"/>
     </inertial>
   </link>
-  <joint name="rb1_front_rgbd_camera_depth_joint" type="fixed">
-    <origin rpy="0 0 0" xyz="0.0 0.025 0.0"/>
+  <joint name="rb1_front_rgbd_camera_joint" type="fixed">
+    <origin rpy="0.0 0 0" xyz="0.0 -0.0125 -0.015"/>
     <parent link="rb1_front_rgbd_camera_rgb_base_link"/>
-    <child link="rb1_front_rgbd_camera_depth_frame"/>
+    <child link="rb1_front_rgbd_camera_link"/>
   </joint>
+  
   <link name="rb1_front_rgbd_camera_depth_frame">
     <inertial>
         <mass value="0.01" />
@@ -688,11 +439,12 @@
           izz="0.001" />
       </inertial>
   </link>
-  <joint name="rb1_front_rgbd_camera_depth_optical_joint" type="fixed">
-    <origin rpy="-1.5707963267948966 0 -1.5707963267948966" xyz="0 0 0"/>
-    <parent link="rb1_front_rgbd_camera_depth_frame"/>
-    <child link="rb1_front_rgbd_camera_depth_optical_frame"/>
+  <joint name="rb1_front_rgbd_camera_depth_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0.0 0.025 0.0"/>
+    <parent link="rb1_front_rgbd_camera_rgb_base_link"/>
+    <child link="rb1_front_rgbd_camera_depth_frame"/>
   </joint>
+  
   <link name="rb1_front_rgbd_camera_depth_optical_frame">
     <inertial>
         <mass value="0.001" />
@@ -702,8 +454,12 @@
           izz="0.0001" />
       </inertial>
   </link>
-  <!-- RGBD sensor for simulation, same as Kinect -->
-  <!--sensor_orbbec_astra_gazebo/-->
+  <joint name="rb1_front_rgbd_camera_depth_optical_joint" type="fixed">
+    <origin rpy="-1.5707963267948966 0 -1.5707963267948966" xyz="0 0 0"/>
+    <parent link="rb1_front_rgbd_camera_depth_frame"/>
+    <child link="rb1_front_rgbd_camera_depth_optical_frame"/>
+  </joint>
+  
   <!-- TORSO & ARMS -->
   <link name="rb1_torso_link">
     <visual>
@@ -713,9 +469,9 @@
       </geometry>
     </visual>
     <collision>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <origin rpy="0 0 0" xyz="0 0 0.292"/>
       <geometry>
-        <mesh filename="package://rb1_base_description/meshes/others/rb1_torso_ur3.stl"/>
+        <mesh filename="package://rb1_base_description/meshes/others/adam_model.stl"/>
       </geometry>
     </collision>
     <inertial>
@@ -730,6 +486,7 @@
     <origin rpy="0.0 0.0 0.0" xyz="-0.1 0.0 0.248"/>
     <axis rpy="0 0 0" xyz="0 0 1"/>
   </joint>
+
   <link name="rb1_torso_ur3_right_link">
   <inertial>
       <mass value="0.01"/>

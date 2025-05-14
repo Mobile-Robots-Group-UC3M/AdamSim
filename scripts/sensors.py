@@ -14,6 +14,18 @@ class Sensors:
 
 
     def get_rgb_image_from_link(self, link_index, width=640, height=480, fov=60, near=0.01, far=5.0):
+        '''
+        Get RGB image from a specific link of the robot.
+        Args:
+            link_index (int): The index of the link to capture the image from.
+            width (int): The width of the image.
+            height (int): The height of the image.
+            fov (float): The field of view of the camera in degrees.
+            near (float): The near clipping plane distance.
+            far (float): The far clipping plane distance.
+        Returns:
+            rgb (numpy.ndarray): The captured RGB image.
+        '''
 
         # Get link world position and orientation
         link_state = p.getLinkState(self.adam.robot_id, link_index)
@@ -50,6 +62,13 @@ class Sensors:
     
 
     def save_rgb_image(self, rgb_array, filename="camera_image.png", directory="./images"):
+        '''
+        Save RGB image to a file.
+        Args:
+            rgb_array (numpy.ndarray): The RGB image array.
+            filename (str): The name of the file to save the image.
+            directory (str): The directory to save the image.
+        '''
         
         os.makedirs(directory, exist_ok=True)
         path = os.path.join(directory, filename)
@@ -59,6 +78,11 @@ class Sensors:
 
 
     def move_camera_angle(self, angle):
+        '''
+        Move the camera to a specified angle.
+        Args:
+            angle (float): The camera angle in degrees. Must be between -45 and 45 degrees.
+        '''
 
         # Save camera angle
         self.camera_angle = angle
