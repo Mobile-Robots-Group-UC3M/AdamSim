@@ -1,6 +1,8 @@
 import pybullet as p
 import time
 from pykdl_kinematics import Kinematics
+import math
+import numpy as np
 
 # Class for kinematics
 class ArmsKinematics:
@@ -10,7 +12,7 @@ class ArmsKinematics:
         self.pykdl = Kinematics(adam, adam.urdf_path)
     
     # Calculate the inverse kinematics for the specified arm
-    def calculate_arm_inverse_kinematics(self, robot_id, ee_index, target_pose, null=True):
+    def calculate_arm_inverse_kinematics(self, robot_id, ee_index, target_pose, null=True, iterations=1000):
         '''
         Calculate the inverse kinematics for the specified arm.
         Args:
@@ -30,15 +32,16 @@ class ArmsKinematics:
             ik_solution = p.calculateInverseKinematics(robot_id, ee_index, target_position, target_orientation,lowerLimits=self.adam.ll,
                                                     upperLimits=self.adam.ul,
                                                     jointRanges=self.adam.jr,
-                                                    restPoses=self.adam.rp)
+                                                    restPoses=self.adam.rp,
+                                                    maxNumIterations=iterations,)
         else:
             ik_solution = p.calculateInverseKinematics(robot_id, ee_index, target_position, target_orientation,jointDamping=self.adam.jd,
                                                 solver=0,
-                                                maxNumIterations=100,
+                                                maxNumIterations=iterations,
                                                 residualThreshold=.01)
         return ik_solution
     
-    def move_arm_to_pose(self, arm, target_pose, target_link, pos_act=None, vel_act=None, accurate=False, threshold=[0.01, 0.035], type="both", visualize=False):
+    def move_arm_to_pose(self, arm, target_pose, target_link, pos_act=None, vel_act=None, accurate=False, threshold=[0.01, 0.035], type="both"):
         '''
         Move the arm to the specified pose.
         Args:
@@ -55,55 +58,65 @@ class ArmsKinematics:
             arm_solution (list): The arm joint angles.
             vel_des (list): The desired velocity of the arm.
         '''
-
-        # Visualize the target pose
-        if visualize: self.adam.utils.draw_frame(target_pose)
+        
 
         # Get the joint indices and target link index
         joint_indices, rev_joint_indices = self.get_arm_joint_indices(arm)
         target_link_index = self.get_arm_link_index(arm, target_link)
 
-        # Compute IK solution
-        ik_solution = self.calculate_arm_inverse_kinematics(self.adam.robot_id, target_link_index, target_pose)
-        arm_solution = [ik_solution[i] for i in rev_joint_indices]
+        closeEnough = False
+        break_loop = False
+
+        while not break_loop and not closeEnough:
+            
+            # Only do once if not accurate
+            if not accurate: break_loop = True
+
+            # Compute IK 
+            if accurate: iterations = 1000
+            else: iterations = 100000
+
+            ik_solution = self.calculate_arm_inverse_kinematics(self.adam.robot_id, target_link_index, target_pose, iterations=iterations)
+            arm_solution = [ik_solution[i] for i in rev_joint_indices]
 
 
-        # Include dynamics
-        if self.adam.Dynamics:
+            # Correct the angles
+            arm_solution = self.compute_closest_joints(arm, arm_solution)
 
-            # Compute inverse dynamics
-            torque, vel_des, acc_des = self.adamDynamics.calculate_arm_inverse_dynamics(arm_solution, pos_act, vel_act, arm)
+            # Include dynamics
+            if self.adam.Dynamics:
 
-            for i, joint_id in enumerate(joint_indices):
-                #set the joint friction
-                p.setJointMotorControl2(self.adam.robot_id, joint_id, p.VELOCITY_CONTROL, targetVelocity=0, force=20)
-                #apply a joint torque
-                p.setJointMotorControl2(self.adam.robot_id, joint_id, p.TORQUE_CONTROL, force=torque[i])
-            p.stepSimulation()
+                # Compute inverse dynamics
+                torque, vel_des, acc_des = self.adamDynamics.calculate_arm_inverse_dynamics(arm_solution, pos_act, vel_act, arm)
 
-            #Calculamos la dinámica directa para obtener la aceleracion de las articulaciones al aplicar una fuerza sobre ellas
-            acc = self.adam.calculate_arm_forward_dynamics(torque,arm)
+                for i, joint_id in enumerate(joint_indices):
+                    #set the joint friction
+                    p.setJointMotorControl2(self.adam.robot_id, joint_id, p.VELOCITY_CONTROL, targetVelocity=0, force=20)
+                    #apply a joint torque
+                    p.setJointMotorControl2(self.adam.robot_id, joint_id, p.TORQUE_CONTROL, force=torque[i])
+                p.stepSimulation()
 
-        # Without dynamics
-        else:
+                #Calculamos la dinámica directa para obtener la aceleracion de las articulaciones al aplicar una fuerza sobre ellas
+                acc = self.adam.calculate_arm_forward_dynamics(torque,arm)
 
-            # Calculo de la cinematica inversa precisa
-            if accurate:
-
-                while not closeEnough:
-                    for i, joint_id in enumerate(joint_indices):
-                        p.setJointMotorControl2(self.adam.robot_id, joint_id, p.POSITION_CONTROL, arm_solution[i])
-                    
-                    closeEnough, _, _ = self.check_reached(arm, target_pose, target_link, threshold=threshold, type=type)
-
-            # Calculo de la cinematica inversa sin precision
+            # Without dynamics
             else:
+
                 for i, joint_id in enumerate(joint_indices):
                     p.setJointMotorControl2(self.adam.robot_id, joint_id, p.POSITION_CONTROL, arm_solution[i])
+                
+                # Check if the arm has reached the target pose
+                if accurate: closeEnough, _, _ = self.check_reached(arm, target_pose, target_link, threshold=threshold, type=type)
 
-            vel_des = None
-        
-        return ik_solution, arm_solution, vel_des
+                
+                vel_des = None
+            
+            # Simulation step
+            if self.adam.useRealTimeSimulation:
+                    p.stepSimulation()
+                    time.sleep(self.adam.t)
+
+        return arm_solution, closeEnough, vel_des
 
 
     
@@ -296,6 +309,24 @@ class ArmsKinematics:
         return link_state[4],link_state[5]
     
 
+    def get_arm_joint_angles(self, arm):
+        '''
+        Get the joint angles of the specified arm.
+        Args:
+            arm (str): The arm to get the joint angles for ('left' or 'right').
+        Returns:
+            list: A list of joint angles in radians.
+        '''
+
+        # Get the joint indices
+        joint_indices, _ = self.get_arm_joint_indices(arm)
+
+        # Get the joint angles
+        joint_angles = [p.getJointState(self.adam.robot_id, joint_id)[0] for joint_id in joint_indices]
+
+        return joint_angles
+    
+
     def get_arm_link_index(self, arm, target_link):
         '''
         Get the index of the specified arm link.
@@ -335,3 +366,35 @@ class ArmsKinematics:
             raise ValueError("El brazo debe ser 'left' o 'right'.")
         
         return joint_indices, rev_joint_indices
+    
+
+    def compute_closest_joints(self, arm, joint_angles):
+        '''
+        Compute the closest joint angles to the given angles.
+        Args:
+            joint_angles (list): The joint angles to compute the closest angles for.
+        Returns:
+            list: A list of closest joint angles.
+        '''
+        
+        # Compute the closest joint angles
+        closest_angles = []
+
+        current_angles = self.get_arm_joint_angles(arm)  # Get the current joint angles
+
+        for i, angle in enumerate(joint_angles):
+
+            q_current = current_angles[i]
+            q_target = angle
+
+            if abs(q_target - q_current) >= math.pi:
+
+                if q > self.adam.ul[i] or q < self.adam.ll[i]: q = q_target # if the target is out of limits
+                else: q = q_target + np.sign(q_target - q_current) * 2 * math.pi # wrap around
+                
+            else: q = q_target
+
+            # Append the closest angle to the list
+            closest_angles.append(q)
+        
+        return closest_angles

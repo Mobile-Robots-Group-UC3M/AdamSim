@@ -37,8 +37,8 @@ class ADAM:
         self.ur3_right_arm_joints = list(range(20,26))  # Brazo derecho
         self.ur3_left_arm_joints = list(range(45,51)) # Brazo izquierdo
 
-        self.ur3_right_arm_rev_joints = list(range(2,8))  # Brazo derecho
-        self.ur3_left_arm_rev_joints = list(range(20,26)) # Brazo izquierdo
+        self.ur3_right_arm_rev_joints = list(range(5,11))  # Brazo derecho
+        self.ur3_left_arm_rev_joints = list(range(23,29)) # Brazo izquierdo
 
         # Hand revolute joint indices
         self.hand_joint_indices = {'right': list(range(30, 42)), 'left': list(range(55, 67))}
@@ -210,6 +210,20 @@ class ADAM:
             }.get(joint_type, "Unknown")
             
             print(f"ID: {joint_id}, Nombre: {joint_name}, Tipo: {joint_type_str}")
+
+        print("\n=== ADAM REVOLUTE JOINTS ===")
+        
+        revolute_id = 0
+        
+        for i in range(num_joints):
+            joint_info = p.getJointInfo(self.robot_id, i)
+            joint_id = joint_info[0]
+            joint_name = joint_info[1].decode("utf-8")
+            joint_type = joint_info[2]
+            
+            if joint_type == p.JOINT_REVOLUTE:
+                print(f"Revolute ID: {revolute_id}, Nombre: {joint_name}")
+                revolute_id += 1
 
 
 
