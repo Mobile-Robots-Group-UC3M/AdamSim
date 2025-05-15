@@ -50,7 +50,6 @@ class Navigation():
                 # Mientras estamos lejos del objetivo:
                 if abs(alpha) >= orient_tolerance:
                     # 4.1) GIRAR IN SITU hacia la dirección al target
-                    print("GIROOOOOOOO JODERRRRR")
                     v = 0.0
                     w = K_ang * alpha
                 else:
