@@ -222,7 +222,7 @@
     </inertial>
   </link>
   <!-- joint name="joint_${name}_wheel" type="continuous" -->
-  <joint name="rb1_omni_backwheel_joint" type="fixed">
+  <joint name="rb1_omni_backwheel_joint" type="continuous">
     <parent link="rb1_base_link"/>
     <child link="rb1_omni_backwheel_link"/>
     <origin rpy="0 0 0" xyz="-0.195 0.0 0.027"/>
