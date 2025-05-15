@@ -49,7 +49,7 @@ while True:
     # Example: Move the right arm to a specific position
     
     #adam.teleop.apply_slider_values()
-    
+    #Test
     _, closeEnough, _ = adam.arm_kinematics.move_arm_to_pose('right', pose, target_link='hand', accurate=True)
     print("Close enough:", closeEnough)
 
