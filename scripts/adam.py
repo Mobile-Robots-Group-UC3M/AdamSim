@@ -1,13 +1,12 @@
 import pybullet as p
 import pybullet_data
-import math
 from arms_dynamics import ArmsDynamics
-from scripts.teleoperation import Sliders
+from teleoperation import Teleop
 from arms_kinematics import ArmsKinematics
 from hands_kinematics import HandsKinematics
 from sensors import Sensors
 from teleoperation import Teleop
-
+from utils import Utils
 
 # Class for ADAM robot
 class ADAM:
@@ -25,12 +24,12 @@ class ADAM:
         self.urdf_path = urdf_path
 
         # Spawn ADAM robot model
-        self.robot_id = p.loadURDF(urdf_path, useFixedBase=used_fixed_base, flags=p.URDF_USE_SELF_COLLISION_INCLUDE_PARENT)
+        self.robot_id = p.loadURDF(urdf_path, useFixedBase=used_fixed_base, flags=p.URDF_USE_SELF_COLLISION)
 
         # Change simulation mode
         self.useSimulation = useSimulation
         self.useRealTimeSimulation = useRealTimeSimulation
-        self.t = 0.01
+        self.t = 0.05
 
 
         # Arm revolute joint indices
@@ -53,8 +52,9 @@ class ADAM:
         self.arm_dynamics = ArmsDynamics(self)
         self.arm_kinematics = ArmsKinematics(self)
         self.hand_kinematics = HandsKinematics(self)
-        self.sliders = Teleop(self)
-        self.sensors = Sensors(self)      
+        self.teleop = Teleop(self)
+        self.sensors = Sensors(self)
+        self.utils = Utils(self)      
         
         
         #Definir null space
@@ -88,6 +88,13 @@ class ADAM:
 
         # Señal de colision
         self.collision = False
+
+        # Add autocollisions to the robot (DO NOT MODIFY)
+        p.setCollisionFilterGroupMask(self.robot_id, -1, 0, 0)
+
+        '''p.setCollisionFilterGroupMask(self.robot_id, -1, 0, 0)
+        p.setCollisionFilterGroupMask(self.plane_id, -1, 1, 0)
+        p.setCollisionFilterPair(self.robot_id, self.plane_id, -1, -1, 1)'''
 
 
 

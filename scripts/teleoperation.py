@@ -34,6 +34,8 @@ class Teleop():
                 joint_name = self.adam.hand_kinematics.finger_names[i]
                 self.slider_ids.append(p.addUserDebugParameter(arm + ' ' + joint_name, 0, 1000, 0))
 
+        self.slider_ids.append(p.addUserDebugParameter('Camera joint', -45, 45, 0))
+
             
 
     def apply_slider_values(self):
@@ -64,3 +66,6 @@ class Teleop():
         # Move hands
         self.adam.hand_kinematics.move_hand_to_dofs('left', left_hand_values)
         self.adam.hand_kinematics.move_hand_to_dofs('right', right_hand_values)
+
+        # Move camera
+        self.adam.sensors.move_camera_angle(p.readUserDebugParameter(self.slider_ids[24]))

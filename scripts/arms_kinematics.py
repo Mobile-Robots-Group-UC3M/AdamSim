@@ -1,6 +1,5 @@
 import pybullet as p
 import time
-import math
 from pykdl_kinematics import Kinematics
 
 # Class for kinematics
@@ -92,7 +91,7 @@ class ArmsKinematics:
                     for i, joint_id in enumerate(joint_indices):
                         p.setJointMotorControl2(self.adam.robot_id, joint_id, p.POSITION_CONTROL, arm_solution[i])
                     
-                    closeEnough, _, _ = self.adam.check_reached(arm, target_pose, target_link, threshold=threshold, type=type)
+                    closeEnough, _, _ = self.check_reached(arm, target_pose, target_link, threshold=threshold, type=type)
 
             # Calculo de la cinematica inversa sin precision
             else:
