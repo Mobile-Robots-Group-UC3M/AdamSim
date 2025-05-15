@@ -18,9 +18,6 @@ adam.teleop.create_sliders()
 
 pose = [[0.3422611951828003, 0.020709218457341194, 1.4573277235031128], [0.68709796667099, 0.11739179491996765, 0.6064856052398682, -0.382479727268219]]
 
-adam.utils.draw_frame([[0,0,3], [0,0,0,1]])
-adam.utils.draw_frame(pose)
-
 
 # Main simulation loop
 while True:
@@ -31,7 +28,7 @@ while True:
     # INSERT YOUR SIMULATION CODE HERE
 
     # Example: Move the right arm to a specific position
-    adam.arm_kinematics.move_arm_to_pose('right', pose, target_link='ee', accurate=False)
+    adam.arm_kinematics.move_arm_to_pose('right', pose, target_link='ee', accurate=False, visualize=True)
     current_pose = adam.arm_kinematics.get_arm_link_pose('right', target_link='ee')
     print("Current Pose:", current_pose)
     
