@@ -35,6 +35,8 @@ class HandsKinematics():
             'pink_DIP_joint'
         ]
 
+        self.finger_names = ['thumb_abd', 'thumb_flex', 'index', 'middle', 'ring', 'pink']
+
         self.num_hand_joints = len(self.joint_names)
         self.dof_joints_indices = [0, 1, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5]
         self.num_dofs = 6

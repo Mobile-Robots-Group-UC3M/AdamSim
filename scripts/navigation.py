@@ -16,17 +16,28 @@ class Navigation():
         
         self.K_lin = 1.0
         self.K_ang = 3.0
+        
+    def shortest_angle_diff(self, a, b):
+        return math.atan2(math.sin(b - a), math.cos(b - a))
+        
+    def move_wheels(self, left_wheel_speed, right_wheel_speed,force = 100):
+        # Set the wheel speeds
+        p.setJointMotorControl2(self.adam.robot_id, self.adam.left_wheel_joint,
+                                p.VELOCITY_CONTROL, targetVelocity=left_wheel_speed, force=force)
+        p.setJointMotorControl2(self.adam.robot_id, self.adam.right_wheel_joint,
+                                p.VELOCITY_CONTROL, targetVelocity=right_wheel_speed, force=force)
     
 
         
     def move_base_continuous(self, target_pos, pos_tolerance=0.01, angle_tolerance=0.02, orient_tolerance=0.1, debug=True):
         x_goal, y_goal, theta_goal = target_pos
-
         # Ganancias
         K_lin = self.K_lin
         K_ang = self.K_ang
         step = True
 
+        self.adam.utils.draw_frame(([x_goal,y_goal,0],p.getQuaternionFromEuler([0,0,theta_goal])),axis_length=0.5,line_width=6)
+        
         while step:
             # 1) Estado actual
             pos, orn = p.getBasePositionAndOrientation(self.adam.robot_id)

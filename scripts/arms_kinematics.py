@@ -1,7 +1,6 @@
 import pybullet as p
 import time
-import math
-from scripts.pykdl_kinematics import Kinematics
+from pykdl_kinematics import Kinematics
 
 # Class for kinematics
 class ArmsKinematics:
@@ -39,7 +38,7 @@ class ArmsKinematics:
                                                 residualThreshold=.01)
         return ik_solution
     
-    def move_arm_to_pose(self, arm, target_pose, target_link, pos_act=None, vel_act=None, accurate=False, threshold=[0.01, 0.035], type="both"):
+    def move_arm_to_pose(self, arm, target_pose, target_link, pos_act=None, vel_act=None, accurate=False, threshold=[0.01, 0.035], type="both", visualize=False):
         '''
         Move the arm to the specified pose.
         Args:
@@ -56,6 +55,9 @@ class ArmsKinematics:
             arm_solution (list): The arm joint angles.
             vel_des (list): The desired velocity of the arm.
         '''
+
+        # Visualize the target pose
+        if visualize: self.adam.utils.draw_frame(target_pose)
 
         # Get the joint indices and target link index
         joint_indices, rev_joint_indices = self.get_arm_joint_indices(arm)
@@ -92,7 +94,7 @@ class ArmsKinematics:
                     for i, joint_id in enumerate(joint_indices):
                         p.setJointMotorControl2(self.adam.robot_id, joint_id, p.POSITION_CONTROL, arm_solution[i])
                     
-                    closeEnough, _, _ = self.adam.check_reached(arm, target_pose, target_link, threshold=threshold, type=type)
+                    closeEnough, _, _ = self.check_reached(arm, target_pose, target_link, threshold=threshold, type=type)
 
             # Calculo de la cinematica inversa sin precision
             else:
