@@ -73,7 +73,7 @@ class Teleop():
         # Move camera
         self.adam.sensors.move_camera_angle(p.readUserDebugParameter(self.slider_ids[24]))
         
-    def teleoperate_base(self, debug=False):
+    def teleoperate_base(self, debug=False, move_sim = True):
         
         leftWheelVelocity=0
         rightWheelVelocity=0
@@ -104,5 +104,7 @@ class Teleop():
         if debug==True:
             print("Right wheel velocity", rightWheelVelocity)
             print("Left wheel velocity",leftWheelVelocity)
+        if move_sim==True:
+            self.adam.navigation.move_wheels(leftWheelVelocity, rightWheelVelocity, force=100)
         
-        self.adam.navigation.move_wheels(leftWheelVelocity, rightWheelVelocity, force=100)
+        return leftWheelVelocity, rightWheelVelocity

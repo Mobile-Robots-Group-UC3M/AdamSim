@@ -1,6 +1,6 @@
 import rospy
 from sensor_msgs.msg import JointState
-from geometry_msgs.msg import Pose
+from geometry_msgs.msg import Pose, Twist
 from trajectory_msgs.msg import JointTrajectory, JointTrajectoryPoint
 import pybullet as p
 
@@ -15,13 +15,32 @@ class ROSConnection:
 
         # Create a publisher for the robot's pose
         self.arm_joint_pub = {'left': rospy.Publisher('/robot/left_arm/scaled_pos_traj_controller/command', JointTrajectory, queue_size=1),
-                              'right': rospy.Publisher('/robot/right_arm/scaled_pos_traj_controller/command', JointTrajectory, queue_size=1)}
+                            'right': rospy.Publisher('/robot/right_arm/scaled_pos_traj_controller/command', JointTrajectory, queue_size=1)}
+        
+        # Create a publisher for the base pose
+        self.pub = rospy.Publisher('/robot/move_base/cmd_vel', Twist, queue_size=1)
+        self.wheel_radius = 0.0762
+        self.wheel_distance = 0.436
         
         self.adam = adam
 
         self.latest_arm_joint_states = {'right': None, 'left': None}
 
         self.last_arm_joint_state_log_time = rospy.Time.now()
+        
+    def send_velocity(self, linear_speed=0.0, angular_speed=0.0):
+        '''
+        Send velocity commands to the robot's base.
+        '''
+        
+        twist = Twist()
+        
+        twist.linear.x = linear_speed
+        twist.angular.z = angular_speed
+        
+        self.pub.publish(twist)
+        
+        #rospy.loginfo("Published velocity command to robot base")
 
 
     def arm_joint_state_callback(self, msg, arm):
@@ -58,7 +77,7 @@ class ROSConnection:
         # Publish the message
         self.arm_joint_pub[arm].publish(traj_msg)
         
-        rospy.loginfo("Published joint trajectory for %s arm", arm)
+        #rospy.loginfo("Published joint trajectory for %s arm", arm)
 
         
     def convert_joints_to_msg(self, joint_positions):
@@ -105,3 +124,15 @@ class ROSConnection:
             self.adam.arm_kinematics.move_arm_joints_to_angles('right', self.latest_arm_joint_states['right'])    
 
             self.last_arm_joint_state_log_time = now
+            
+    def teleop_real_base(self):
+        '''
+        Teleoperate the base using the keyboard.
+        '''
+        leftSpeed, rightSpeed = self.adam.teleop.teleoperate_base(move_sim=False)
+        # Convertir velocidades de rueda (rad/s) a velocidad lineal y angular
+        linear_x = self.wheel_radius * (rightSpeed + leftSpeed) / 2.0
+        angular_z = self.wheel_radius * (rightSpeed - leftSpeed) / self.wheel_distance
+        
+        self.send_velocity(linear_x, angular_z)
+        self.adam.navigation.move_wheels(leftSpeed, rightSpeed, force=100)
