@@ -60,7 +60,7 @@ def convert_joints_to_msg(joint_positions):
     return traj_msg
 
 def main():
-    rospy.init_node('adam_node',anonymous=True)
+    rospy.init_node('adam_node', anonymous=True)
 
     # Publisher
     pose_pub = rospy.Publisher('/right_hand_pose', Pose, queue_size=10)
@@ -97,10 +97,10 @@ def main():
 
             # Obtener pose actual y publicarla
             # current_pose = adam.arm_kinematics.get_arm_link_pose('right', target_link='hand')
-            joint_msg = convert_joints_to_msg(command_joints_left)
-            joints_pub.publish(joint_msg)
+            #joint_msg = convert_joints_to_msg(command_joints_left)
+            #joints_pub.publish(joint_msg)
 
-            rospy.loginfo_throttle(1.0, f"Joints msg: {joint_msg}")
+            #rospy.loginfo_throttle(1.0, f"Joints msg: {joint_msg}")
 
             # Leer /joint_states cada 1 segundo
             now = rospy.Time.now()
@@ -121,6 +121,8 @@ def main():
                 corrected_position_right[0], corrected_position_right[2] = corrected_position_right[2], corrected_position_right[0]
                 adam.arm_kinematics.move_arm_joints_to_angles('right', corrected_position_right)
                 last_joint_state_log_time = now
+
+                print(adam.detect_autocollisions())
 
             # Simulación
             if not adam.useRealTimeSimulation:

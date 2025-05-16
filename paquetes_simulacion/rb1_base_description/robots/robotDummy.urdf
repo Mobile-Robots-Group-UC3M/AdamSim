@@ -468,12 +468,12 @@
         <mesh filename="package://rb1_base_description/meshes/others/rb1_torso_ur3.stl"/>
       </geometry>
     </visual>
-    <collision>
+    <!--collision>
       <origin rpy="0 0 0" xyz="0 0 0.292"/>
       <geometry>
         <mesh filename="package://rb1_base_description/meshes/others/adam_model.stl"/>
       </geometry>
-    </collision>
+    </collision-->
     <inertial>
       <mass value="4.0"/>
       <origin xyz="0 0 0"/>
@@ -2108,6 +2108,95 @@
     <parent link="rgbd_link"/>
     <child link="camera_link"/>
     <origin xyz="0 0 0" rpy="0 0 3.141592"/>
+  </joint>
+
+  <!-- TORSO COLLISIONS -->
+
+  <link name="rb1_torso_base_collision_link">
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="package://rb1_base_description/meshes/others/torso_base.stl"/>
+      </geometry>
+      <material name="torso">
+        <color rgba="1 1 1 0"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="package://rb1_base_description/meshes/others/torso_base.stl"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="4.0"/>
+      <origin xyz="0 0 0"/>
+      <inertia ixx="0.154375" ixy="0" ixz="0" iyy="0.154375" iyz="0" izz="0.005000000000000001"/>
+    </inertial>
+  </link>
+  <joint name="rb1_torso_base_collision_joint" type="fixed">
+    <parent link="rb1_base_footprint"/>
+    <child link="rb1_torso_base_collision_link"/>
+    <origin rpy="0.0 0.0 0.0" xyz="-0.1 0.0 0.248"/>
+    <axis rpy="0 0 0" xyz="0 0 1"/>
+  </joint>
+
+  <link name="rb1_torso_chest_collision_link">
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="package://rb1_base_description/meshes/others/torso_chest.stl"/>
+      </geometry>
+      <material name="torso">
+        <color rgba="1 1 1 0"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="package://rb1_base_description/meshes/others/torso_chest.stl"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="4.0"/>
+      <origin xyz="0 0 0"/>
+      <inertia ixx="0.154375" ixy="0" ixz="0" iyy="0.154375" iyz="0" izz="0.005000000000000001"/>
+    </inertial>
+  </link>
+  <joint name="rb1_torso_chest_collision_joint" type="fixed">
+    <parent link="rb1_base_footprint"/>
+    <child link="rb1_torso_chest_collision_link"/>
+    <origin rpy="0.0 0.0 0.0" xyz="-0.1 0.0 0.248"/>
+    <axis rpy="0 0 0" xyz="0 0 1"/>
+  </joint>
+
+  <link name="rb1_torso_shoulders_collision_link">
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="package://rb1_base_description/meshes/others/torso_shoulders.stl"/>
+      </geometry>
+      <material name="torso">
+        <color rgba="1 1 1 0"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="package://rb1_base_description/meshes/others/torso_shoulders.stl"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="4.0"/>
+      <origin xyz="0 0 0"/>
+      <inertia ixx="0.154375" ixy="0" ixz="0" iyy="0.154375" iyz="0" izz="0.005000000000000001"/>
+    </inertial>
+  </link>
+  <joint name="rb1_torso_shoulders_collision_joint" type="fixed">
+    <parent link="rb1_base_footprint"/>
+    <child link="rb1_torso_shoulders_collision_link"/>
+    <origin rpy="0.0 0.0 0.0" xyz="-0.1 0.0 0.248"/>
+    <axis rpy="0 0 0" xyz="0 0 1"/>
   </joint>
 
 </robot>
