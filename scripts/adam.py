@@ -8,6 +8,7 @@ from sensors import Sensors
 from teleoperation import Teleop
 from navigation import Navigation
 from utils import Utils
+from ros_connection import ROSConnection
 
 # Class for ADAM robot
 class ADAM:
@@ -30,7 +31,7 @@ class ADAM:
         # Change simulation mode
         self.useSimulation = useSimulation
         self.useRealTimeSimulation = useRealTimeSimulation
-        self.t = 0.05
+        self.t = 0.01
 
 
         # Arm revolute joint indices
@@ -42,6 +43,9 @@ class ADAM:
 
         # Hand revolute joint indices
         self.hand_joint_indices = {'right': list(range(30, 42)), 'left': list(range(55, 67))}
+
+        # Torso link indices
+        self.torso_link_indices = list(range(73, 76))
 
         # Other indices
         self.ee_index = {'right': 26, 'left': 51}
@@ -60,7 +64,8 @@ class ADAM:
         self.navigation = Navigation(self)
         self.teleop = Teleop(self)
         self.sensors = Sensors(self)
-        self.utils = Utils(self)      
+        self.utils = Utils(self)
+        self.ros = ROSConnection(self)      
         
         
         #Definir null space
@@ -115,7 +120,6 @@ class ADAM:
 
         complete_left_arm_joints = self.ur3_left_arm_joints + self.hand_joint_indices['left']
         complete_right_arm_joints = self.ur3_right_arm_joints + self.hand_joint_indices['right']
-        torso_index = 17
 
         self.collision_left = False
         self.collision_right = False
@@ -128,15 +132,25 @@ class ADAM:
                     self.collision_left = True # Collision detected
                     self.collision_right = True # Collision detected
 
+                    print('Collision in link:', left_joint)
+                    print('Collision in link:', right_joint)
+
         # Collision with the body
         for left_joint in complete_left_arm_joints:
-            contact_points = p.getClosestPoints(self.robot_id, self.robot_id, distance=0.0, linkIndexA=left_joint, linkIndexB=torso_index)
-            if contact_points: self.collision_left = True
+            for torso_index in self.torso_link_indices:
+
+                contact_points = p.getContactPoints(self.robot_id, self.robot_id, linkIndexA=left_joint, linkIndexB=torso_index)
+                if contact_points:
+                    self.collision_left = True
+                    print('Collision in link:', left_joint)
 
         # Collision with the body
         for right_joint in complete_right_arm_joints:
-            contact_points = p.getClosestPoints(self.robot_id, self.robot_id, distance=0.0, linkIndexA=right_joint, linkIndexB=torso_index)
-            if contact_points: self.collision_right = True
+            for torso_index in self.torso_link_indices:
+                contact_points = p.getClosestPoints(self.robot_id, self.robot_id, distance=0.0, linkIndexA=right_joint, linkIndexB=torso_index)
+                if contact_points:
+                    self.collision_right = True
+                    print('Collision in link:', right_joint)
 
 
         return self.collision_left, self.collision_right

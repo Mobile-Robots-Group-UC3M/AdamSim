@@ -122,6 +122,8 @@ def main():
                 adam.arm_kinematics.move_arm_joints_to_angles('right', corrected_position_right)
                 last_joint_state_log_time = now
 
+                print(adam.detect_autocollisions())
+
             # Simulación
             if not adam.useRealTimeSimulation:
                 p.stepSimulation()
