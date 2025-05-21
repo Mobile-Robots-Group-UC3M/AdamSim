@@ -9,8 +9,8 @@ robot_urdf_path = "/home/adrian/Escritorio/ImitationLearning/SimuladorADAM/Adam_
 adam = ADAM(robot_urdf_path, useSimulation=False, useRealTimeSimulation=True, used_fixed_base=False)
 
 # Print robot information
-adam.print_robot_info()
-adam.teleop.create_sliders()
+""" adam.print_robot_info()
+adam.teleop.create_sliders() """
 
 # ROS rate
 rate = rospy.Rate(120)

@@ -35,6 +35,6 @@ if __name__ == '__main__':
     
     """ p.setJointMotorControl2(adam.robot_id, 3, p.VELOCITY_CONTROL, force=0)
     p.setJointMotorControl2(adam.robot_id, 4, p.VELOCITY_CONTROL, force=0) """
-    #adam.navigation.move_base_continuous((-6,6,0.5),pos_tolerance=0.01,angle_tolerance=0.03)
-    while(1):
-        adam.teleop.teleoperate_base(debug=True)
+    adam.navigation.move_base_continuous((-6,6,0.5),pos_tolerance=0.04,angle_tolerance=0.08)
+    """ while(1):
+        adam.teleop.teleoperate_base(debug=True) """

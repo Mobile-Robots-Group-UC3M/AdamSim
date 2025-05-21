@@ -52,7 +52,7 @@ class ROSConnection:
         '''
         
         # Log the received joint state message
-        rospy.loginfo(f"Received joint state message for {arm} arm: {msg.position}")
+        #rospy.loginfo(f"Received joint state message for {arm} arm: {msg.position}")
 
         joint_angles = list(msg.position)
 
@@ -135,4 +135,10 @@ class ROSConnection:
         angular_z = self.wheel_radius * (rightSpeed - leftSpeed) / self.wheel_distance
         
         self.send_velocity(linear_x, angular_z)
-        self.adam.navigation.move_wheels(leftSpeed, rightSpeed, force=100)
+        if angular_z == 0 and linear_x != 0:
+            print("Left speed", leftSpeed)
+            print("Right speed", rightSpeed)
+            self.adam.navigation.move_wheels(leftSpeed*4, rightSpeed*4, force=50)
+        else:
+            
+            self.adam.navigation.move_wheels(leftSpeed, rightSpeed, force=50)
