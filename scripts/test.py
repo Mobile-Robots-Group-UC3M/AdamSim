@@ -3,9 +3,11 @@ import time
 import pybullet as p
 import pybullet_data
 import scipy.io
+import os
 
 if __name__ == '__main__':
-    robot_urdf_path = "/home/adrian/Escritorio/ImitationLearning/SimuladorADAM/Adam_sim/paquetes_simulacion/rb1_base_description/robots/robotDummy.urdf"
+    base_path = os.path.dirname(__file__)
+    robot_urdf_path = os.path.join(base_path,"..","paquetes_simulacion", "rb1_base_description", "robots", "robotDummy.urdf")
     
     adam = ADAM(robot_urdf_path,0,1, False,use_ros=False)
     

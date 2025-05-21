@@ -9,15 +9,15 @@ class Sensors():
         self.adam = adam
         self.camera_angle = 0
         self.camera_joint_index = 69
+        self.link_index = 72
 
         self.move_camera_angle(self.camera_angle)
 
 
-    def get_rgb_image_from_link(self, link_index, width=640, height=480, fov=60, near=0.01, far=5.0):
+    def get_rgbd_image_from_link(self, width=640, height=480, fov=60, near=0.01, far=5.0):
         '''
-        Get RGB image from a specific link of the robot.
+        Get RGB and Depth image from a specific link of the robot.
         Args:
-            link_index (int): The index of the link to capture the image from.
             width (int): The width of the image.
             height (int): The height of the image.
             fov (float): The field of view of the camera in degrees.
@@ -25,27 +25,25 @@ class Sensors():
             far (float): The far clipping plane distance.
         Returns:
             rgb (numpy.ndarray): The captured RGB image.
+            depth (numpy.ndarray): The captured depth image (in meters).
         '''
 
         # Get link world position and orientation
-        link_state = p.getLinkState(self.adam.robot_id, link_index)
+        link_state = p.getLinkState(self.adam.robot_id, self.link_index)
         cam_pos = link_state[0]
         cam_ori = link_state[1]
 
-        # Get rotation matrix from quaternion
-        rot_matrix = p.getMatrixFromQuaternion(cam_ori)
-        rot_matrix = np.array(rot_matrix).reshape(3, 3)
-
-        # Camera direction (Z forward) and up vector (Y up)
-        forward = rot_matrix @ np.array([0, 0, 1])
-        up = rot_matrix @ np.array([0, 1, 0])
+        # Rotation matrix from quaternion
+        rot_matrix = np.array(p.getMatrixFromQuaternion(cam_ori)).reshape(3, 3)
+        forward = rot_matrix @ np.array([0, 0, 1])  # Z forward
+        up = rot_matrix @ np.array([0, 1, 0])       # Y up
         target = np.array(cam_pos) + forward
 
         # View and projection matrices
         view_matrix = p.computeViewMatrix(cam_pos, target, up)
         proj_matrix = p.computeProjectionMatrixFOV(fov, width / height, near, far)
 
-        # Capture image
+        # Capture image (returns tuple with depth buffer)
         img = p.getCameraImage(
             width,
             height,
@@ -54,11 +52,16 @@ class Sensors():
             renderer=p.ER_BULLET_HARDWARE_OPENGL
         )
 
-        # Extract RGB image (shape: H x W x 4), take only RGB
+        # Extract and process RGB
         rgba = np.reshape(img[2], (height, width, 4))
         rgb = rgba[:, :, :3].astype(np.uint8)
 
-        return rgb
+        # Extract depth buffer and convert to actual depth in meters
+        depth_buffer = np.reshape(img[3], (height, width)).astype(np.float32)
+        depth = far * near / (far - (far - near) * depth_buffer)
+
+        return rgb, depth
+
     
 
     def save_rgb_image(self, rgb_array, filename="camera_image.png", directory="./images"):
