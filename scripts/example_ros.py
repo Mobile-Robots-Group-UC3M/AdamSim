@@ -9,11 +9,12 @@ robot_urdf_path = "/home/gonzalo/Desktop/AdamBulletSimualator/paquetes_simulacio
 adam = ADAM(robot_urdf_path, useSimulation=False, useRealTimeSimulation=True, used_fixed_base=True)
 
 # Print robot information
-adam.print_robot_info()
+#adam.print_robot_info()
 adam.teleop.create_sliders()
 
 # ROS rate
 rate = rospy.Rate(120)
+
 
 # Simulation loop
 while not rospy.is_shutdown():
@@ -23,6 +24,9 @@ while not rospy.is_shutdown():
 
         # Move simulated arm as real arm
         adam.ros.arm_real_to_sim()
+
+        # Move simulated arm as real arm
+        adam.ros.call_get_angle_set('left')
 
         # Simulación
         if not adam.useRealTimeSimulation:

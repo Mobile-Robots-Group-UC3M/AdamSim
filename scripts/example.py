@@ -60,7 +60,8 @@ while True:
     current_angles = adam.arm_kinematics.get_arm_joint_angles('right')
     print("Current Angles:", current_angles)  '''  
     
-    print(adam.detect_autocollisions())
+    adam.hand_kinematics.move_hand_to_dofs('right', [1000,1000,1000,1000,1000,0])
+    adam.hand_kinematics.move_hand_to_dofs('left', [1000,1000,1000,1000,1000,0])
 
     if not adam.useRealTimeSimulation:
         p.stepSimulation()

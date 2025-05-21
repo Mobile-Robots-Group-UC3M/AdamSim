@@ -4,6 +4,12 @@ from geometry_msgs.msg import Pose
 from trajectory_msgs.msg import JointTrajectory, JointTrajectoryPoint
 import pybullet as p
 
+import sys
+sys.path.insert(0, '/home/gonzalo/catkin_ws/devel/lib/python3/dist-packages')
+
+from inspire_hand.srv import get_angle_act
+
+
 class ROSConnection:
     def __init__(self, adam):
         # Initialize the ROS node
@@ -20,9 +26,29 @@ class ROSConnection:
         self.adam = adam
 
         self.latest_arm_joint_states = {'right': None, 'left': None}
+        self.latest_hand_dof_states = {'right': None, 'left': None}
+        
 
         self.last_arm_joint_state_log_time = rospy.Time.now()
 
+    def wait(self, secs):
+        # ROS rate
+        rate = rospy.Rate(120)
+
+        # Simulación
+        if not self.adam.useRealTimeSimulation:
+            iter = round(secs/self.adam.t, 0)
+
+            for i in range(iter):
+                p.stepSimulation()
+                rospy.sleep(self.adam.t)
+        
+        else:
+            iter = secs*120
+
+            for i in range(iter):
+                p.stepSimulation()
+                rate.sleep()
 
     def arm_joint_state_callback(self, msg, arm):
         '''
@@ -33,7 +59,7 @@ class ROSConnection:
         '''
         
         # Log the received joint state message
-        rospy.loginfo(f"Received joint state message for {arm} arm: {msg.position}")
+        # rospy.loginfo(f"Received joint state message for {arm} arm: {msg.position}")
 
         joint_angles = list(msg.position)
 
@@ -97,11 +123,38 @@ class ROSConnection:
 
         if self.latest_arm_joint_states['right'] and self.latest_arm_joint_states['left']:
 
-            rospy.loginfo(f"JointState del robot real left: {self.latest_arm_joint_states['left']}")
-            rospy.loginfo(f"JointState del robot real right: {self.latest_arm_joint_states['right']}")
+            #rospy.loginfo(f"JointState del robot real left: {self.latest_arm_joint_states['left']}")
+            #rospy.loginfo(f"JointState del robot real right: {self.latest_arm_joint_states['right']}")
 
             # Convert from robot to simulation joint angles
             self.adam.arm_kinematics.move_arm_joints_to_angles('left', self.latest_arm_joint_states['left'])
             self.adam.arm_kinematics.move_arm_joints_to_angles('right', self.latest_arm_joint_states['right'])    
 
             self.last_arm_joint_state_log_time = now
+
+
+    def call_get_angle_set(self, arm):
+        '''
+        Call the get_angle_set service to get the joint angles for the specified arm.
+        Args:
+            arm (str): The arm to get the joint angles for ('left' or 'right').
+        '''
+        print('aaaa')
+        service_get_angle_act = '/robot/left/inspire_hand/get_angle_act'
+        
+        rospy.wait_for_service(service_get_angle_act)
+
+        try:
+            get_angle_set_service = rospy.ServiceProxy(service_get_angle_act, get_angle_act)
+            response = get_angle_set_service()
+
+            print("Joint angles from service:", list(response.curangle))
+
+            dofs = list(response.curangle)
+
+            self.adam.hand_kinematics.move_hand_to_dofs(arm, dofs)
+
+            
+            return response.curangle
+        except rospy.ServiceException as e:
+            rospy.logerr("Service call failed: %s", e)

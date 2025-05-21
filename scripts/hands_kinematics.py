@@ -35,10 +35,10 @@ class HandsKinematics():
             'pink_DIP_joint'
         ]
 
-        self.finger_names = ['thumb_abd', 'thumb_flex', 'index', 'middle', 'ring', 'pink']
+        self.finger_names = ['pink', 'ring', 'middle','index' ,'thumb_flex' ,'thumb_abd']
 
         self.num_hand_joints = len(self.joint_names)
-        self.dof_joints_indices = [0, 1, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5]
+        self.dof_joints_indices = [5, 4, 4, 4, 3, 3, 2, 2, 1, 1, 0, 0]
         self.num_dofs = 6
 
 
@@ -124,6 +124,6 @@ class HandsKinematics():
 
         # Convert the dof values to joint angles using the normalization values
         for i in range(self.num_hand_joints):
-            joint_angles.append(dofs[self.dof_joints_indices[i]]*self.joint_norm_values[self.joint_names[i]])
+            joint_angles.append((1000 - dofs[self.dof_joints_indices[i]])*self.joint_norm_values[self.joint_names[i]])
 
         return joint_angles
