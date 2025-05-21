@@ -7,7 +7,7 @@ import scipy.io
 if __name__ == '__main__':
     robot_urdf_path = "/home/adrian/Escritorio/ImitationLearning/SimuladorADAM/Adam_sim/paquetes_simulacion/rb1_base_description/robots/robotDummy.urdf"
     
-    adam = ADAM(robot_urdf_path,0,1, False)
+    adam = ADAM(robot_urdf_path,0,1, False,use_ros=False)
     
     adam.print_robot_info()
     #time.sleep(100)
