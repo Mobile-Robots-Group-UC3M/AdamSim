@@ -71,7 +71,7 @@ def main():
     rospy.Subscriber('/robot/right_arm/joint_states', JointState, joint_state_right_callback, queue_size=1)
 
     # Ruta del URDF
-    robot_urdf_path = "/home/gonzalo/Desktop/AdamBulletSimualator/paquetes_simulacion/rb1_base_description/robots/robotDummy.urdf"
+    robot_urdf_path = "/home/adrian/Escritorio/ImitationLearning/SimuladorADAM/Adam_sim/paquetes_simulacion/rb1_base_description/robots/robotDummy.urdf"
     adam = ADAM(robot_urdf_path, useSimulation=False, useRealTimeSimulation=True, used_fixed_base=True)
 
     adam.print_robot_info()

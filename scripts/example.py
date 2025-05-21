@@ -1,9 +1,11 @@
 from adam import ADAM
 import pybullet as p
 import time
+import os
 
-# URDF robot path
-robot_urdf_path = "/home/gonzalo/Desktop/AdamBulletSimualator/paquetes_simulacion/rb1_base_description/robots/robotDummy.urdf"
+# Load URDF robot path
+base_path = os.path.dirname(__file__)
+robot_urdf_path = os.path.join(base_path,"..","paquetes_simulacion", "rb1_base_description", "robots", "robotDummy.urdf")
 
 # Create ADAM instanceSliders
 adam = ADAM(robot_urdf_path, useSimulation=True, useRealTimeSimulation=False, used_fixed_base=True)

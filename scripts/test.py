@@ -3,11 +3,13 @@ import time
 import pybullet as p
 import pybullet_data
 import scipy.io
+import os
 
 if __name__ == '__main__':
-    robot_urdf_path = "/home/adrian/Escritorio/ImitationLearning/SimuladorADAM/Adam_sim/paquetes_simulacion/rb1_base_description/robots/robotDummy.urdf"
+    base_path = os.path.dirname(__file__)
+    robot_urdf_path = os.path.join(base_path,"..","paquetes_simulacion", "rb1_base_description", "robots", "robotDummy.urdf")
     
-    adam = ADAM(robot_urdf_path,0,1, False)
+    adam = ADAM(robot_urdf_path,0,1, False,use_ros=False)
     
     adam.print_robot_info()
     #time.sleep(100)
@@ -35,6 +37,6 @@ if __name__ == '__main__':
     
     """ p.setJointMotorControl2(adam.robot_id, 3, p.VELOCITY_CONTROL, force=0)
     p.setJointMotorControl2(adam.robot_id, 4, p.VELOCITY_CONTROL, force=0) """
-    #adam.navigation.move_base_continuous((-6,6,0.5),pos_tolerance=0.01,angle_tolerance=0.03)
-    while(1):
-        adam.teleop.teleoperate_base(debug=True)
+    adam.navigation.move_base_continuous((-6,6,0.5),pos_tolerance=0.04,angle_tolerance=0.08)
+    """ while(1):
+        adam.teleop.teleoperate_base(debug=True) """

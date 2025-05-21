@@ -73,11 +73,11 @@ class Teleop():
         # Move camera
         self.adam.sensors.move_camera_angle(p.readUserDebugParameter(self.slider_ids[24]))
         
-    def teleoperate_base(self, debug=False):
+    def teleoperate_base(self, debug=False, move_sim = True):
         
         leftWheelVelocity=0
         rightWheelVelocity=0
-        speed=8
+        speed=self.adam.navigation.linear_speed
         self.keys = p.getKeyboardEvents()
         
         for k,v in self.keys.items():
@@ -101,8 +101,16 @@ class Teleop():
 
         rightWheelVelocity = (self.forward + self.turn) * speed
         leftWheelVelocity  = (self.forward - self.turn) * speed
+        
         if debug==True:
             print("Right wheel velocity", rightWheelVelocity)
             print("Left wheel velocity",leftWheelVelocity)
+        if move_sim==True:
+            #self.adam.navigation.move_wheels(leftWheelVelocity, rightWheelVelocity, force=50)
+            if self.turn == 0 and self.forward != 0:
+                self.adam.navigation.move_wheels(leftWheelVelocity*4, rightWheelVelocity*4, force=50)
+            else:
+                
+                self.adam.navigation.move_wheels(leftWheelVelocity, rightWheelVelocity, force=50)
         
-        self.adam.navigation.move_wheels(leftWheelVelocity, rightWheelVelocity, force=100)
+        return leftWheelVelocity, rightWheelVelocity

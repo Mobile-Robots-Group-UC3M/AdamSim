@@ -1,9 +1,11 @@
 from adam import ADAM
 import pybullet as p
 import time
+import os
 
 # URDF robot path
-robot_urdf_path = "/home/gonzalo/Desktop/AdamBulletSimualator/paquetes_simulacion/rb1_base_description/robots/robotDummy.urdf"
+base_path = os.path.dirname(__file__)
+robot_urdf_path = os.path.join(base_path,"..","paquetes_simulacion", "rb1_base_description", "robots", "robotDummy.urdf")
 
 
 # Create ADAM instance
@@ -41,7 +43,9 @@ while True:
         adam.sensors.move_camera_angle(camera_angle)
         print("Moving camera to angle:", camera_angle)
 
-    adam.sensors.get_rgb_image_from_link(72, width=640, height=480, fov=60, near=0.01, far=5.0)
+    rgb, depth = adam.sensors.get_rgbd_image_from_link(width=640, height=480, fov=60, near=0.01, far=5.0)
+    print("RGB image:", rgb)
+    print("Depth image:", depth)
 
     if not adam.useRealTimeSimulation:
         time.sleep(adam.t)

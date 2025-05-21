@@ -12,7 +12,7 @@ from ros_connection import ROSConnection
 
 # Class for ADAM robot
 class ADAM:
-    def __init__(self, urdf_path, useSimulation, useRealTimeSimulation, used_fixed_base=True):
+    def __init__(self, urdf_path, useSimulation, useRealTimeSimulation, used_fixed_base=True, use_ros=True):
         
         # Load environment
         self.physicsClient = p.connect(p.GUI)
@@ -65,7 +65,8 @@ class ADAM:
         self.teleop = Teleop(self)
         self.sensors = Sensors(self)
         self.utils = Utils(self)
-        self.ros = ROSConnection(self)      
+        if use_ros:
+            self.ros = ROSConnection(self)      
         
         
         #Definir null space

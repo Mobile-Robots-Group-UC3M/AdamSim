@@ -3,10 +3,12 @@
 import rospy
 import pybullet as p
 from adam import ADAM
+import os
 
 # URDF robot path and create ADAM instance
-robot_urdf_path = "/home/gonzalo/Desktop/AdamBulletSimualator/paquetes_simulacion/rb1_base_description/robots/robotDummy.urdf"
-adam = ADAM(robot_urdf_path, useSimulation=False, useRealTimeSimulation=True, used_fixed_base=True)
+base_path = os.path.dirname(__file__)
+robot_urdf_path = os.path.join(base_path,"..","paquetes_simulacion", "rb1_base_description", "robots", "robotDummy.urdf")
+adam = ADAM(robot_urdf_path, useSimulation=False, useRealTimeSimulation=True, used_fixed_base=False)
 
 # Print robot information
 #adam.print_robot_info()
