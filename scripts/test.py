@@ -49,9 +49,16 @@ if __name__ == '__main__':
                             baseCollisionShapeIndex=box_collision,
                             baseVisualShapeIndex=box_visual,
                             basePosition=[3, 0, 0.5])  # Frente al robot
+    
+    # Añadir obstáculo: una caja delante del robot
+    box_collision2 = p.createCollisionShape(p.GEOM_BOX, halfExtents=[0.1, 0.28, 0.31])
+    box_visual2 = p.createVisualShape(p.GEOM_BOX, halfExtents=[0.3, 0.3, 0.5], rgbaColor=[0.7, 0, 45, 1])
+    box_id2 = p.createMultiBody(baseMass=0.1,
+                            baseCollisionShapeIndex=box_collision2,
+                            baseVisualShapeIndex=box_visual2,
+                            basePosition=[3, 0, 0.5])  # Frente al robot
     while (1):
-        print("Okay")
-            #adam.sensors.simulated_lidar()
+        adam.sensors.simulated_lidar()
         
     """ # Índice del joint donde está montado el lidar
     laser_joint_index = 8

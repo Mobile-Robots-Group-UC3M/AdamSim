@@ -132,7 +132,7 @@ class Sensors():
         p.stepSimulation()
 
         # Obtener la pose del joint del LiDAR
-        link_state = p.getLinkState(self.adam.robot_id,self.adam.laser_joint_index)
+        link_state = p.getLinkState(self.adam.robot_id,self.laser_joint_index)
 
         laser_pos = link_state[0]
         laser_ori = link_state[1]
