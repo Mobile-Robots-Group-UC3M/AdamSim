@@ -55,7 +55,7 @@ class ADAM:
         # Wheel indices
         self.left_wheel_joint = 4
         self.right_wheel_joint = 3
-
+        
 
         # ADAM MODULES
         self.arm_dynamics = ArmsDynamics(self)

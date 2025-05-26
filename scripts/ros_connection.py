@@ -7,7 +7,7 @@ import pybullet as p
 import sys
 sys.path.insert(0, '/home/gonzalo/catkin_ws/devel/lib/python3/dist-packages')
 
-from inspire_hand.srv import get_angle_act
+#from inspire_hand.srv import get_angle_act
 
 
 class ROSConnection:

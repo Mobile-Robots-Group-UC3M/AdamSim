@@ -2,6 +2,7 @@ import pybullet as p
 import numpy as np
 from PIL import Image
 import os
+import math
 import time
 
 class Sensors():
@@ -10,6 +11,13 @@ class Sensors():
         self.camera_angle = 0
         self.camera_joint_index = 69
         self.link_index = 72
+        self.laser_joint_index = 8
+        
+        self.ray_ids = []
+        self.num_rays = int(270/0.25)
+        
+        for _ in range(self.num_rays):
+                self.ray_ids.append(p.addUserDebugLine([0, 0, 0], [0, 0, 0], [0, 1, 0]))
 
         self.move_camera_angle(self.camera_angle)
 
@@ -110,3 +118,59 @@ class Sensors():
         joint_state = p.getJointState(self.adam.robot_id, self.camera_joint_index)
 
         return np.rad2deg(joint_state[0]) - 45
+    
+    def simulated_lidar(self,ray_length=10):
+        self.ray_length = ray_length
+        self.ray_hit_color = [1, 0, 0]
+        self.ray_miss_color = [0, 1, 0]
+
+        # Crear rayos inicialmente
+        """ if self.ray_ids ==[]:
+            for _ in range(self.num_rays):
+                self.ray_ids.append(p.addUserDebugLine([0, 0, 0], [0, 0, 0], [0, 1, 0])) """
+
+        p.stepSimulation()
+
+        # Obtener la pose del joint del LiDAR
+        link_state = p.getLinkState(self.adam.robot_id,self.adam.laser_joint_index)
+
+        laser_pos = link_state[0]
+        laser_ori = link_state[1]
+        rot_matrix = p.getMatrixFromQuaternion(laser_ori)
+        rot_matrix = [rot_matrix[0:3], rot_matrix[3:6], rot_matrix[6:9]]
+
+        self.ray_from = []
+        self.ray_to = []
+
+        # Generar rayos en el plano XY del frame del LIDAR
+        for i in range(self.num_rays):
+            #angle = 2 * math.pi * i / num_rays
+            angle = -math.pi * 3/4 + (math.pi * 3/2) * i / self.num_rays
+            local_dir = [math.cos(angle), math.sin(angle), 0]
+
+            # Convertir a coordenadas globales
+            global_dir = [
+                sum(rot_matrix[row][col] * local_dir[col] for col in range(3))
+                for row in range(3)
+            ]
+            self.ray_from.append(laser_pos)
+            self.ray_to.append([
+                laser_pos[0] + ray_length * global_dir[0],
+                laser_pos[1] + ray_length * global_dir[1],
+                laser_pos[2] + ray_length * global_dir[2],
+            ])
+
+        # Lanzar rayos
+        results = p.rayTestBatch(self.ray_from, self.ray_to)
+
+        # Dibujar rayos
+        for i in range(self.num_rays):
+            if results[i][0] < 0:
+                p.addUserDebugLine(self.ray_from[i], self.ray_to[i], self.ray_miss_color, lineWidth=1.0,
+                                replaceItemUniqueId=self.ray_ids[i])
+            else:
+                hit_position = results[i][3]
+                p.addUserDebugLine(self.ray_from[i], hit_position, self.ray_hit_color, lineWidth=1.0,
+                                replaceItemUniqueId=self.ray_ids[i])
+
+        time.sleep(self.adam.t)
