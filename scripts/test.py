@@ -57,8 +57,11 @@ if __name__ == '__main__':
                             baseCollisionShapeIndex=box_collision2,
                             baseVisualShapeIndex=box_visual2,
                             basePosition=[3, 0, 0.5])  # Frente al robot
+    adam.teleop.create_sliders()
     while (1):
-        adam.sensors.simulated_lidar()
+        adam.teleop.apply_slider_values()
+        adam.teleop.teleoperate_base(debug=False)
+        adam.sensors.simulated_lidar(ray_length=5)
         
     """ # Índice del joint donde está montado el lidar
     laser_joint_index = 8
