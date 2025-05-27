@@ -1,12 +1,14 @@
 from adam import ADAM
 import pybullet as p
 import time
+import os
 
-# URDF robot path
-robot_urdf_path = "/home/gonzalo/Desktop/AdamBulletSimualator/paquetes_simulacion/rb1_base_description/robots/robotDummy.urdf"
+# Load URDF robot path
+base_path = os.path.dirname(__file__)
+robot_urdf_path = os.path.join(base_path,"..","paquetes_simulacion", "rb1_base_description", "robots", "robotDummy.urdf")
 
 # Create ADAM instanceSliders
-adam = ADAM(robot_urdf_path, useSimulation=False, useRealTimeSimulation=True, used_fixed_base=True)
+adam = ADAM(robot_urdf_path, useSimulation=True, useRealTimeSimulation=False, used_fixed_base=True)
 
 # Print robot information
 adam.print_robot_info()
@@ -14,7 +16,7 @@ adam.print_robot_info()
 
 # INSERT YOUR INITIALIZATION CODE HERE
 
-adam.teleop.create_sliders()
+#adam.teleop.create_sliders()
 
 
 
@@ -36,6 +38,7 @@ Current Angles: [-1.3216045350115093, 1.0978111577306686, -1.438960327420289, -0
 
 '''
 
+
 pose = [[0.4211849355697632, -0.3960678040981293, 1.4412695169448853], [0, 0, 0, 1]]
 
 adam.utils.draw_frame(pose, axis_length=0.1, line_width=2)
@@ -49,16 +52,18 @@ while True:
     # Example: Move the right arm to a specific position
     
     #adam.teleop.apply_slider_values()
-    
-    _, closeEnough, _ = adam.arm_kinematics.move_arm_to_pose('right', pose, target_link='hand', accurate=True)
-    print("Close enough:", closeEnough)
+    #Test
+    #_, closeEnough, _ = adam.arm_kinematics.move_arm_to_pose('right', pose, target_link='hand', accurate=True)
+    #print("Close enough:", closeEnough)
 
-    current_pose = adam.arm_kinematics.get_arm_link_pose('right', target_link='hand')
+    '''current_pose = adam.arm_kinematics.get_arm_link_pose('right', target_link='hand')
     print("Current Pose:", current_pose)
 
     current_angles = adam.arm_kinematics.get_arm_joint_angles('right')
-    print("Current Angles:", current_angles)    
+    print("Current Angles:", current_angles)  '''  
     
+    adam.hand_kinematics.move_hand_to_dofs('right', [1000,1000,1000,1000,1000,0])
+    adam.hand_kinematics.move_hand_to_dofs('left', [1000,1000,1000,1000,1000,0])
 
     if not adam.useRealTimeSimulation:
         p.stepSimulation()

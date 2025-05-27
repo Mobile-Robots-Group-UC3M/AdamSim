@@ -11,7 +11,7 @@ class Navigation():
         self.start_pos = [0, 0, 0] # x,y,theta
         self.wheel_radius=0.0762
         self.wheel_distance=0.436
-        self.linear_speed=8
+        self.linear_speed=6.55
         self.angular_speed=1.0
         
         self.K_lin = 1.0
