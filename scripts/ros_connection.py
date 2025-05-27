@@ -4,10 +4,8 @@ from geometry_msgs.msg import Pose, Twist
 from trajectory_msgs.msg import JointTrajectory, JointTrajectoryPoint
 import pybullet as p
 
-import sys
-sys.path.insert(0, '/home/gonzalo/catkin_ws/devel/lib/python3/dist-packages')
 
-from inspire_hand.srv import *
+from inspire_hand.srv import * # this is the compiled service of the robotic hand with catkin_make
 
 
 class ROSConnection:

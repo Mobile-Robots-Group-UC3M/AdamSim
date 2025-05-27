@@ -34,7 +34,7 @@ while not rospy.is_shutdown():
 
         # Move hand pose
 
-        '''adam.ros.wait(3)
+        adam.ros.wait(3)
 
         adam.ros.call_set_angle('right', [1000, 0, 1000, 1000, 1000, 1000])
         adam.ros.call_set_angle('left', [1000, 1000, 1000, 1000, 1000, 1000])
@@ -43,7 +43,7 @@ while not rospy.is_shutdown():
         # Move to another hand pose
         adam.ros.wait(3)
         adam.ros.call_set_angle('right', [500, 500, 500, 500, 500, 0])
-        adam.ros.call_set_angle('left', [500, 500, 500, 500, 500, 0])'''
+        adam.ros.call_set_angle('left', [500, 500, 500, 500, 500, 0])
         
 
 

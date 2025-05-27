@@ -1,2 +1,4 @@
 pip install pybullet
 
+# PAra instalar inspire hand hay que :
+sudo apt-get install ros-noetic-serial
