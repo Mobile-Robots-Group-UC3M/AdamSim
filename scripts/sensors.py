@@ -15,11 +15,15 @@ class Sensors():
         
         self.ray_ids = []
         self.num_rays = int(270/0.25)
-        
-        for _ in range(self.num_rays):
-                self.ray_ids.append(p.addUserDebugLine([0, 0, 0], [0, 0, 0], [0, 1, 0]))
 
         self.move_camera_angle(self.camera_angle)
+
+
+    def start_lidar(self):
+        '''
+        Start Lidar rays
+        '''
+        for _ in range(self.num_rays): self.ray_ids.append(p.addUserDebugLine([0, 0, 0], [0, 0, 0], [0, 1, 0]))
 
 
     def get_rgbd_image_from_link(self, width=640, height=480, fov=60, near=0.01, far=5.0):

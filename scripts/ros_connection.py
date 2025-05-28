@@ -34,6 +34,8 @@ class ROSConnection:
 
         self.latest_arm_joint_states = {'right': None, 'left': None}
         self.latest_hand_dof_states = {'right': None, 'left': None}
+
+        self.rate = rospy.Rate(120)
         
         
     def send_velocity(self, linear_speed=0.0, angular_speed=0.0):
@@ -50,24 +52,15 @@ class ROSConnection:
         
         #rospy.loginfo("Published velocity command to robot base")
 
-    def wait(self, secs):
-        # ROS rate
-        rate = rospy.Rate(120)
+    
+    def sleep(self):
+        '''
+        Rospy sleep
+        '''
 
-        # Simulación
-        if not self.adam.useRealTimeSimulation:
-            iter = round(secs/self.adam.t, 0)
+        if self.adam.useRealTimeSimulation: rospy.sleep(self.adam.t)
+        else: self.rate.sleep()
 
-            for i in range(iter):
-                p.stepSimulation()
-                rospy.sleep(self.adam.t)
-        
-        else:
-            iter = secs*120
-
-            for i in range(iter):
-                p.stepSimulation()
-                rate.sleep()
 
     def arm_joint_state_callback(self, msg, arm):
         '''

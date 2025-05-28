@@ -9,15 +9,18 @@ from teleoperation import Teleop
 from navigation import Navigation
 from utils import Utils
 from ros_connection import ROSConnection
+import time
 
 # Class for ADAM robot
 class ADAM:
-    def __init__(self, urdf_path, useSimulation, useRealTimeSimulation, used_fixed_base=True, use_ros=True):
+    def __init__(self, urdf_path, useRealTimeSimulation, used_fixed_base=True, use_ros=True):
         
         # Load environment
         self.physicsClient = p.connect(p.GUI)
         p.setAdditionalSearchPath(pybullet_data.getDataPath())
         p.setGravity(0, 0, -9.81)
+        if useRealTimeSimulation: p.setRealTimeSimulation(1)
+        else: p.setRealTimeSimulation(0)
 
         # Load world plane
         self.plane_id = p.loadURDF("plane.urdf")
@@ -29,9 +32,9 @@ class ADAM:
         self.robot_id = p.loadURDF(urdf_path, useFixedBase=used_fixed_base, flags=p.URDF_USE_SELF_COLLISION)
 
         # Change simulation mode
-        self.useSimulation = useSimulation
         self.useRealTimeSimulation = useRealTimeSimulation
-        self.t = 0.01
+        self.use_ros = use_ros
+        self.t = 0.1
 
 
         # Arm revolute joint indices
@@ -61,12 +64,11 @@ class ADAM:
         self.arm_dynamics = ArmsDynamics(self)
         self.arm_kinematics = ArmsKinematics(self)
         self.hand_kinematics = HandsKinematics(self)
-        self.navigation = Navigation(self)
+        if not used_fixed_base: self.navigation = Navigation(self)
         self.teleop = Teleop(self)
         self.sensors = Sensors(self)
         self.utils = Utils(self)
-        if use_ros:
-            self.ros = ROSConnection(self)      
+        if use_ros: self.ros = ROSConnection(self)      
         
         
         #Definir null space
@@ -109,6 +111,38 @@ class ADAM:
         p.setCollisionFilterPair(self.robot_id, self.plane_id, -1, -1, 1)'''
 
 
+    def step(self):
+        '''
+        Simulation step.
+        Executes p.stepSimulation() in non real time simulations.
+        Sleeps for adam.t using rospy if enabled.
+        '''
+
+        if not self.useRealTimeSimulation: p.stepSimulation()
+
+        if self.use_ros: self.ros.sleep()
+        else: time.sleep(self.t)
+
+
+    def wait(self, secs):
+        '''
+        Wait for specified time in seconds
+        '''
+
+        iter = round(secs / self.t, 0)
+
+        if self.use_ros:
+            if not self.useRealTimeSimulation:
+                for _ in range(iter):
+                    p.stepSimulation()
+                    self.ros.sleep()
+            else:
+                for _ in range(int(secs * 120)):
+                    self.ros.sleep()
+        else:
+            for _ in range(int(iter)):
+                if not self.useRealTimeSimulation: p.stepSimulation()
+                time.sleep(self.t)
 
     #Collisions
     def detect_autocollisions(self):
