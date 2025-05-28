@@ -120,18 +120,17 @@ class Sensors():
         return np.rad2deg(joint_state[0]) - 45
     
     def simulated_lidar(self,ray_length=10):
+        '''
+        Simulated LiDAR sensor using ray casting.
+        Args:
+            ray_length (float): The length of the rays in meters.
+        '''
         self.ray_length = ray_length
         self.ray_hit_color = [1, 0, 0]
         self.ray_miss_color = [0, 1, 0]
 
-        # Crear rayos inicialmente
-        """ if self.ray_ids ==[]:
-            for _ in range(self.num_rays):
-                self.ray_ids.append(p.addUserDebugLine([0, 0, 0], [0, 0, 0], [0, 1, 0])) """
-
         p.stepSimulation()
 
-        # Obtener la pose del joint del LiDAR
         link_state = p.getLinkState(self.adam.robot_id,self.laser_joint_index)
 
         laser_pos = link_state[0]
@@ -142,13 +141,11 @@ class Sensors():
         self.ray_from = []
         self.ray_to = []
 
-        # Generar rayos en el plano XY del frame del LIDAR
         for i in range(self.num_rays):
             #angle = 2 * math.pi * i / num_rays
             angle = -math.pi * 3/4 + (math.pi * 3/2) * i / self.num_rays
             local_dir = [math.cos(angle), math.sin(angle), 0]
 
-            # Convertir a coordenadas globales
             global_dir = [
                 sum(rot_matrix[row][col] * local_dir[col] for col in range(3))
                 for row in range(3)
@@ -160,10 +157,8 @@ class Sensors():
                 laser_pos[2] + ray_length * global_dir[2],
             ])
 
-        # Lanzar rayos
         results = p.rayTestBatch(self.ray_from, self.ray_to)
 
-        # Dibujar rayos
         for i in range(self.num_rays):
             if results[i][0] < 0:
                 p.addUserDebugLine(self.ray_from[i], self.ray_to[i], self.ray_miss_color, lineWidth=1.0,

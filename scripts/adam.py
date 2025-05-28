@@ -69,7 +69,7 @@ class ADAM:
             self.ros = ROSConnection(self)      
         
         
-        #Definir null space
+        #Null space definition
         #lower limits for null space
         self.ll = [-6.28]*6
         #upper limits for null space
@@ -80,15 +80,13 @@ class ADAM:
         self.rp = [0]*6
         #joint damping coefficents
         self.jd = [0.1]*21
-      
 
         #Current pos, vel
         self.pos_act = []
         self.vel_act = []
         self.acc_joints = []
 
-
-        # Calculo de dinamica
+        # Dynamic and control
         self.Dynamics = False
         self.dt = None
 
@@ -157,20 +155,25 @@ class ADAM:
         return self.collision_left, self.collision_right
     
     def detect_collision_with_objects(self, object_id):
-        #! TODO: Ver si se quiere dectectar la colision con el rest odel cuerpo
-        # Detectar colisiones del brazo izquierdo o derecho con otros objetos en la escena
+        '''
+        Detect collisions between the robot's arms and a specified object.
+        Returns:
+            left_arm_collision (bool): True if there is a collision in the left arm.
+            right_arm_collision (bool): True if there is a collision in the right arm.
+            body_collision (bool): True if there is a collision with the body.'''
+        
         left_arm_collision = False
         right_arm_collision = False
         body_collision = False
 
-        # Comprobar colisiones del brazo izquierdo con el objeto
+        # Check collisions of the left arm with the object
         for left_joint in self.ur3_left_arm_joints:
             contact_points = p.getClosestPoints(self.robot_id, object_id, distance=0, linkIndexA=left_joint)
             if len(contact_points) > 0:
                 left_arm_collision = True
                 self.collision = True
 
-        # Comprobar colisiones del brazo derecho con el objeto
+        # Check collisions of the right arm with the object
         for right_joint in self.ur3_right_arm_joints:
             contact_points = p.getClosestPoints(self.robot_id, object_id, distance=0, linkIndexA=right_joint)
             if len(contact_points) > 0:
@@ -178,14 +181,14 @@ class ADAM:
                 self.collision = True
 
 
-        # Comprobar objeto con cuerpo
+        # Check collisions of the body with the object
         for body_joint in self.body_joints:
             contact_points = p.getClosestPoints(self.robot_id, object_id, distance=0, linkIndexA=body_joint)
             if len(contact_points) > 0:
                 body_collision = True
                 self.collision = True
 
-        #Que nos devuelva puntos de contacto(articulaciones) y además un true o false
+        #output: collision status for left arm, right arm, and body
         return left_arm_collision, right_arm_collision, body_collision
 
 

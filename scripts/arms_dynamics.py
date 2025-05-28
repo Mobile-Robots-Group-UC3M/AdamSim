@@ -16,7 +16,7 @@ class ArmsDynamics():
         joint_positions = []
         joint_velocities = []
 
-        # Obtener los índices del brazo seleccionado
+        # Index of the arm joints
         if arm == "left":
             joint_indices = self.adam.ur3_left_arm_joints
         elif arm == "right":
@@ -24,7 +24,7 @@ class ArmsDynamics():
         else:
             raise ValueError("El brazo debe ser 'left' o 'right'.")
 
-        # Leer las posiciones articulares
+        # Read joint states
         for joint_id in joint_indices:
             joint_state = p.getJointState(self.adam.robot_id, joint_id)
             joint_positions.append(joint_state[0])  # La posición de la articulación está en el índice 0
@@ -44,28 +44,26 @@ class ArmsDynamics():
         else:
             raise ValueError("El brazo debe ser 'left' o 'right'.")
 
-        #Se obtienen las posiciones y velocidades actuales
+        #Actual positions and velocities
         self.adam.pos_act,self.adam.vel_act = self.adam.get_joints_pos_vel(arm)
 
-        #Obtener los términos de la dinámica del sistema
+        #Obtain the current joint positions and velocities
         zero_acc = [0.0] * len(joints)
         zero_vel = zero_acc
-        #Termino gravitacional
+        #Gravitational torque
         tau_g = p.calculateInverseDynamics(self.adam.robot_id,self.adam.pos_act,zero_vel,zero_acc, flags=1)
 
-        #Terminos de coriolis y centrifugo
-        #Para calcular el torque de coriolis y centrifugas despreciamos la gravedad
+        #Coriolis and centrifugal torque
         tau_c_c_g = p.calculateInverseDynamics(self.adam.robot_id,self.adam.pos_act, self.adam.vel_act,zero_acc, flags=1)
     
-        # Restar los términos gravitacionales de los combinados
+        # Substract gravitational torque from coriolis and centrifugal torque
         tau_c_c = [tau_c_c_g[i] - tau_g[i] for i in range(len(joints))]
         
-        #Calculo de la aceleracion
+        #Acceleration calculation
         joints_acc=[]
         for j, i in enumerate(joints):
-            #Matriz de inercia M
+            #Inertial Matrix M
             dynamics_info = p.getDynamicsInfo(self.adam.robot_id,i)
-            # Obtener el valor de inercia para el eje z
             I_z = dynamics_info[2][2]
 
             

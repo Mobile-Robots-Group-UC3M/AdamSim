@@ -21,7 +21,13 @@ class Navigation():
         return math.atan2(math.sin(b - a), math.cos(b - a))
         
     def move_wheels(self, left_wheel_speed, right_wheel_speed,force = 100):
-        # Set the wheel speeds
+        '''
+        Generates a movement of the robot by setting the wheel speeds.
+        Args:
+            left_wheel_speed (float): Speed of the left wheel in m/s.
+            right_wheel_speed (float): Speed of the right wheel in m/s.
+            force (int): Force applied to the wheels.
+        '''
         p.setJointMotorControl2(self.adam.robot_id, self.adam.left_wheel_joint,
                                 p.VELOCITY_CONTROL, targetVelocity=left_wheel_speed, force=force)
         p.setJointMotorControl2(self.adam.robot_id, self.adam.right_wheel_joint,
@@ -30,8 +36,19 @@ class Navigation():
 
         
     def move_base_continuous(self, target_pos, pos_tolerance=0.01, angle_tolerance=0.02, orient_tolerance=0.1, debug=True):
+        '''
+        Generates a movement of the robot towards a target position and orientation continuously.
+        Args:
+            target_pos (tuple): Target position and orientation as (x, y, theta).
+            pos_tolerance (float): Position tolerance to stop the robot.
+            angle_tolerance (float): Orientation tolerance to stop the robot.
+            orient_tolerance (float): Orientation tolerance to start moving towards the target.
+            debug (bool): If True, prints debug information.
+        Returns:
+            bool: True if the movement was successful, False otherwise.
+        '''
         x_goal, y_goal, theta_goal = target_pos
-        # Ganancias
+        # PID Gains
         K_lin = self.K_lin
         K_ang = self.K_ang
         step = True
@@ -44,7 +61,7 @@ class Navigation():
             x, y = pos[0], pos[1]
             _, _, theta = p.getEulerFromQuaternion(orn)
 
-            # 2) Errores
+            # 2) Errors
             dx = x_goal - x
             dy = y_goal - y
             dist = math.hypot(dx, dy)
@@ -56,16 +73,15 @@ class Navigation():
             if debug:
                 print(f"step={step}, dist={dist:.3f}, α={alpha:.3f}, Δθ_final={dtheta_final:.3f}")
 
-            # 4) Ley de control
+            # 4) Control logic
             if dist > pos_tolerance:
-                # Mientras estamos lejos del objetivo:
+                # far from target position:
                 if abs(alpha) >= orient_tolerance:
-                    # 4.1) GIRAR IN SITU hacia la dirección al target
+                    # 4.1) Turn in place
                     v = 0.0
                     w = K_ang * alpha
                 else:
-                    # 4.2) AVANZAR y corregir heading fino
-                    print("UPSSS ME HE PASADO")
+                    # 4.2) Go ahead and fix orientation
                     if dist <= 2.0:
                         v = K_lin *dist
                     else:
@@ -73,38 +89,32 @@ class Navigation():
                     w = K_ang * alpha
                     
             else:
-                # 4.3) Estamos cerca (dist <= pos_tolerance): sólo orientación final
+                # 4.3) near target (dist <= pos_tolerance): just orientation
                 v = 0.0
                 w = K_ang * dtheta_final
 
-            # 5) Limitación de velocidades
             v = max(-self.linear_speed, min(self.linear_speed, v))
             w = max(-self.angular_speed, min(self.angular_speed, w))
 
-            # 6) Convertir a velocidades de rueda
             v_l = (2 * v - w * self.wheel_distance) / (2 * self.wheel_radius)
             v_r = (2 * v + w * self.wheel_distance) / (2 * self.wheel_radius)
             
-
-            # 7) Enviar comandos
             p.setJointMotorControl2(self.adam.robot_id, self.adam.left_wheel_joint,
                                     p.VELOCITY_CONTROL, targetVelocity=v_l, force=100)
             p.setJointMotorControl2(self.adam.robot_id, self.adam.right_wheel_joint,
                                     p.VELOCITY_CONTROL, targetVelocity=v_r, force=100)
             
-            # 8) Simular un paso
             p.stepSimulation()
             time.sleep(self.adam.t)
             step += 1
             
-            # --- 3) Chequeo de parada estricta ---
+            #Check if reached final position
             if dist < pos_tolerance and abs(dtheta_final) < angle_tolerance:
                 print("Final position reached")
                 print("Final position and orientation:", pos, theta)
                 print("Target position and orientation:", target_pos)
                 step = False
-
-        # 9) Parar el robot
+        # Stop the robot
         p.setJointMotorControl2(self.adam.robot_id, self.adam.left_wheel_joint,
                                 p.VELOCITY_CONTROL, targetVelocity=0, force=10)
         p.setJointMotorControl2(self.adam.robot_id, self.adam.right_wheel_joint,

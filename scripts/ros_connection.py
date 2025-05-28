@@ -36,13 +36,18 @@ class ROSConnection:
         self.latest_hand_dof_states = {'right': None, 'left': None}
         
         
+        
     def send_velocity(self, linear_speed=0.0, angular_speed=0.0):
         '''
         Send velocity commands to the robot's base.
+        Args:
+            linear_speed (float): Linear speed in m/s.
+            angular_speed (float): Angular speed in rad/s.
+        Returns:
+            None
         '''
         
         twist = Twist()
-        
         twist.linear.x = linear_speed
         twist.angular.z = angular_speed
         
@@ -51,10 +56,13 @@ class ROSConnection:
         #rospy.loginfo("Published velocity command to robot base")
 
     def wait(self, secs):
-        # ROS rate
+        '''
+        Wait for a specified number of seconds in the simulation (the simulation runs but the rest is stopped).
+        Args:
+            secs (float): The number of seconds to wait.'''
+            
         rate = rospy.Rate(120)
 
-        # Simulación
         if not self.adam.useRealTimeSimulation:
             iter = round(secs/self.adam.t, 0)
 

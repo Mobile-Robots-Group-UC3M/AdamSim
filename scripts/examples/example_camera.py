@@ -55,9 +55,9 @@ for pos, model in zip(positions, models):
     else:
         scale = 1.5
     p.loadURDF(model, 
-               basePosition=pos, 
-               baseOrientation=p.getQuaternionFromEuler([0,0,0]),
-               globalScaling=scale)
+            basePosition=pos, 
+            baseOrientation=p.getQuaternionFromEuler([0,0,0]),
+            globalScaling=scale)
 
 # Main simulation loop
 while True:

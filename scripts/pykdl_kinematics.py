@@ -64,10 +64,6 @@ class Kinematics:
             else:
                 # No more parents; reached the root
                 break
-        
-        # print('Transform from world to base link of right/left arm:')
-        # print(world_to_base_transform)
-        
         return world_to_base_transform
 
 
