@@ -112,9 +112,8 @@ class ArmsKinematics:
                 vel_des = None
             
             # Simulation step
-            if self.adam.useRealTimeSimulation:
-                    p.stepSimulation()
-                    time.sleep(self.adam.t)
+            if not self.adam.useRealTimeSimulation: p.stepSimulation()
+            time.sleep(self.adam.t)
 
         return arm_solution, closeEnough, vel_des
 
@@ -386,13 +385,12 @@ class ArmsKinematics:
 
             q_current = current_angles[i]
             q_target = angle
+            q = q_target
 
             if abs(q_target - q_current) >= math.pi:
 
                 if q > self.adam.ul[i] or q < self.adam.ll[i]: q = q_target # if the target is out of limits
                 else: q = q_target + np.sign(q_target - q_current) * 2 * math.pi # wrap around
-                
-            else: q = q_target
 
             # Append the closest angle to the list
             closest_angles.append(q)
