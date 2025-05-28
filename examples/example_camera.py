@@ -1,8 +1,10 @@
-from adam import ADAM
+import sys
+import os
+from scripts.adam import ADAM
 import pybullet as p
 import pybullet_data
 import time
-import os
+
 
 # URDF robot path
 base_path = os.path.dirname(__file__)
@@ -10,7 +12,7 @@ robot_urdf_path = os.path.join(base_path,"..","paquetes_simulacion", "rb1_base_d
 
 
 # Create ADAM instance
-adam = ADAM(robot_urdf_path, useSimulation=True, useRealTimeSimulation=False, used_fixed_base=True,use_ros=False)
+adam = ADAM(robot_urdf_path, useRealTimeSimulation=False, used_fixed_base=True,use_ros=False)
 
 # Print robot information
 adam.print_robot_info()
@@ -62,7 +64,7 @@ for pos, model in zip(positions, models):
 # Main simulation loop
 while True:
 
-    if (adam.useSimulation and not adam.useRealTimeSimulation):
+    if (not adam.useRealTimeSimulation):
         p.stepSimulation()
 
     #pose = adam.kinematics.get_arm_link_pose('left', 'hand')

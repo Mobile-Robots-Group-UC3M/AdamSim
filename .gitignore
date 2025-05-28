@@ -1,0 +1,8 @@
+#Ignorar archivos/carpeta de instalación de Python
+*.egg-info/
+*.egg
+*.pyc
+__pycache__/
+
+# Configs de VSCode (si usas VSCode)
+.vscode/

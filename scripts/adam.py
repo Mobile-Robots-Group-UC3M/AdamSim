@@ -1,14 +1,13 @@
 import pybullet as p
 import pybullet_data
-from arms_dynamics import ArmsDynamics
-from teleoperation import Teleop
-from arms_kinematics import ArmsKinematics
-from hands_kinematics import HandsKinematics
-from sensors import Sensors
-from teleoperation import Teleop
-from navigation import Navigation
-from utils import Utils
-from ros_connection import ROSConnection
+from scripts.arms_dynamics import ArmsDynamics
+from scripts.teleoperation import Teleop
+from scripts.arms_kinematics import ArmsKinematics
+from scripts.hands_kinematics import HandsKinematics
+from scripts.sensors import Sensors
+from scripts.navigation import Navigation
+from scripts.utils import Utils
+from scripts.ros_connection import ROSConnection
 import time
 
 # Class for ADAM robot
