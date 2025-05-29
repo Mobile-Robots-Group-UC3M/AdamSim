@@ -79,7 +79,7 @@
     <div class="container is-max-desktop">
       <div class="columns is-centered">
         <div class="column has-text-centered">
-          <img src="static/images/LogoJornada.png" alt="JornadasAutomatica2025" style="width: 160px;;height:auto;">
+          <img src="static/images/LogoJornada.png" alt="JornadasAutomatica2025" style="width: 200px;;height:auto;">
           <h1 class="title is-1 publication-title">ADAMSim: PyBullet-Based Simulation Environment for Research on Domestic Mobile Manipulator Robots</h1>
           <div class="is-size-5 publication-authors">
 
@@ -297,9 +297,8 @@
         <p class="subtitle has-text-centered">
           (a) ADAM’s motion is defined by the linear velocity <em>v</em>, angular velocity <em>&omega;</em>, 
           and wheel velocities <em>v<sub>r</sub></em> and <em>v<sub>l</sub></em>. 
-          <em>&theta;</em> determines the robot’s orientation.<br>
-          (b) Example of use of the Lidar information for navigation. Red color represents obstacles 
-          (purple and yellow boxes) in the ray casting.
+          <em>&theta;</em> determines the robot’s orientation,
+          (b) Example of use of the Lidar information for navigation. Red color represents obstacles (purple and yellow boxes) in the ray casting.
         </p>
       </div>
     </div>
@@ -354,7 +353,7 @@
     </div>
     <div class="container is-max-desktop">
       <div class="hero body">
-        <img src="./static/images/ROS Scheme.pdf" alt="ROS Communication Module">
+        <img src="./static/images/ROS Scheme.png" alt="ROS Communication Module">
         <p class="subtitle has-text-centered">
           Diagram of the connections between the real model and the simulator through the created ROS bridge.
         </p>
@@ -364,7 +363,7 @@
 </section>
 
 <!-- Examples of the method. -->
-<section class="section">
+<!--section class="section">
   <div class="container is-max-desktop">
     <div class="columns is-centered has-text-centered">
       <div class="column">
@@ -440,12 +439,12 @@
           </video>
         </figure>
         <p class="has-text-centered">Example 4: Obstacle in final point.</p>
-      </div> -->
+      </div> >
 
     </div>
   </div>
   </div>
-</section>
+</section-->
 
 
 <!-- Examples with ADAM. -->
@@ -453,20 +452,17 @@
   <div class="container is-max-desktop">
     <div class="columns is-centered has-text-centered">
       <div class="column">
-        <h2 class="title is-3">Real world examples using VASO</h2>
+        <h2 class="title is-3">ADAMSim Examples</h2>
         <div class="content has-text-justified">
           <p>
-            To assess the capabilities of the VASO algorithm, a series of real-world experiments were carried out using a mobile dual-arm robot 
-            equipped with two UR3 arms, a Realsense D435i RGB-D camera, and two Inspire Robots RH56DFX robotic hands. The experiments involved 
-            tasks related to object reorganization and liquid serving, classified by complexity (single-arm or dual-arm), length (short or long), 
-            and type (e.g., placing, stacking, serving). Seven tasks (additionally for the ones presented in the comparisons with other methods) 
-            were performed, including object placement on shelves, liquid pouring with 
-            and without obstacles, stacking, and simultaneous object handling. While the final positions for object placement and serving were 
-            predefined, VASO autonomously determined grasping points, motion sequences, and task order based on object detection, showcasing its 
-            ability to plan and execute complex, adaptive dual-arm manipulation tasks.The robot successfully adapted to the environment in real 
-            time, generating efficient grasping poses for both arms. The algorithm demonstrated its effectiveness in learning the task through 
-            kinesthetic demonstrations and adapting to the environment using visual input. The results highlight VASO's potential for real-world 
-            applications in robotic manipulation tasks.
+            To evaluate the efficiency of the simulator, several examples have been carried out both in simulation and by connecting 
+            the simulation with the real robot. These examples demonstrate the modularity of ADAMSim for fast, efficient, and simple 
+            algorithm development, as well as for debugging without needing access to the robot in the real environment. The examples 
+            include various use cases where tasks are executed entirely in simulation, showcasing how the ADAM robot can be directly used 
+            in the PyBullet-based simulated environment. Additionally, two use cases have been added to highlight the ROS bridge between the 
+            simulated model and the real robot. In these cases, one test involves object manipulation, where a custom Learning from Demonstration 
+            algorithm is used to generate solutions for simultaneously manipulating two objects. The second test shows how the robot is capable of 
+            navigating autonomously in the simulated environment and, through the communication bridge, replicates the same motion in the real robot.
 
           </p>
         </div>
@@ -480,22 +476,22 @@
       <div class="column is-half">
         <figure class="image is-16by9">
           <video controls>
-            <source src="./static/videos/TareaCortaObjetosinBox.mp4" type="video/mp4">
+            <source src="./static/videos/ADAMsim_navigation.mp4" type="video/mp4">
             Your browser does not support the video tag.
           </video>
         </figure>
-        <p class="has-text-centered">Object placement task using one arm into a box.</p>
+        <p class="has-text-centered">Manipulation with LfD method of real and simulated objects.</p>
       </div>
 
       <!-- Video 2 -->
       <div class="column is-half">
         <figure class="image is-16by9">
           <video controls>
-            <source src="./static/videos/TareaBrazoIzq.mp4" type="video/mp4">
+            <source src="./static/videos/ADAMsim_navigation.mp4" type="video/mp4">
             Your browser does not support the video tag.
           </video>
         </figure>
-        <p class="has-text-centered">Object placement task using one arm over a shelf.</p>
+        <p class="has-text-centered">Simultaneous navigation using the real and the simulated ADAM.</p>
       </div>
 
     </div>
@@ -508,22 +504,22 @@
       <div class="column is-half">
         <figure class="image is-16by9">
           <video controls>
-            <source src="./static/videos/StackObjetcs.mp4" type="video/mp4">
+            <source src="./static/videos/example_arms.mp4" type="video/mp4">
             Your browser does not support the video tag.
           </video>
         </figure>
-        <p class="has-text-centered">Object stacking task.</p>
+        <p class="has-text-centered">Moving arms and hands simultaneously in simulated environment.</p>
       </div>
 
       <!-- Video 4 -->
       <div class="column is-half">
         <figure class="image is-16by9">
           <video controls>
-            <source src="./static/videos/ServirAgua.mp4" type="video/mp4">
+            <source src="./static/videos/example_camera.mp4" type="video/mp4">
             Your browser does not support the video tag.
           </video>
         </figure>
-        <p class="has-text-centered">Water serving task in different scenarios using both arms.</p>
+        <p class="has-text-centered">Camera information obtained from ADAMSim</p>
       </div>
 
     </div>
@@ -536,25 +532,41 @@
       <div class="column is-half">
         <figure class="image is-16by9">
           <video controls>
-            <source src="./static/videos/DosbrazosCajas.mp4" type="video/mp4">
+            <source src="./static/videos/example_hands.mp4" type="video/mp4">
             Your browser does not support the video tag.
           </video>
         </figure>
-        <p class="has-text-centered">Object picking task placing them into a box using both arms.</p>
+        <p class="has-text-centered">Robotic hands simulated grasping and moving a simulated bottle</p>
       </div>
 
       <!-- Video 6 -->
       <div class="column is-half">
         <figure class="image is-16by9">
           <video controls>
-            <source src="./static/videos/DosBrazosoverBox.mp4" type="video/mp4">
+            <source src="./static/videos/example_sliders.mp4" type="video/mp4">
             Your browser does not support the video tag.
           </video>
         </figure>
-        <p class="has-text-centered">Object picking task placing them over a shelf using both arms.</p>
+        <p class="has-text-centered">Teleoperation of the arms and hands using sliders.</p>
       </div>
 
     </div>
+
+    <div class="container">
+      <div class="columns is-centered">
+        
+        <!-- Video 7 -->
+        <div class="column is-half">
+          <figure class="image is-16by9">
+            <video controls>
+              <source src="./static/videos/example_navigation.mp4" type="video/mp4">
+              Your browser does not support the video tag.
+            </video>
+          </figure>
+          <p class="has-text-centered">Teleoperation of the robot base and detection of simulated boxes with the 2D Lidar</p>
+        </div>
+  
+      </div>
   </div>
   </div>
 
