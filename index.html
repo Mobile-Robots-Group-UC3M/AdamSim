@@ -65,8 +65,8 @@
             <a class="navbar-item" href="https://github.com/AdrianPrados/Robotic-Rearrangement-of-Everyday-Objects" target="_blank">
               Everyday Objects Rearrangement in a Human-Like Manner via Robotic Imagination and Learning from Demonstration
             </a>
-            <a class="navbar-item" href="" target="_blank">
-              In construction
+            <a class="navbar-item" href="https://github.com/AdrianPrados/Learning-and-generalization-of-task-parameterized-skills-through-few-human-demonstrations" target="_blank">
+              Learning and generalization of task-parameterized skills through few human demonstrations
             </a>
           </div>
         </div>
@@ -79,7 +79,7 @@
     <div class="container is-max-desktop">
       <div class="columns is-centered">
         <div class="column has-text-centered">
-          <img src="static/images/Humanoids-2025.png" alt="iros-25" style="width:160px;height:auto;">
+          <img src="static/images/LogoJornada.png" alt="JornadasAutomatica2025" style="width:auto;height:auto;">
           <h1 class="title is-1 publication-title">ADAMSim: PyBullet-Based Simulation Environment for Research on Domestic Mobile Manipulator Robots</h1>
           <div class="is-size-5 publication-authors">
 
@@ -180,16 +180,9 @@
 
 <section class="hero body">
   <div class="container is-max-desktop">
-    <img src="./static/images/GeneralScheme.png">
+    <img src="./static/images/ModulosADAM.pdf">
     <h2 class="subtitle has-text-centered">
-      Our algorithm takes as input the vision data (a), which is decomposed into 2D information—used to segment 
-      the relevant object classes—and 3D information for depth estimation. Both are then fused and encoded as BPS (b) for each detected object 
-      in the environment 𝑥<sub>b</sub>. This encoding is used to estimate potential grasps via a modified version of FFHNet (c), 
-      where pretrained weights are leveraged to estimate the latent space 𝑧 used to generate grasp poses for the robotic hand. 
-      These grasps are subsequently optimized based on the reachability constraints of both the hand and the robotic arm. The full 3D scene 𝒪 
-      is used to learn the traversable regions (d), along with the user's demonstration. The generated waypoints 𝐖 are used to adapt the learned models 𝐅ₓ 
-      and 𝐅<sub>𝜃</sub>, producing a motion solution that passes through all the waypoints (e), while adapting their learned positions and orientations.
-
+      General integration of the modules developed for ADAMSim.
     </h2>
   </div>
 </section>
@@ -203,27 +196,23 @@
         <h2 class="title is-3">Abstract</h2>
         <div class="content has-text-justified">
           <p>
-            This paper introduces VASO (Visual Adaptation of Skills in One-Shot), a novel framework that enables robots to adapt
-            learned manipulation skills to new environments using a single demonstration. VASO leverages visual keypoint-based
-            representations and integrates them with a trajectory modeling approach inspired by the Fast Marching Square
-            method to generate safe, obstacle-aware paths. It incorporates object detection from visual data and 3D point
-            clouds to identify key manipulation points, applying a Variational Autoencoder to determine optimal grasp
-            positions and orientations. The learned skill is then adapted through an Elastic Map-inspired deformation
-            technique, enabling task generalization with respect to new via-points or constraints. Unlike existing visual imitation
-            learning methods, VASO achieves robust one-shot generalization without iterative re-planning, and is
-            validated in both simulated and real-world scenarios, demonstrating effectiveness in dynamic and cluttered environments. 
+            This paper introduces ADAMSim, a PyBullet-based simulation environment tailored for Ambidextrous Domestic Autonomous Manipulator (ADAM), 
+            developed to support research in navigation, manipulation, and learning for domestic robotics. The simulator accurately replicates the 
+            structure and behavior of the physical robot, enabling robust sim-to-real and real-to-sim algorithm transfer. ADAMSim follows a modular design, 
+            including navigation, arm and hand kinematics, perception, and ROS communication. This architecture allows synchronized operation between the 
+            real robot and its digital twin. Several example applications were developed, ranging from vision and grasping tasks to navigation and teleoperation, 
+            including experiments running both simulated and real robots simultaneously. Its open-source and flexible design makes ADAMSim a powerful tool for 
+            safe and reproducible algorithm development and experimentation in household robotics. The platform is also intended to support future research in 
+            indoor mapping, advanced manipulation learning, and educational projects, serving as a test bed.
           </p>
         </div>
       </div>
     </div>
     <div class="column">
-      <img src="./static/images/IntroPaper.png">
+      <img src="./static/images/RealSim.pdf">
       <p class="subtitle has-text-centered">
-        Our bimanual robot performing a task-oriented learning process to rearrange the table. 
-        The algorithm detects objects using the camera, calculates the optimal grasping points, 
-        and learns both the position and orientation of the entire task using the VASO algorithm, 
-        which learns the velocity space through demonstrations and adjusts the solution using the waypoints generalizing 
-        the learned model.
+        (a) Learning a manipulation task from demonstrations using a real-sim-real pipeline, 
+        (b) Simultaneous navigation with ADAM real and simulated environments
       </p>
     </div>
   </div>
@@ -278,48 +267,98 @@
 
 
 
-<!-- System. -->
+<!-- ADAMSim Modules -->
 <section class="section">
   <div class="container is-max-desktop">
     <div class="columns is-centered has-text-centered">
       <div class="column">
-        <h2 class="title is-3">Method Description</h2>
+        <h2 class="title is-3">ADAMSim Modules</h2>
         <div class="content has-text-justified">
           <p>
-            We propose a novel method, known as <em>Visual Adaptation of Skills in One-Shot</em> (VASO), 
-            which applies the ideas of visual keypoint-based representations in a one-shot manner. 
-            Our method takes one or more demonstrations and encodes them into a skill model. 
-            This skill model is inspired by the Fast Marching Square method, which models the demonstrations as light paths through the workspace. 
-            This model encodes "safe" paths of the skill through the workspace, avoiding any obstacles. 
-            Once the skill model is obtained, the algorithm detects objects of interest using a detection system based on the overlap of the object 
-            masks onto their 3D point cloud. This allows us to detect the keypoints of obstacles or objects of interest within the workspace, 
-            enabling the application of an algorithm based on Variational Autoencoders (VAE) that estimates both the optimal position and orientation 
-            for grasping the object, based on its reachability. A path through the workspace is generated which avoids any obstacles. 
-            Then, this path is modified to meet any necessary via-points (which may be position and/or orientation via-points) using a method 
-            inspired by elastic maps. This modified path can be used as a successful reproduction of the task through the workspace, 
-            without the need for iteration. Notably, this method can handle one or more demonstrations, can adapt to any number of novel initial, 
-            final, via-point, or obstacle constraints, and generate a successful reproduction efficiently. We evaluate our approach in several 
-            real-world environments using a bimanual manipulator robot.
+            <strong>ADAMSim</strong> is structured in a modular fashion, allowing flexibility, scalability, and ease of integration with both simulated and real robotic systems. The core modules are:
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Navigation Module -->
+    <div class="columns is-centered has-text-centered">
+      <div class="column">
+        <div class="content has-text-justified">
+          <p>
+            <strong>Navigation Module:</strong> Enables control of the mobile base, supporting both manual teleoperation and autonomous waypoint navigation. It includes continuous movement controllers, real-time odometry tracking, and customizable speed settings. Obstacle insertion and detection is also supported, allowing experiments with dynamic path planning.
           </p>
         </div>
       </div>
     </div>
     <div class="container is-max-desktop">
-    <div class="hero body">
-      <video id="teaser" autoplay="autoplay" controls autoplay muted loop playsinline height="100%">
-        <source src="./static/videos/VideoLargoHumanoids.mp4" type="video/mp4">
-      </video>
-      <p class="subtitle has-text-centered">
-        Example video showing the VASO algorithm and its functionality for shelf placement tasks and object rearrangement in a box.
-        The algorithm is capable of learning the task through kinesthetic demonstrations and adapting to the environment in real time using the visual input
-        and generating efficient grasping poses for both of the arms. 
-      </p>
+      <div class="hero body">
+        <img src="./static/images/NavigationImg.pdf" alt="Navigation Module">
+        <p class="subtitle has-text-centered">
+          (a) ADAM’s motion is defined by the linear velocity <em>v</em>, angular velocity <em>&omega;</em>, 
+          and wheel velocities <em>v<sub>r</sub></em> and <em>v<sub>l</sub></em>. 
+          <em>&theta;</em> determines the robot’s orientation.<br>
+          (b) Example of use of the Lidar information for navigation. Red color represents obstacles 
+          (purple and yellow boxes) in the ray casting.
+        </p>
+      </div>
     </div>
-  </div>
-    <div class="content has-text-justified">
-      <!--p>
-        Explain the method a little bit more :3 
-      </p-->
+
+    <!-- Arm and Hand Kinematics Module -->
+    <div class="columns is-centered has-text-centered">
+      <div class="column">
+        <div class="content has-text-justified">
+          <p>
+            <strong>Arm and Hand Kinematics Module:</strong> Provides full kinematic control of both arms and grippers. Users can command the robot using joint angles or Cartesian goals, with inverse kinematics and trajectory generation included. It supports both high-level (goal reaching) and low-level joint manipulation.
+          </p>
+        </div>
+      </div>
+    </div>
+    <div class="container is-max-desktop">
+      <div class="hero body">
+        <img src="./static/images/example_armposes.png" alt="Arm Kinematics Module">
+        <p class="subtitle has-text-centered">
+          Sequence of movements of the right arm passing through different waypoints with specific position and orientation.
+        </p>
+      </div>
+    </div>
+
+    <!-- Perception Module -->
+    <div class="columns is-centered has-text-centered">
+      <div class="column">
+        <div class="content has-text-justified">
+          <p>
+            <strong>Perception Module:</strong> Simulates onboard RGB-D sensors and provides synthetic visual data. This is ideal for training vision models and performing object detection, segmentation, and grasp planning using realistic 3D input.
+          </p>
+        </div>
+      </div>
+    </div>
+    <div class="container is-max-desktop">
+      <div class="hero body">
+        <img src="./static/images/VisionExample.pdf" alt="Perception Module">
+        <p class="subtitle has-text-centered">
+          Example of vision with the RGB-D sensor. ADAMSim provides RGB information, depth, and segmented masks in a synthetic manner.
+        </p>
+      </div>
+    </div>
+
+    <!-- ROS Communication Module -->
+    <div class="columns is-centered has-text-centered">
+      <div class="column">
+        <div class="content has-text-justified">
+          <p>
+            <strong>ROS Communication Module:</strong> Creates a bridge between the simulated and real robots via ROS. This module allows for synchronized execution and bidirectional data transfer between ADAMSim and the physical ADAM robot, supporting both sim-to-real and real-to-sim experiments.
+          </p>
+        </div>
+      </div>
+    </div>
+    <div class="container is-max-desktop">
+      <div class="hero body">
+        <img src="./static/images/ROS Scheme.pdf" alt="ROS Communication Module">
+        <p class="subtitle has-text-centered">
+          Diagram of the connections between the real model and the simulator through the created ROS bridge.
+        </p>
+      </div>
     </div>
   </div>
 </section>
