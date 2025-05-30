@@ -1,6 +1,6 @@
 import pybullet as p
 import time
-from pykdl_kinematics import Kinematics
+from scripts.pykdl_kinematics import Kinematics
 import math
 import numpy as np
 
@@ -152,7 +152,7 @@ class ArmsKinematics:
 
             if poses_arm2 is None: raise ValueError("Debes proporcionar poses2 para mover ambos brazos")
 
-            for pose_left, pose_right in zip(poses_arm1, poses_arm2):
+            for pose_right, pose_left in zip(poses_arm1, poses_arm2):
                 
                 # Check if collision is detected
                 self.adam.detect_autocollisions()
@@ -161,9 +161,7 @@ class ArmsKinematics:
                 self.move_arm_to_pose('left', pose_left, target_link=target_link, accurate=accurate, threshold=threshold)
 
                 # Avanzar la simulación para que los movimientos se apliquen
-                if not self.adam.useRealTimeSimulation:
-                    p.stepSimulation()
-                    time.sleep(self.adam.t)
+                self.adam.wait(1)
     
 
     def check_reached(self, arm, target_pose, target_link, threshold=[0.01, 0.035], type="both"):

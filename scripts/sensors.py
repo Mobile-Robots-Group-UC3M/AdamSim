@@ -74,19 +74,18 @@ class Sensors():
 
         return rgb, depth
 
-    
 
-    def save_rgb_image(self, rgb_array, filename="camera_image.png", directory="./images"):
+    def save_rgb_image(self, rgb_array, folder_path="./images", filename="camera_image.png"):
         '''
         Save RGB image to a file.
         Args:
             rgb_array (numpy.ndarray): The RGB image array.
             filename (str): The name of the file to save the image.
-            directory (str): The directory to save the image.
+            folder_path (str): The path to save the image.
         '''
         
-        os.makedirs(directory, exist_ok=True)
-        path = os.path.join(directory, filename)
+        os.makedirs(folder_path, exist_ok=True)
+        path = os.path.join(folder_path, filename)
         image = Image.fromarray(rgb_array)
         image.save(path)
         print(f"Saved image to {path}")

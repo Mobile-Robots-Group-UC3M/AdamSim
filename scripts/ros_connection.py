@@ -21,10 +21,6 @@ class ROSConnection:
         self.arm_joint_pub = {'left': rospy.Publisher('/robot/left_arm/scaled_pos_traj_controller/command', JointTrajectory, queue_size=1),
                             'right': rospy.Publisher('/robot/right_arm/scaled_pos_traj_controller/command', JointTrajectory, queue_size=1)}
         
-
-        self.hand_timer = rospy.Timer(rospy.Duration(0.02), self.hand_services_callback)
-        self.real_to_sim_timer = rospy.Timer(rospy.Duration(1/120), self.real_to_sim)
-        
         # Create a publisher for the base pose
         self.pub = rospy.Publisher('/robot/move_base/cmd_vel', Twist, queue_size=1)
         self.wheel_radius = 0.0762
@@ -36,6 +32,9 @@ class ROSConnection:
         self.latest_hand_dof_states = {'right': None, 'left': None}
 
         self.rate = rospy.Rate(120)
+
+        self.hand_timer = rospy.Timer(rospy.Duration(0.02), self.hand_services_callback)
+        self.real_to_sim_timer = rospy.Timer(rospy.Duration(1/120), self.real_to_sim)
         
         
         
