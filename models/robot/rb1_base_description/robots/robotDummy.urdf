@@ -38,7 +38,7 @@
   <!-- BASE_LINK -->
   <link name="rb1_base_link">
     <inertial>
-      <mass value="500.0"/>
+      <mass value="500.0"/> <!-- Modifcado de 500 a 1000-->
       <origin xyz="0 0 0"/>
       <inertia ixx="0.605" ixy="0.0" ixz="0.0" iyy="0.5435" iyz="0.0" izz="0.981"/>
     </inertial>
@@ -225,7 +225,7 @@
   <joint name="rb1_omni_backwheel_joint" type="continuous">
     <parent link="rb1_base_link"/>
     <child link="rb1_omni_backwheel_link"/>
-    <origin rpy="0 0 0" xyz="-0.195 0.0 0.027"/>
+    <origin rpy="0 0 0" xyz="-0.195 0.0 0.026"/> <!-- Modificado por Adria original es 0.027-->
     <axis rpy="0 0 0" xyz="0 1 0"/>
     <limit effort="100" velocity="100"/>
     <!--joint_properties damping="0.0" friction="0.0"/-->
@@ -261,7 +261,7 @@
   <joint name="rb1_omni_front_leftwheel_joint" type="continuous">
     <parent link="rb1_base_link"/>
     <child link="rb1_omni_front_leftwheel_link"/>
-    <origin rpy="0 0 0" xyz="0.132 0.1535 0.027"/>
+    <origin rpy="0 0 0" xyz="0.132 0.1535 0.026"/>
     <axis rpy="0 0 0" xyz="0 1 0"/>
     <limit effort="100" velocity="100"/>
     <!--joint_properties damping="0.0" friction="0.0"/-->
@@ -297,7 +297,7 @@
   <joint name="rb1_omni_front_rightwheel_joint" type="continuous">
     <parent link="rb1_base_link"/>
     <child link="rb1_omni_front_rightwheel_link"/>
-    <origin rpy="0 0 0" xyz="0.132 -0.1535 0.027"/>
+    <origin rpy="0 0 0" xyz="0.132 -0.1535 0.026"/>
     <axis rpy="0 0 0" xyz="0 1 0"/>
     <limit effort="100" velocity="100"/>
     <!--joint_properties damping="0.0" friction="0.0"/-->

@@ -1,11 +1,11 @@
-from adam import ADAM
+from scripts.adam import ADAM
 import pybullet as p
 import time
 import os
 
 # Load URDF robot path
 base_path = os.path.dirname(__file__)
-robot_urdf_path = os.path.join(base_path,"..","paquetes_simulacion", "rb1_base_description", "robots", "robotDummy.urdf")
+robot_urdf_path = os.path.join(base_path,"..","models","robot", "rb1_base_description", "robots", "robotDummy.urdf")
 
 print('Loading ADAM...')
 
@@ -15,7 +15,6 @@ adam = ADAM(robot_urdf_path, useRealTimeSimulation=True, used_fixed_base=True, u
 
 print('READY!')
 
-# INSERT YOUR INITIALIZATION CODE HERE
 
 #adam.teleop.create_sliders()
 

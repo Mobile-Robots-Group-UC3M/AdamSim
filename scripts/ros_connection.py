@@ -3,6 +3,7 @@ from sensor_msgs.msg import JointState
 from geometry_msgs.msg import Pose, Twist
 from trajectory_msgs.msg import JointTrajectory, JointTrajectoryPoint
 import pybullet as p
+import time
 
 
 from inspire_hand.srv import * # this is the compiled service of the robotic hand with catkin_make
@@ -22,8 +23,7 @@ class ROSConnection:
                             'right': rospy.Publisher('/robot/right_arm/scaled_pos_traj_controller/command', JointTrajectory, queue_size=1)}
         
 
-        self.hand_timer = rospy.Timer(rospy.Duration(0.02), self.hand_services_callback)
-        self.real_to_sim_timer = rospy.Timer(rospy.Duration(1/120), self.real_to_sim)
+        
         
         # Create a publisher for the base pose
         self.pub = rospy.Publisher('/robot/move_base/cmd_vel', Twist, queue_size=1)
@@ -36,6 +36,10 @@ class ROSConnection:
         self.latest_hand_dof_states = {'right': None, 'left': None}
 
         self.rate = rospy.Rate(120)
+        
+        
+        self.real_to_sim_timer = rospy.Timer(rospy.Duration(1/120), self.real_to_sim)
+        self.hand_timer = rospy.Timer(rospy.Duration(0.02), self.hand_services_callback)
         
         
         
@@ -86,6 +90,33 @@ class ROSConnection:
         # Store the latest joint angles
         try: self.latest_arm_joint_states[arm] = joint_angles
         except: pass
+        
+    def read_arm_joint_states(self, arm, mode = 'sim'):
+        '''
+        Read the latest joint angles for the specified arm.
+        Args:
+            arm (str): The arm to read the joint angles from ('left' or 'right').
+        Returns:
+            list: The latest joint angles for the specified arm.
+        '''
+        joint_angles_read = []
+        
+            
+        if self.latest_arm_joint_states[arm]:
+            if mode=='real':
+                joint_angles_read = self.latest_arm_joint_states[arm]
+                joint_angles_read = [joint_angles_read[2],joint_angles_read[1],joint_angles_read[0],joint_angles_read[3],joint_angles_read[4],joint_angles_read[5]]
+            elif mode=='sim':
+                joint_angles_read = self.latest_arm_joint_states[arm]
+            else:
+                rospy.logerr("Invalid mode. Use 'real' or 'sim'.")
+                return None
+            
+            return joint_angles_read
+        else:
+            rospy.logwarn(f"No joint state received for {arm} arm yet.")
+            return None
+        
 
     
     def arm_publish_joint_trajectory(self, arm, joint_angles):
@@ -97,15 +128,14 @@ class ROSConnection:
         '''
         
         # Create a JointTrajectory message
-        traj_msg = self.convert_joints_to_msg(joint_angles)
-
+        traj_msg = self.convert_joints_to_msg(arm, joint_angles)
         # Publish the message
         self.arm_joint_pub[arm].publish(traj_msg)
         
         #rospy.loginfo("Published joint trajectory for %s arm", arm)
 
         
-    def convert_joints_to_msg(self, joint_positions):
+    def convert_joints_to_msg(self, arm, joint_positions):
         """
         Crea un mensaje JointTrajectory a partir de una lista de nombres y posiciones.
         
@@ -117,8 +147,8 @@ class ROSConnection:
             JointTrajectory: Mensaje listo para publicar.
         """
         traj_msg = JointTrajectory()
-        traj_msg.joint_names = ['robot_left_arm_elbow_joint', 'robot_left_arm_shoulder_lift_joint', 'robot_left_arm_shoulder_pan_joint',
-                                'robot_left_arm_wrist_1_joint', 'robot_left_arm_wrist_2_joint', 'robot_left_arm_wrist_3_joint']
+        traj_msg.joint_names = [f'robot_{arm}_arm_elbow_joint', f'robot_{arm}_arm_shoulder_lift_joint', f'robot_{arm}_arm_shoulder_pan_joint',
+                                f'robot_{arm}_arm_wrist_1_joint', f'robot_{arm}_arm_wrist_2_joint', f'robot_{arm}_arm_wrist_3_joint']
         
         point = JointTrajectoryPoint()
         point.positions = joint_positions
@@ -163,17 +193,17 @@ class ROSConnection:
             arm (str): The arm to get the joint angles for ('left' or 'right').
         '''
         
-        service_get_angle_act = f'/robot/{arm}/inspire_hand/get_angle_act'
+        service_get_angle_act = f'/robot/{arm}/inspire_hand/get_angle_set'
         
         rospy.wait_for_service(service_get_angle_act)
 
         try:
-            get_angle_set_service = rospy.ServiceProxy(service_get_angle_act, get_angle_act)
+            get_angle_set_service = rospy.ServiceProxy(service_get_angle_act, get_angle_set)
             response = get_angle_set_service()
 
-            print(f"Joint angles in {arm} arm from service:", list(response.curangle))
+            #print(f"Joint angles in {arm} arm from service:", list(response.curangle))
 
-            dofs = list(response.curangle)
+            dofs = list(response.setangle)
 
             # Store the latest hand dof states
             self.latest_hand_dof_states[arm] = dofs
@@ -223,16 +253,16 @@ class ROSConnection:
         '''
         Teleoperate the base using the keyboard.
         '''
-        leftSpeed, rightSpeed = self.adam.teleop.teleoperate_base(move_sim=False)
+        leftSpeed, rightSpeed= self.adam.teleop.teleoperate_base(move_sim=True)
         # Convertir velocidades de rueda (rad/s) a velocidad lineal y angular
-        linear_x = self.wheel_radius * (rightSpeed + leftSpeed) / 2.0
-        angular_z = self.wheel_radius * (rightSpeed - leftSpeed) / self.wheel_distance
+        v = self.wheel_radius * (rightSpeed + leftSpeed) / 2.0
+        w = self.wheel_radius * (rightSpeed - leftSpeed) / self.wheel_distance
         
-        self.send_velocity(linear_x, angular_z)
-        if angular_z == 0 and linear_x != 0:
+        self.send_velocity(v, w)
+        """ if angular_z == 0 and linear_x != 0:
             print("Left speed", leftSpeed)
             print("Right speed", rightSpeed)
-            self.adam.navigation.move_wheels(leftSpeed*4, rightSpeed*4, force=50)
+            self.adam.navigation.move_wheels(leftSpeed*1.5, rightSpeed*1.5, force=20)
         else:
             
-            self.adam.navigation.move_wheels(leftSpeed, rightSpeed, force=50)
+            self.adam.navigation.move_wheels(leftSpeed/4, rightSpeed/4, force=50) """

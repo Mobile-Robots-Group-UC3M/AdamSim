@@ -23,12 +23,48 @@ class ADAM:
 
         # Load world plane
         self.plane_id = p.loadURDF("plane.urdf")
+        p.setPhysicsEngineParameter(enableConeFriction=1)
+        
+        """ p.setPhysicsEngineParameter(contactBreakingThreshold=0.001)
+        p.setPhysicsEngineParameter(numSolverIterations=150)
+        p.setPhysicsEngineParameter(enableConeFriction=1 """
+        
+        # Wheel indices
+        self.left_wheel_joint = 4
+        self.right_wheel_joint = 3
 
         # URDF path
         self.urdf_path = urdf_path
 
         # Spawn ADAM robot model
         self.robot_id = p.loadURDF(urdf_path, useFixedBase=used_fixed_base, flags=p.URDF_USE_SELF_COLLISION)
+        
+        #Establecer fricción para las ruedas (índices de joint correctos)
+        """ p.changeDynamics(self.robot_id, 3, lateralFriction=0.02)
+        p.changeDynamics(self.robot_id, 4, lateralFriction=0.02)
+        p.changeDynamics(self.robot_id, 5, lateralFriction=0.02)
+        p.changeDynamics(self.robot_id, 6, lateralFriction=0.02)
+        p.changeDynamics(self.robot_id, 7, lateralFriction=0.02)
+        
+        p.changeDynamics(self.robot_id, 3, linearDamping=0)
+        p.changeDynamics(self.robot_id, 4, linearDamping=0)
+        p.changeDynamics(self.robot_id, 5, linearDamping=0)
+        p.changeDynamics(self.robot_id, 6, linearDamping=0)
+        p.changeDynamics(self.robot_id, 7, linearDamping=0)
+        
+        p.changeDynamics(self.robot_id, 3, angularDamping=0)
+        p.changeDynamics(self.robot_id, 4, angularDamping=0)
+        p.changeDynamics(self.robot_id, 5, angularDamping=0)
+        p.changeDynamics(self.robot_id, 6, angularDamping=0)
+        p.changeDynamics(self.robot_id, 7, angularDamping=0)
+        
+        p.changeDynamics(self.robot_id, -1, lateralFriction=0.02)
+        #p.changeDynamics(sphere,-1,rollingFriction=10)
+        p.changeDynamics(self.robot_id, -1, linearDamping=0)
+        p.changeDynamics(self.robot_id, -1, angularDamping=0) """
+
+        # (Opcional) Establecer fricción para el cuerpo principal
+        #p.changeDynamics(self.robot_id, base_link_index, lateralFriction=1.0)
 
         # Change simulation mode
         self.useRealTimeSimulation = useRealTimeSimulation
@@ -54,9 +90,7 @@ class ADAM:
         self.hand_base_index = {'right': 28, 'left': 53}
         self.dummy_index = {'right': 29, 'left': 54}
         
-        # Wheel indices
-        self.left_wheel_joint = 4
-        self.right_wheel_joint = 3
+        
         
 
         # ADAM MODULES

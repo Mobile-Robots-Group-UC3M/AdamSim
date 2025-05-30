@@ -35,7 +35,7 @@ class Navigation():
     
 
         
-    def move_base_continuous(self, target_pos, pos_tolerance=0.01, angle_tolerance=0.02, orient_tolerance=0.1, debug=True):
+    def move_base_continuous(self, target_pos, pos_tolerance=0.01, angle_tolerance=0.05, orient_tolerance=0.1, debug=True,use_lidar=False, use_ros=False):
         '''
         Generates a movement of the robot towards a target position and orientation continuously.
         Args:
@@ -55,7 +55,9 @@ class Navigation():
 
         self.adam.utils.draw_frame(([x_goal,y_goal,0],p.getQuaternionFromEuler([0,0,theta_goal])),axis_length=0.5,line_width=6)
         
-        while step:
+        while step==True:
+            if use_lidar==True:
+                self.adam.sensors.simulated_lidar(ray_length=5)
             # 1) Estado actual
             pos, orn = p.getBasePositionAndOrientation(self.adam.robot_id)
             x, y = pos[0], pos[1]
@@ -104,9 +106,9 @@ class Navigation():
             p.setJointMotorControl2(self.adam.robot_id, self.adam.right_wheel_joint,
                                     p.VELOCITY_CONTROL, targetVelocity=v_r, force=100)
             
-            p.stepSimulation()
-            time.sleep(self.adam.t)
-            step += 1
+            self.adam.step()
+            
+            
             
             #Check if reached final position
             if dist < pos_tolerance and abs(dtheta_final) < angle_tolerance:
@@ -114,6 +116,10 @@ class Navigation():
                 print("Final position and orientation:", pos, theta)
                 print("Target position and orientation:", target_pos)
                 step = False
+                return False
+                
+            if use_ros==True and step== True:
+                self.adam.ros.send_velocity(v, w)
         # Stop the robot
         p.setJointMotorControl2(self.adam.robot_id, self.adam.left_wheel_joint,
                                 p.VELOCITY_CONTROL, targetVelocity=0, force=10)
