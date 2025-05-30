@@ -69,7 +69,7 @@ class ADAM:
         # Change simulation mode
         self.useRealTimeSimulation = useRealTimeSimulation
         self.use_ros = use_ros
-        self.t = 0.1
+        self.t = 0.01
 
 
         # Arm revolute joint indices
@@ -131,15 +131,11 @@ class ADAM:
         self.pub_right = False
         self.pub_left = False
 
-        # Señal de colision
+        # Collision flag
         self.collision = False
 
         # Add autocollisions to the robot (DO NOT MODIFY)
         p.setCollisionFilterGroupMask(self.robot_id, -1, 0, 0)
-
-        '''p.setCollisionFilterGroupMask(self.robot_id, -1, 0, 0)
-        p.setCollisionFilterGroupMask(self.plane_id, -1, 1, 0)
-        p.setCollisionFilterPair(self.robot_id, self.plane_id, -1, -1, 1)'''
 
 
     def step(self):
