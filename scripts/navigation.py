@@ -55,16 +55,9 @@ class Navigation():
 
         self.adam.utils.draw_frame(([x_goal,y_goal,0],p.getQuaternionFromEuler([0,0,theta_goal])),axis_length=0.5,line_width=6)
         
-<<<<<<< HEAD
         while step==True:
             if use_lidar==True:
                 self.adam.sensors.simulated_lidar(ray_length=5)
-=======
-        while step:
-
-            self.adam.sensors.simulated_lidar() # Lidar during navigation
-
->>>>>>> dev-gon
             # 1) Estado actual
             pos, orn = p.getBasePositionAndOrientation(self.adam.robot_id)
             x, y = pos[0], pos[1]
