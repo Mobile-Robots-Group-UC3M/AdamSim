@@ -3,7 +3,7 @@ import os
 
 # Load URDF robot path
 base_path = os.path.dirname(__file__)
-robot_urdf_path = os.path.join(base_path,"..","paquetes_simulacion", "rb1_base_description", "robots", "robotDummy.urdf")
+robot_urdf_path = os.path.join(base_path,"..","models","robot", "rb1_base_description", "robots", "robotDummy.urdf")
 
 
 # Create ADAM robot in PyBullet
