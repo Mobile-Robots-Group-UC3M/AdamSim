@@ -39,6 +39,12 @@ Then enter the directory and install all the requierements:
 cd installation
 pip install -r requirements.txt
 ```
+After that, you have to install the package in editable mode, so you can modify the code and see the changes without reinstalling it.
+```bash
+cd ..
+pip install -e .
+```
+Then you are ready to work with ADAMSim 
 
 
 
