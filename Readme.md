@@ -54,6 +54,7 @@ In order to make use of pyKDL the pip install does not work properly, therefore 
 ```bash
 conda install conda-forge::python-orocos-kdl
 conda install conda-forge/label/cf202003::python-orocos-kdl
+pip install git+https://github.com/ros/kdl_parser_py.git
 ```
 
 Additionally, in case you want to use the robotic hands with the ADAM robot in the real environment, it is necessary to add the Inspire Hands package to your workspace, compile it and install the following ROS1 package:
