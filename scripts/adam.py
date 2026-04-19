@@ -7,14 +7,35 @@ from scripts.hands_kinematics import HandsKinematics
 from scripts.sensors import Sensors
 from scripts.navigation import Navigation
 from scripts.utils import Utils
-from scripts.ros_connection import ROSConnection
 import time
+import json
+import os
 
-# Class for ADAM robot
+
 class ADAM:
-    def __init__(self, urdf_path, useRealTimeSimulation, used_fixed_base=True, use_ros=True):
+    def __init__(self, urdf_path=None, info_json_path=None, semantic_json_path=None, hand_json_path=None, useRealTimeSimulation=True, used_fixed_base=True, use_ros=True):
         
-        # Load environment
+
+        base_path = os.path.dirname(__file__)
+        self.robot_pkg_path = os.path.join(base_path, "..", "models", "robot", "rb1_base_description")
+        self.config_dir = os.path.join(self.robot_pkg_path, "config")
+
+        # URDF Path
+        if urdf_path is None: self.urdf_path = os.path.join(self.robot_pkg_path, "robots", "robotDummy.urdf")
+        else: self.urdf_path = urdf_path
+
+        # JSON Config Paths
+        if info_json_path is None: self.info_json_path = os.path.join(self.config_dir, "robot_info.json")
+        else: self.info_json_path = info_json_path
+
+        if semantic_json_path is None: self.semantic_json_path = os.path.join(self.config_dir, "semantic_groups.json")
+        else: self.semantic_json_path = semantic_json_path
+
+        if hand_json_path is None: self.hand_json_path = os.path.join(self.config_dir, "hand_kinematics.json")
+        else: self.hand_json_path = hand_json_path
+
+
+        # Load PyBullet environment
         self.physicsClient = p.connect(p.GUI)
         p.setAdditionalSearchPath(pybullet_data.getDataPath())
         p.setGravity(0, 0, -9.81)
@@ -25,74 +46,19 @@ class ADAM:
         self.plane_id = p.loadURDF("plane.urdf")
         p.setPhysicsEngineParameter(enableConeFriction=1)
         
-        """ p.setPhysicsEngineParameter(contactBreakingThreshold=0.001)
-        p.setPhysicsEngineParameter(numSolverIterations=150)
-        p.setPhysicsEngineParameter(enableConeFriction=1 """
-        
-        # Wheel indices
-        self.left_wheel_joint = 4
-        self.right_wheel_joint = 3
-
-        # URDF path
-        self.urdf_path = urdf_path
 
         # Spawn ADAM robot model
-        self.robot_id = p.loadURDF(urdf_path, useFixedBase=used_fixed_base, flags=p.URDF_USE_SELF_COLLISION)
-        
-        #Establecer fricción para las ruedas (índices de joint correctos)
-        """ p.changeDynamics(self.robot_id, 3, lateralFriction=0.02)
-        p.changeDynamics(self.robot_id, 4, lateralFriction=0.02)
-        p.changeDynamics(self.robot_id, 5, lateralFriction=0.02)
-        p.changeDynamics(self.robot_id, 6, lateralFriction=0.02)
-        p.changeDynamics(self.robot_id, 7, lateralFriction=0.02)
-        
-        p.changeDynamics(self.robot_id, 3, linearDamping=0)
-        p.changeDynamics(self.robot_id, 4, linearDamping=0)
-        p.changeDynamics(self.robot_id, 5, linearDamping=0)
-        p.changeDynamics(self.robot_id, 6, linearDamping=0)
-        p.changeDynamics(self.robot_id, 7, linearDamping=0)
-        
-        p.changeDynamics(self.robot_id, 3, angularDamping=0)
-        p.changeDynamics(self.robot_id, 4, angularDamping=0)
-        p.changeDynamics(self.robot_id, 5, angularDamping=0)
-        p.changeDynamics(self.robot_id, 6, angularDamping=0)
-        p.changeDynamics(self.robot_id, 7, angularDamping=0)
-        
-        p.changeDynamics(self.robot_id, -1, lateralFriction=0.02)
-        #p.changeDynamics(sphere,-1,rollingFriction=10)
-        p.changeDynamics(self.robot_id, -1, linearDamping=0)
-        p.changeDynamics(self.robot_id, -1, angularDamping=0) """
-
-        # (Opcional) Establecer fricción para el cuerpo principal
-        #p.changeDynamics(self.robot_id, base_link_index, lateralFriction=1.0)
+        self.robot_id = p.loadURDF(self.urdf_path, useFixedBase=used_fixed_base, flags=p.URDF_USE_SELF_COLLISION)
 
         # Change simulation mode
         self.useRealTimeSimulation = useRealTimeSimulation
         self.use_ros = use_ros
         self.t = 0.01
 
-
-        # Arm revolute joint indices
-        self.ur3_right_arm_joints = list(range(20,26))  # Brazo derecho
-        self.ur3_left_arm_joints = list(range(45,51)) # Brazo izquierdo
-
-        self.ur3_right_arm_rev_joints = list(range(5,11))  # Brazo derecho
-        self.ur3_left_arm_rev_joints = list(range(23,29)) # Brazo izquierdo
-
-        # Hand revolute joint indices
-        self.hand_joint_indices = {'right': list(range(30, 42)), 'left': list(range(55, 67))}
-
-        # Torso link indices
-        self.torso_link_indices = list(range(73, 76))
-
-        # Other indices
-        self.ee_index = {'right': 26, 'left': 51}
-        self.hand_base_index = {'right': 28, 'left': 53}
-        self.dummy_index = {'right': 29, 'left': 54}
+        # Load indices
+        self._load_dynamic_indices()
         
         
-        
-
         # ADAM MODULES
         self.arm_dynamics = ArmsDynamics(self)
         self.arm_kinematics = ArmsKinematics(self)
@@ -101,11 +67,13 @@ class ADAM:
         self.teleop = Teleop(self)
         self.sensors = Sensors(self)
         self.utils = Utils(self)
-        if use_ros: self.ros = ROSConnection(self)      
+        if use_ros:
+            from scripts.ros_connection import ROSConnection
+            self.ros = ROSConnection(self)      
         
         
-        #Null space definition
-        #lower limits for null space
+        # Null space definition
+        # lower limits for null space
         self.ll = [-6.28]*6
         #upper limits for null space
         self.ul = [6.28]*6
@@ -255,25 +223,44 @@ class ADAM:
         return left_arm_collision, right_arm_collision, body_collision
 
 
-    def print_robot_info(self):
+    def print_robot_info(self, save=False, filename="robot_info.json"):
         '''
         Print the structure of the robot, including links and joints.
+        If save=True, exports this information to a JSON file for dynamic ID lookup.
         '''
 
         num_joints = p.getNumJoints(self.robot_id)
+        
+        # Dictionary to store all the data for the JSON export
+        robot_data = {
+            "links": {},
+            "joints": {},
+            "movable_joints": {}
+        }
+
         print(f"Robot ID: {self.robot_id}\n")
         
+        # --- LINKS ---
         print("=== ADAM LINKS ===")
-        # Agregamos el link base manualmente (ID -1)
-        print(f"Link ID: -1, Nombre: base_link (implícito)")
+        print(f"Link ID: -1, Nombre: base_link (implicit)")
+        robot_data["links"]["base_link"] = {"id": -1, "parent_id": None}
+        
         for i in range(num_joints):
             joint_info = p.getJointInfo(self.robot_id, i)
+            link_index = joint_info[0]
             link_name = joint_info[12].decode("utf-8")
-            link_index = joint_info[0]  # También se puede usar i
             parent_index = joint_info[16]
+            
             print(f"Link ID: {link_index}, Nombre: {link_name}, Parent Link ID: {parent_index}")
+            robot_data["links"][link_name] = {
+                "id": link_index,
+                "parent_id": parent_index
+            }
         
+        # --- JOINTS ---
         print("\n=== ADAM JOINTS ===")
+        dof_index = 0 # Degree of Freedom index for IK matching
+        
         for i in range(num_joints):
             joint_info = p.getJointInfo(self.robot_id, i)
             joint_id = joint_info[0]
@@ -291,20 +278,110 @@ class ADAM:
             }.get(joint_type, "Unknown")
             
             print(f"ID: {joint_id}, Nombre: {joint_name}, Tipo: {joint_type_str}")
-
-        print("\n=== ADAM REVOLUTE JOINTS ===")
-        
-        revolute_id = 0
-        
-        for i in range(num_joints):
-            joint_info = p.getJointInfo(self.robot_id, i)
-            joint_id = joint_info[0]
-            joint_name = joint_info[1].decode("utf-8")
-            joint_type = joint_info[2]
+            robot_data["joints"][joint_name] = {
+                "id": joint_id,
+                "type": joint_type_str
+            }
             
-            if joint_type == p.JOINT_REVOLUTE:
-                print(f"Revolute ID: {revolute_id}, Nombre: {joint_name}")
-                revolute_id += 1
+            # If it's a movable joint (Revolute or Prismatic), add it to the movable specific dictionary
+            if joint_type in [p.JOINT_REVOLUTE, p.JOINT_PRISMATIC]:
+                robot_data["movable_joints"][joint_name] = {
+                    "dof_index": dof_index,
+                    "joint_id": joint_id,
+                    "type": joint_type_str
+                }
+                dof_index += 1
+
+        # --- MOVABLE JOINTS ---
+        print("\n=== ADAM MOVABLE JOINTS ===")
+        for name, data in robot_data["movable_joints"].items():
+            print(f"DoF Index: {data['dof_index']}, Nombre: {name}, Joint ID: {data['joint_id']}, Tipo: {data['type']}")
+
+        # --- SAVE TO JSON ---
+        if save:
+            
+            save_path = os.path.join(self.config_dir, filename)
+
+            with open(save_path, "w", encoding="utf-8") as f:
+                json.dump(robot_data, f, indent=4)
+            print(f"\n[INFO] Robot structure successfully saved to '{filename}'.")
 
 
+    def _load_dynamic_indices(self):
+        '''
+        Reads the auto-generated robot_info.json and the manual semantic_groups.json
+        to populate all necessary joint and link indices dynamically.
+        '''
+        
+        if not os.path.exists(self.info_json_path) or not os.path.exists(self.semantic_json_path):
+            raise FileNotFoundError("[ERROR] Configuration JSONs not found. Please generate robot_info.json first.")
 
+        with open(self.info_json_path, 'r', encoding='utf-8') as f:
+            robot_info = json.load(f)
+            self.robot_info = robot_info
+            
+        with open(self.semantic_json_path, 'r', encoding='utf-8') as f:
+            semantics = json.load(f)
+            self.semantics = semantics
+
+        # 1. Arm global joint IDs
+        self.ur3_right_arm_joints = [robot_info["joints"][name]["id"] for name in semantics["arms"]["right"]]
+        self.ur3_left_arm_joints = [robot_info["joints"][name]["id"] for name in semantics["arms"]["left"]]
+
+        # print("ur3_right_arm_joints", self.ur3_right_arm_joints)
+        # print("ur3_left_arm_joints", self.ur3_left_arm_joints)
+
+
+        # 2. Arm movable IDs (DoF Index for PyBullet IK arrays)
+        self.ur3_right_arm_rev_joints = [robot_info["movable_joints"][name]["dof_index"] for name in semantics["arms"]["right"]]
+        self.ur3_left_arm_rev_joints = [robot_info["movable_joints"][name]["dof_index"] for name in semantics["arms"]["left"]]
+
+        # print("ur3_right_arm_rev_joints", self.ur3_right_arm_rev_joints)
+        # print("ur3_left_arm_rev_joints", self.ur3_left_arm_rev_joints)
+
+        # 3. Hand joints
+        self.hand_joint_indices = {
+            'right': [robot_info["joints"][name]["id"] for name in semantics["hands"]["right"]],
+            'left': [robot_info["joints"][name]["id"] for name in semantics["hands"]["left"]]
+        }
+
+        # print("hand_joint_indices right", self.hand_joint_indices['right'])
+        # print("hand_joint_indices left", self.hand_joint_indices['left'])
+
+        # 4. Other indices
+        self.left_wheel_joint = robot_info["joints"][semantics["wheels"]["left"]]["id"]
+        self.right_wheel_joint = robot_info["joints"][semantics["wheels"]["right"]]["id"]
+        
+        # print("left_wheel_joint", self.left_wheel_joint)
+        # print("right_wheel_joint", self.right_wheel_joint)
+
+        self.torso_link_indices = [robot_info["links"][name]["id"] for name in semantics["torso"]]
+        # print("torso_link_indices", self.torso_link_indices)
+
+        self.ee_index = {
+            'right': robot_info["links"][semantics["special_links"]["right_ee"]]["id"],
+            'left': robot_info["links"][semantics["special_links"]["left_ee"]]["id"]
+        }
+        # print("ee_index right", self.ee_index['right'])
+        # print("ee_index left", self.ee_index['left'])
+
+        self.hand_base_index = {
+            'right': robot_info["links"][semantics["special_links"]["right_hand_base"]]["id"],
+            'left': robot_info["links"][semantics["special_links"]["left_hand_base"]]["id"]
+        }
+        # print("hand_base_index right", self.hand_base_index['right'])
+        # print("hand_base_index left", self.hand_base_index['left'])
+        
+        self.dummy_index = {
+            'right': robot_info["links"][semantics["special_links"]["right_dummy"]]["id"],
+            'left': robot_info["links"][semantics["special_links"]["left_dummy"]]["id"]
+        }
+        # print("dummy_index right", self.dummy_index['right'])
+        # print("dummy_index left", self.dummy_index['left'])
+
+        self.camera_joint_index = robot_info["joints"][semantics["special_links"]["camera_joint"]]["id"]
+        self.camera_link_index = robot_info["links"][semantics["special_links"]["camera_link"]]["id"]
+        self.laser_link_index = robot_info["links"][semantics["special_links"]["laser_link"]]["id"]
+        print("camera_joint_index", self.camera_joint_index)
+        print("camera_link_index", self.camera_link_index)
+        print("laser_link_index", self.laser_link_index)

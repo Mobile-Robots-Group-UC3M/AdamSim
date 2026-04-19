@@ -46,6 +46,7 @@ import_object(object_path, [[0.5, 0, 0.85], p.getQuaternionFromEuler([0,0,0])])
 pregrasp_pose = [[0.55, -0.23, 0.86], p.getQuaternionFromEuler([0, math.pi/2, math.pi/2])]
 grasp_pose = [[0.55, -0.14, 0.86], p.getQuaternionFromEuler([0, math.pi/2, math.pi/2])]
 lift_pose = [[0.56, -0.14, 0.95], p.getQuaternionFromEuler([0, math.pi/2, math.pi/2])]
+
 adam.utils.draw_frame(grasp_pose, axis_length=0.1, line_width=4)
 adam.utils.draw_frame(pregrasp_pose, axis_length=0.1, line_width=4)
 
@@ -55,7 +56,7 @@ adam.hand_kinematics.move_hand_to_dofs('right', [1000, 1000, 1000, 1000, 1000, 0
 adam.wait(10)
 
 while True:
-
+    
     # INSERT YOUR SIMULATION LOOP CODE HERE
 
     # Move to grasp pose
@@ -65,7 +66,8 @@ while True:
     adam.wait(2)
 
     # Close hands
-    adam.hand_kinematics.move_hand_to_dofs('right', [300, 300, 300, 300, 300, 0])
+    # adam.hand_kinematics.move_hand_to_dofs('right', [300, 300, 300, 300, 300, 0])
+    adam.hand_kinematics.close_hand('right')
     adam.wait(3)
 
     # Lift pose

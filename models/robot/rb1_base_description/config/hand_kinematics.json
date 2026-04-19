@@ -1,0 +1,25 @@
+{
+    "joint_norm_values": {
+        "thumb_MCP_joint1": 0.0011,
+        "thumb_MCP_joint2": 0.0005,
+        "thumb_PIP_joint": 0.001,
+        "thumb_DIP_joint": 0.0012,
+        "index_MCP_joint": 0.0017,
+        "index_DIP_joint": 0.0016,
+        "middle_MCP_joint": 0.0017,
+        "middle_DIP_joint": 0.0016,
+        "ring_MCP_joint": 0.0017,
+        "ring_DIP_joint": 0.0016,
+        "pinky_MCP_joint": 0.0017,
+        "pinky_DIP_joint": 0.0016
+    },
+    "dof_joints_indices": [5, 4, 4, 4, 3, 3, 2, 2, 1, 1, 0, 0],
+    "finger_base_link_names": {
+        "palm": ["hand_base_link", "dummy_link"],
+        "thumb": ["thumb_proximal_base", "thumb_proximal", "thumb_intermediate", "thumb_distal"],
+        "index": ["index_proximal", "index_distal"],
+        "middle": ["middle_proximal", "middle_distal"],
+        "ring": ["ring_proximal", "ring_distal"],
+        "pinky": ["pinky_proximal", "pinky_distal"]
+    }
+}
