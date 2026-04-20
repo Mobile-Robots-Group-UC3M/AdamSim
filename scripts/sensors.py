@@ -186,34 +186,9 @@ class Sensors():
         self.ray_length = ray_length
         self.ray_hit_color = [1, 0, 0]
         self.ray_miss_color = [0, 1, 0]
-
-        # Obtenemos la posición del sensor en el mundo
-        link_state = p.getLinkState(self.adam.robot_id, self.laser_joint_index)
-        laser_pos = link_state[0]
-        laser_ori = link_state[1]
         
-        # Matriz de rotación para orientar los rayos igual que el robot
-        rot_matrix = p.getMatrixFromQuaternion(laser_ori)
-        rot_matrix = [rot_matrix[0:3], rot_matrix[3:6], rot_matrix[6:9]]
-
-        self.ray_from = []
-        self.ray_to = []
-
-        # Calculamos origen y destino de cada rayo
-        for i in range(self.num_rays):
-            angle = -math.pi * 3/4 + (math.pi * 3/2) * i / self.num_rays
-            local_dir = [math.cos(angle), math.sin(angle), 0]
-
-            global_dir = [
-                sum(rot_matrix[row][col] * local_dir[col] for col in range(3))
-                for row in range(3)
-            ]
-            self.ray_from.append(laser_pos)
-            self.ray_to.append([
-                laser_pos[0] + ray_length * global_dir[0],
-                laser_pos[1] + ray_length * global_dir[1],
-                laser_pos[2] + ray_length * global_dir[2],
-            ])
+        # Trigger the LiDAR scan
+        self.adam.sensors.simulated_lidar(ray_length=ray_length)
 
         # Lanzamos los rayos
         results = p.rayTestBatch(self.ray_from, self.ray_to)
