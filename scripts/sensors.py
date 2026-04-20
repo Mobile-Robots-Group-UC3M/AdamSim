@@ -172,3 +172,71 @@ class Sensors():
                                 replaceItemUniqueId=self.ray_ids[i])
 
         time.sleep(self.adam.t)
+    
+    def get_lidar_points_world(self, ray_length=10):
+        '''
+        Simulated LiDAR sensor using ray casting.
+        Updates debug lines and returns the hit points in world coordinates.
+        
+        Args:
+            ray_length (float): The length of the rays in meters.
+        Returns:
+            np.array: An array of [x, y] coordinates where the LiDAR hit an obstacle.
+        '''
+        self.ray_length = ray_length
+        self.ray_hit_color = [1, 0, 0]
+        self.ray_miss_color = [0, 1, 0]
+
+        # Obtenemos la posición del sensor en el mundo
+        link_state = p.getLinkState(self.adam.robot_id, self.laser_joint_index)
+        laser_pos = link_state[0]
+        laser_ori = link_state[1]
+        
+        # Matriz de rotación para orientar los rayos igual que el robot
+        rot_matrix = p.getMatrixFromQuaternion(laser_ori)
+        rot_matrix = [rot_matrix[0:3], rot_matrix[3:6], rot_matrix[6:9]]
+
+        self.ray_from = []
+        self.ray_to = []
+
+        # Calculamos origen y destino de cada rayo
+        for i in range(self.num_rays):
+            angle = -math.pi * 3/4 + (math.pi * 3/2) * i / self.num_rays
+            local_dir = [math.cos(angle), math.sin(angle), 0]
+
+            global_dir = [
+                sum(rot_matrix[row][col] * local_dir[col] for col in range(3))
+                for row in range(3)
+            ]
+            self.ray_from.append(laser_pos)
+            self.ray_to.append([
+                laser_pos[0] + ray_length * global_dir[0],
+                laser_pos[1] + ray_length * global_dir[1],
+                laser_pos[2] + ray_length * global_dir[2],
+            ])
+
+        # Lanzamos los rayos
+        results = p.rayTestBatch(self.ray_from, self.ray_to)
+
+        # Lista para guardar los obstáculos detectados
+        hit_points = []
+
+        # Procesamos los resultados
+        for i in range(self.num_rays):
+            if results[i][0] < 0:
+                # No ha chocado con nada (Dibuja línea verde)
+                p.addUserDebugLine(self.ray_from[i], self.ray_to[i], self.ray_miss_color, lineWidth=1.0,
+                                replaceItemUniqueId=self.ray_ids[i])
+            else:
+                # HA CHOCADO CON ALGO
+                hit_position = results[i][3] # <--- Coordenadas [x, y, z] del impacto
+                
+                # Añadimos solo X e Y a la lista de obstáculos (DWA funciona en 2D)
+                hit_points.append([hit_position[0], hit_position[1]]) 
+                
+                # Dibuja línea roja hasta el punto de impacto
+                p.addUserDebugLine(self.ray_from[i], hit_position, self.ray_hit_color, lineWidth=1.0,
+                                replaceItemUniqueId=self.ray_ids[i])
+
+        # Devolvemos los puntos como un array de Numpy para que sea más fácil de procesar en el planner
+        return np.array(hit_points)

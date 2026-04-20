@@ -41,7 +41,7 @@ class ArmsKinematics:
                                                 residualThreshold=.01)
         return ik_solution
     
-    def move_arm_to_pose(self, arm, target_pose, target_link, pos_act=None, vel_act=None, accurate=False, threshold=[0.01, 0.035], type="both"):
+    """ def move_arm_to_pose(self, arm, target_pose, target_link, pos_act=None, vel_act=None, accurate=False, threshold=[0.01, 0.035], type="both"):
         '''
         Move the arm to the specified pose.
         Args:
@@ -114,6 +114,62 @@ class ArmsKinematics:
             # Simulation step
             if not self.adam.useRealTimeSimulation: p.stepSimulation()
             time.sleep(self.adam.t)
+
+        return arm_solution, closeEnough, vel_des """
+        
+    def move_arm_to_pose_continuous(self, arm, target_pose, target_link, pos_act=None, vel_act=None, accurate=False, threshold=[0.01, 0.035], type="both"):
+        '''
+        Non-blocking function to move the arm to a specified pose for a single simulation step.
+        Returns:   
+            arm_solution (list): The arm joint angles.
+            closeEnough (bool): True if the target is reached, False if it's still moving.
+            vel_des (list): The desired velocity of the arm.
+        '''
+        
+        # Get the joint indices and target link index
+        joint_indices, rev_joint_indices = self.get_arm_joint_indices(arm)
+        target_link_index = self.get_arm_link_index(arm, target_link)
+
+        # Compute IK (iterations depend on accuracy need)
+        iterations = 1000 if accurate else 100000
+        ik_solution = self.calculate_arm_inverse_kinematics(self.adam.robot_id, target_link_index, target_pose, iterations=iterations)
+        arm_solution = [ik_solution[i] for i in rev_joint_indices]
+
+        # Correct the angles
+        arm_solution = self.compute_closest_joints(arm, arm_solution)
+
+        closeEnough = False
+        vel_des = None
+
+        # Include dynamics
+        if self.adam.Dynamics:
+            # Compute inverse dynamics
+            torque, vel_des, acc_des = self.adamDynamics.calculate_arm_inverse_dynamics(arm_solution, pos_act, vel_act, arm)
+
+            for i, joint_id in enumerate(joint_indices):
+                #set the joint friction
+                p.setJointMotorControl2(self.adam.robot_id, joint_id, p.VELOCITY_CONTROL, targetVelocity=0, force=20)
+                #apply a joint torque
+                p.setJointMotorControl2(self.adam.robot_id, joint_id, p.TORQUE_CONTROL, force=torque[i])
+            
+            # ¡ELIMINADO: p.stepSimulation() estaba aquí!
+
+            # Calculamos la dinámica directa
+            acc = self.adam.calculate_arm_forward_dynamics(torque,arm)
+
+        # Without dynamics
+        else:
+            for i, joint_id in enumerate(joint_indices):
+                p.setJointMotorControl2(self.adam.robot_id, joint_id, p.POSITION_CONTROL, targetPosition=arm_solution[i])
+            
+        # Check if the arm has reached the target pose
+        if accurate: 
+            closeEnough, _, _ = self.check_reached(arm, target_pose, target_link, threshold=threshold, type=type)
+        else:
+            # Si no buscamos precisión milimétrica, asumimos que con enviar el comando de posición basta
+            closeEnough = True 
+
+        # ¡ELIMINADOS: p.stepSimulation() y time.sleep() estaban aquí!
 
         return arm_solution, closeEnough, vel_des
 

@@ -6,6 +6,7 @@ from scripts.arms_kinematics import ArmsKinematics
 from scripts.hands_kinematics import HandsKinematics
 from scripts.sensors import Sensors
 from scripts.navigation import Navigation
+from scripts.planner import Planner
 from scripts.utils import Utils
 from scripts.ros_connection import ROSConnection
 import time
@@ -101,7 +102,8 @@ class ADAM:
         self.teleop = Teleop(self)
         self.sensors = Sensors(self)
         self.utils = Utils(self)
-        if use_ros: self.ros = ROSConnection(self)      
+        if use_ros: self.ros = ROSConnection(self)     
+        self.planner =  Planner(self)
         
         
         #Null space definition
@@ -151,7 +153,7 @@ class ADAM:
         else: time.sleep(self.t)
 
 
-    def wait(self, secs):
+    """ def wait(self, secs):
         '''
         Wait for specified time in seconds
         '''
@@ -169,6 +171,32 @@ class ADAM:
         else:
             for _ in range(int(iter)):
                 if not self.useRealTimeSimulation: p.stepSimulation()
+                time.sleep(self.t) """
+    def wait(self, secs, callback_func=None):
+        '''
+        Wait for specified time in seconds. 
+        If callback_func is provided, it runs in every step of the wait loop.
+        '''
+        iter = round(secs / self.t, 0)
+
+        if self.use_ros:
+            if not self.useRealTimeSimulation:
+                for _ in range(int(iter)):
+                    p.stepSimulation()
+                    if callback_func: callback_func() 
+                    self.ros.sleep()
+            else:
+                for _ in range(int(secs * 120)):
+                    if callback_func: callback_func()
+                    self.ros.sleep()
+        else:
+            for _ in range(int(iter)):
+                if not self.useRealTimeSimulation: 
+                    p.stepSimulation()
+                
+                if callback_func: 
+                    callback_func() 
+                
                 time.sleep(self.t)
 
     #Collisions
