@@ -172,3 +172,46 @@ class Sensors():
                                 replaceItemUniqueId=self.ray_ids[i])
 
         time.sleep(self.adam.t)
+    
+    def get_lidar_points_world(self, ray_length=10):
+        '''
+        Simulated LiDAR sensor using ray casting.
+        Updates debug lines and returns the hit points in world coordinates.
+        
+        Args:
+            ray_length (float): The length of the rays in meters.
+        Returns:
+            np.array: An array of [x, y] coordinates where the LiDAR hit an obstacle.
+        '''
+        self.ray_length = ray_length
+        self.ray_hit_color = [1, 0, 0]
+        self.ray_miss_color = [0, 1, 0]
+        
+        # Trigger the LiDAR scan
+        self.adam.sensors.simulated_lidar(ray_length=ray_length)
+
+        # Lanzamos los rayos
+        results = p.rayTestBatch(self.ray_from, self.ray_to)
+
+        # Lista para guardar los obstáculos detectados
+        hit_points = []
+
+        # Procesamos los resultados
+        for i in range(self.num_rays):
+            if results[i][0] < 0:
+                # No ha chocado con nada (Dibuja línea verde)
+                p.addUserDebugLine(self.ray_from[i], self.ray_to[i], self.ray_miss_color, lineWidth=1.0,
+                                replaceItemUniqueId=self.ray_ids[i])
+            else:
+                # HA CHOCADO CON ALGO
+                hit_position = results[i][3] # <--- Coordenadas [x, y, z] del impacto
+                
+                # Añadimos solo X e Y a la lista de obstáculos (DWA funciona en 2D)
+                hit_points.append([hit_position[0], hit_position[1]]) 
+                
+                # Dibuja línea roja hasta el punto de impacto
+                p.addUserDebugLine(self.ray_from[i], hit_position, self.ray_hit_color, lineWidth=1.0,
+                                replaceItemUniqueId=self.ray_ids[i])
+
+        # Devolvemos los puntos como un array de Numpy para que sea más fácil de procesar en el planner
+        return np.array(hit_points)

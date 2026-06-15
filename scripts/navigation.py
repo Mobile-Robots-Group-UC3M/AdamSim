@@ -35,7 +35,7 @@ class Navigation():
     
 
         
-    def move_base_continuous(self, target_pos, pos_tolerance=0.01, angle_tolerance=0.05, orient_tolerance=0.1, debug=True,use_lidar=False, use_ros=False):
+    """ def move_base_continuous(self, target_pos, pos_tolerance=0.01, angle_tolerance=0.05, orient_tolerance=0.1, debug=True,use_lidar=False, use_ros=False):
         '''
         Generates a movement of the robot towards a target position and orientation continuously.
         Args:
@@ -126,5 +126,93 @@ class Navigation():
         p.setJointMotorControl2(self.adam.robot_id, self.adam.right_wheel_joint,
                                 p.VELOCITY_CONTROL, targetVelocity=0, force=10)
         
+        return True """
+        
+    def move_base_continuous(self, target_pos, pos_tolerance=0.01, angle_tolerance=0.05, orient_tolerance=0.1, debug=True, use_lidar=False, use_ros=False):
+        '''
+        Generates a movement step towards a target position and orientation.
+        Returns:
+            bool: False if the target is reached, True if it's still moving.
+        '''
+        x_goal, y_goal, theta_goal = target_pos
+        K_lin = self.K_lin
+        K_ang = self.K_ang
+
+        # Opcional: Esto dibujará el frame en cada step. Puedes moverlo si afecta al rendimiento.
+        # self.adam.utils.draw_frame(([x_goal,y_goal,0],p.getQuaternionFromEuler([0,0,theta_goal])),axis_length=0.5,line_width=6)
+        
+        if use_lidar:
+            self.adam.sensors.simulated_lidar(ray_length=5)
+
+        # 1) Estado actual
+        pos, orn = p.getBasePositionAndOrientation(self.adam.robot_id)
+        x, y = pos[0], pos[1]
+        _, _, theta = p.getEulerFromQuaternion(orn)
+
+        # 2) Errores
+        dx = x_goal - x
+        dy = y_goal - y
+        dist = math.hypot(dx, dy)
+        path_angle = math.atan2(dy, dx)
+        alpha = self.shortest_angle_diff(theta, path_angle)
+        dtheta_final = self.shortest_angle_diff(theta, theta_goal)
+
+        # 3) Check si ya llegó (Condición de parada)
+        if dist < pos_tolerance and abs(dtheta_final) < angle_tolerance:
+            if debug:
+                print("Final position reached")
+                print("Final position and orientation:", pos, theta)
+            
+            # Parar los motores
+            p.setJointMotorControl2(self.adam.robot_id, self.adam.left_wheel_joint, p.VELOCITY_CONTROL, targetVelocity=0, force=10)
+            p.setJointMotorControl2(self.adam.robot_id, self.adam.right_wheel_joint, p.VELOCITY_CONTROL, targetVelocity=0, force=10)
+            return False # Indica que ya no necesita moverse hacia este punto
+
+        # 4) Lógica de control
+        if dist > pos_tolerance:
+            if abs(alpha) >= orient_tolerance:
+                v = 0.0
+                w = K_ang * alpha
+            else:
+                if dist <= 2.0:
+                    v = K_lin * dist
+                else:
+                    v = K_lin * 2
+                w = K_ang * alpha
+        else:
+            v = 0.0
+            w = K_ang * dtheta_final
+
+        v = max(-self.linear_speed, min(self.linear_speed, v))
+        w = max(-self.angular_speed, min(self.angular_speed, w))
+
+        v_l = (2 * v - w * self.wheel_distance) / (2 * self.wheel_radius)
+        v_r = (2 * v + w * self.wheel_distance) / (2 * self.wheel_radius)
+        
+        # Aplicar velocidades
+        p.setJointMotorControl2(self.adam.robot_id, self.adam.left_wheel_joint, p.VELOCITY_CONTROL, targetVelocity=v_l, force=100)
+        p.setJointMotorControl2(self.adam.robot_id, self.adam.right_wheel_joint, p.VELOCITY_CONTROL, targetVelocity=v_r, force=100)
+        
+        if use_ros:
+            self.adam.ros.send_velocity(v, w)
         return True
+    
+    def send_velocity(self, v, w, force=100):
+        '''
+        Applies linear and angular velocity commands directly to the robot's base.
+        Args:
+            v (float): Desired linear velocity in m/s.
+            w (float): Desired angular velocity in rad/s.
+            force (float): Maximum force applied to the motors.
+        '''
+        v = max(-self.linear_speed, min(self.linear_speed, v))
+        w = max(-self.angular_speed, min(self.angular_speed, w))
+
+        v_l = (2 * v - w * self.wheel_distance) / (2 * self.wheel_radius)
+        v_r = (2 * v + w * self.wheel_distance) / (2 * self.wheel_radius)
+        
+        p.setJointMotorControl2(self.adam.robot_id, self.adam.left_wheel_joint, 
+                                p.VELOCITY_CONTROL, targetVelocity=v_l, force=force)
+        p.setJointMotorControl2(self.adam.robot_id, self.adam.right_wheel_joint, 
+                                p.VELOCITY_CONTROL, targetVelocity=v_r, force=force)
 

@@ -134,8 +134,7 @@ class HandsKinematics():
             joint_angles.append((1000 - dofs[self.dof_joints_indices[i]])*self.joint_norm_values[self.joint_names[i]])
 
         return joint_angles
-
-
+    
     def close_hand(self, hand_side='right', thumb_abd_value=0, close_speed=10, force_threshold=2):
         """
         Closes the hand while keeping thumb abduction fixed for an antipodal grasp.

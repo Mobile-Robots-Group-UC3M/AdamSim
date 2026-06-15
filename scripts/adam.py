@@ -6,16 +6,19 @@ from scripts.arms_kinematics import ArmsKinematics
 from scripts.hands_kinematics import HandsKinematics
 from scripts.sensors import Sensors
 from scripts.navigation import Navigation
+from scripts.planner import Planner
 from scripts.utils import Utils
+
 import time
 import json
 import os
-
-
+# Class for ADAM robot
 class ADAM:
     def __init__(self, urdf_path=None, info_json_path=None, semantic_json_path=None, hand_json_path=None, useRealTimeSimulation=True, used_fixed_base=True, use_ros=True):
+    def __init__(self, urdf_path=None, info_json_path=None, semantic_json_path=None, hand_json_path=None, useRealTimeSimulation=True, used_fixed_base=True, use_ros=True):
         
-
+        #Load JSON files
+        
         base_path = os.path.dirname(__file__)
         self.robot_pkg_path = os.path.join(base_path, "..", "models", "robot", "rb1_base_description")
         self.config_dir = os.path.join(self.robot_pkg_path, "config")
@@ -33,9 +36,8 @@ class ADAM:
 
         if hand_json_path is None: self.hand_json_path = os.path.join(self.config_dir, "hand_kinematics.json")
         else: self.hand_json_path = hand_json_path
-
-
-        # Load PyBullet environment
+        
+        # Load environment
         self.physicsClient = p.connect(p.GUI)
         p.setAdditionalSearchPath(pybullet_data.getDataPath())
         p.setGravity(0, 0, -9.81)
@@ -49,14 +51,18 @@ class ADAM:
 
         # Spawn ADAM robot model
         self.robot_id = p.loadURDF(self.urdf_path, useFixedBase=used_fixed_base, flags=p.URDF_USE_SELF_COLLISION)
+        
+        
 
         # Change simulation mode
         self.useRealTimeSimulation = useRealTimeSimulation
         self.use_ros = use_ros
         self.t = 0.01
 
-        # Load indices
+        # Load indices from JSON
         self._load_dynamic_indices()
+        
+        
         
         
         # ADAM MODULES
@@ -67,13 +73,14 @@ class ADAM:
         self.teleop = Teleop(self)
         self.sensors = Sensors(self)
         self.utils = Utils(self)
-        if use_ros:
+        if use_ros: 
             from scripts.ros_connection import ROSConnection
-            self.ros = ROSConnection(self)      
+            self.ros = ROSConnection(self)     
+        self.planner =  Planner(self)
         
         
         # Null space definition
-        # lower limits for null space
+        # Lower limits for null space
         self.ll = [-6.28]*6
         #upper limits for null space
         self.ul = [6.28]*6
@@ -119,7 +126,7 @@ class ADAM:
         else: time.sleep(self.t)
 
 
-    def wait(self, secs):
+    """ def wait(self, secs):
         '''
         Wait for specified time in seconds
         '''
@@ -137,6 +144,32 @@ class ADAM:
         else:
             for _ in range(int(iter)):
                 if not self.useRealTimeSimulation: p.stepSimulation()
+                time.sleep(self.t) """
+    def wait(self, secs, callback_func=None):
+        '''
+        Wait for specified time in seconds. 
+        If callback_func is provided, it runs in every step of the wait loop.
+        '''
+        iter = round(secs / self.t, 0)
+
+        if self.use_ros:
+            if not self.useRealTimeSimulation:
+                for _ in range(int(iter)):
+                    p.stepSimulation()
+                    if callback_func: callback_func() 
+                    self.ros.sleep()
+            else:
+                for _ in range(int(secs * 120)):
+                    if callback_func: callback_func()
+                    self.ros.sleep()
+        else:
+            for _ in range(int(iter)):
+                if not self.useRealTimeSimulation: 
+                    p.stepSimulation()
+                
+                if callback_func: 
+                    callback_func() 
+                
                 time.sleep(self.t)
 
     #Collisions
@@ -306,7 +339,6 @@ class ADAM:
                 json.dump(robot_data, f, indent=4)
             print(f"\n[INFO] Robot structure successfully saved to '{filename}'.")
 
-
     def _load_dynamic_indices(self):
         '''
         Reads the auto-generated robot_info.json and the manual semantic_groups.json
@@ -385,3 +417,4 @@ class ADAM:
         print("camera_joint_index", self.camera_joint_index)
         print("camera_link_index", self.camera_link_index)
         print("laser_link_index", self.laser_link_index)
+

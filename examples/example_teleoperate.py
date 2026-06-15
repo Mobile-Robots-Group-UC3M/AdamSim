@@ -2,9 +2,6 @@ import os
 from scripts.adam import ADAM
 import pybullet as p
 
-
-
-
 # Create ADAM instance
 adam = ADAM(useRealTimeSimulation=True, used_fixed_base=False, use_ros=False)
 

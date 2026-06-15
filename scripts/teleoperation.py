@@ -109,7 +109,13 @@ class Teleop():
         if move_sim==True:
             #self.adam.navigation.move_wheels(leftWheelVelocity, rightWheelVelocity, force=50)
             if self.turn == 0 and self.forward != 0:
-                self.adam.navigation.move_wheels(leftWheelVelocity*4, rightWheelVelocity*4, force=50)
+                print("Right wheel velocity", rightWheelVelocity)
+                print("Left wheel velocity",leftWheelVelocity)
+                print("++++++++++++++++++")
+                self.adam.navigation.move_wheels(leftWheelVelocity*4.0, rightWheelVelocity*4.0, force=50)
+                print("Izq:", p.getJointState(self.adam.robot_id, self.adam.left_wheel_joint)[1])  # velocity
+                print("Dcha:",p.getJointState(self.adam.robot_id, self.adam.right_wheel_joint)[1])
+        
             else:
                 
                 self.adam.navigation.move_wheels(leftWheelVelocity, rightWheelVelocity, force=50)

@@ -21,6 +21,8 @@
   <!-- *************** -->
   <!-- Here we create the robot elements using the xacro:macros imported at the beggining of this file -->
 
+
+
   <link name="rb1_base_footprint">
     <inertial>
       <mass value="1.0"/>
@@ -155,6 +157,12 @@
       <origin rpy="1.5707963267948966 0 0" xyz="0 0 0"/>
       <inertia ixx="0.0014960833333333334" ixy="0" ixz="0" iyy="0.0014960833333333334" iyz="0" izz="0.002888"/>
     </inertial>
+    <contact>
+      <lateral_friction value="1.0"/>
+      <rolling_friction value="0.0"/>
+      <stiffness value="30000000"/>
+      <damping value="1000"/>
+    </contact>
   </link>
   <joint name="rb1_right_wheel_joint" type="continuous">
     <parent link="rb1_base_link"/>
@@ -184,6 +192,12 @@
       <origin rpy="1.5707963267948966 0 0" xyz="0 0 0"/>
       <inertia ixx="0.0014960833333333334" ixy="0" ixz="0" iyy="0.0014960833333333334" iyz="0" izz="0.002888"/>
     </inertial>
+    <contact>
+      <lateral_friction value="1.0"/>
+      <rolling_friction value="0.0"/>
+      <stiffness value="30000000"/>
+      <damping value="1000"/>
+    </contact>
   </link>
   <joint name="rb1_left_wheel_joint" type="continuous">
     <parent link="rb1_base_link"/>
@@ -220,6 +234,12 @@
       <inertia ixx="0.00023507499999999998" ixy="0" ixz="0" iyy="0.00023507499999999998" iyz="0" izz="0.0003901499999999999"/>
       <!-- inertia  ixx="0.001" ixy="0.0"  ixz="0.0"  iyy="0.001"  iyz="0.0"  izz="0.001" / -->
     </inertial>
+    <contact>
+      <lateral_friction value="0.0"/>
+      <rolling_friction value="0.0"/>
+      <stiffness value="30000000"/>
+      <damping value="1000"/>
+    </contact>
   </link>
   <!-- joint name="joint_${name}_wheel" type="continuous" -->
   <joint name="rb1_omni_backwheel_joint" type="continuous">
@@ -257,6 +277,12 @@
       <inertia ixx="0.00023507499999999998" ixy="0" ixz="0" iyy="0.00023507499999999998" iyz="0" izz="0.0003901499999999999"/>
       <!-- inertia  ixx="0.001" ixy="0.0"  ixz="0.0"  iyy="0.001"  iyz="0.0"  izz="0.001" / -->
     </inertial>
+    <contact>
+      <lateral_friction value="0.0"/>
+      <rolling_friction value="0.0"/>
+      <stiffness value="30000000"/>
+      <damping value="1000"/>
+    </contact>
   </link>
   <joint name="rb1_omni_front_leftwheel_joint" type="continuous">
     <parent link="rb1_base_link"/>
@@ -293,6 +319,12 @@
       <inertia ixx="0.00023507499999999998" ixy="0" ixz="0" iyy="0.00023507499999999998" iyz="0" izz="0.0003901499999999999"/>
       <!-- inertia  ixx="0.001" ixy="0.0"  ixz="0.0"  iyy="0.001"  iyz="0.0"  izz="0.001" / -->
     </inertial>
+    <contact>
+      <lateral_friction value="0.0"/>
+      <rolling_friction value="0.0"/>
+      <stiffness value="30000000"/>
+      <damping value="1000"/>
+    </contact>
   </link>
   <joint name="rb1_omni_front_rightwheel_joint" type="continuous">
     <parent link="rb1_base_link"/>
@@ -2030,6 +2062,11 @@
 
   <!-- 1. From rb1_base_footprint to shoulder_link -->
   <link name="shoulder_link">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="0.0"/>
+      <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/>
+    </inertial>
     <visual>
       <origin rpy="0 0 1.57079632" xyz="0.115 0 0"/>
       <geometry>
@@ -2048,6 +2085,11 @@
 
   <!-- 2. From shoulder_link to joint_support_link -->
   <link name="joint_support_link">
+  <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="0.0"/>
+      <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/>
+    </inertial>
     <visual>
         <origin rpy="1.57079632 0 0" xyz="0 0.02 0"/>
         <geometry>
@@ -2068,6 +2110,11 @@
 
   <!-- 3. From joint_support_link to support_end_link -->
   <link name="support_end_link">
+  <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="0.0"/>
+      <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/>
+    </inertial>
     <visual>
       <origin rpy="1.57079632 0 -1.57079632" xyz="-0.01 0 0"/>
       <geometry>
@@ -2085,15 +2132,27 @@
   </joint>
 
   <!-- 4. From support_end_link to camera_link -->
-  <link name="rgbd_link"/>
+  <link name="rgbd_link">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="0.0"/>
+      <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/>
+    </inertial>
+  </link>
   <joint name="support_end_to_rgbd" type="fixed">
     <parent link="support_end_link"/>
     <child link="rgbd_link"/>
     <origin xyz="0.01803 0.0175 0" rpy="-1.5708 0 -1.5708"/> <!-- -π/2 -->
   </joint>
 
+
   <!-- 5. From support_end_link to camera_link -->
   <link name="camera_link">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="0.0"/>
+      <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/>
+    </inertial>
     <visual>
       <origin rpy="0 0 0" xyz="-0.01803 0 -0.0027"/>
       <geometry>
