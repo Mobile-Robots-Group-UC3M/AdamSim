@@ -1,5 +1,6 @@
 import pybullet as p
 import pybullet_data
+
 from scripts.arms_dynamics import ArmsDynamics
 from scripts.teleoperation import Teleop
 from scripts.arms_kinematics import ArmsKinematics
@@ -8,10 +9,12 @@ from scripts.sensors import Sensors
 from scripts.navigation import Navigation
 from scripts.planner import Planner
 from scripts.utils import Utils
+from scripts.environments import Environment
 
 import time
 import json
 import os
+
 # Class for ADAM robot
 class ADAM:
     def __init__(self, urdf_path=None, info_json_path=None, semantic_json_path=None, hand_json_path=None, useRealTimeSimulation=True, used_fixed_base=True, use_ros=True):
@@ -75,7 +78,8 @@ class ADAM:
         if use_ros: 
             from scripts.ros_connection import ROSConnection
             self.ros = ROSConnection(self)     
-        self.planner =  Planner(self)
+        self.planner = Planner(self)
+        self.environments = Environment(self)
         
         
         # Null space definition
