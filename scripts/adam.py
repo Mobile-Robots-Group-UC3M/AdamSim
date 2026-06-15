@@ -15,7 +15,6 @@ import os
 # Class for ADAM robot
 class ADAM:
     def __init__(self, urdf_path=None, info_json_path=None, semantic_json_path=None, hand_json_path=None, useRealTimeSimulation=True, used_fixed_base=True, use_ros=True):
-    def __init__(self, urdf_path=None, info_json_path=None, semantic_json_path=None, hand_json_path=None, useRealTimeSimulation=True, used_fixed_base=True, use_ros=True):
         
         #Load JSON files
         
