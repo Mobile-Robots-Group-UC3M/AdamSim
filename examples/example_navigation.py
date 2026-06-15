@@ -10,7 +10,7 @@ if __name__ == '__main__':
     base_path = os.path.dirname(__file__)
     robot_urdf_path = os.path.join(base_path,"..","models","robot", "rb1_base_description", "robots", "robotDummy.urdf")
     
-    adam = ADAM(robot_urdf_path, useRealTimeSimulation=True, used_fixed_base=False, use_ros=False)
+    adam = ADAM(robot_urdf_path, useRealTimeSimulation=True, used_fixed_base=False, use_ros=True)
     adam.wait(0.1)
     #adam.print_robot_info()
     #adam.sensors.start_lidar()
@@ -64,17 +64,17 @@ if __name__ == '__main__':
     adam.utils.draw_frame(([points[1][0],points[1][1],0],p.getQuaternionFromEuler([0,0,points[1][2]])),axis_length=0.5,line_width=6)
     adam.utils.draw_frame(([points[2][0],points[2][1],0],p.getQuaternionFromEuler([0,0,points[2][2]])),axis_length=0.5,line_width=6)
     #time.sleep(5)
-    """ while step:
+    while step:
         rgb, depth = adam.sensors.get_rgbd_image_from_link(width=640, height=480, fov=60, near=0.01, far=5.0)
         #adam.teleop.teleoperate_base(debug=False)
-        #adam.ros.teleop_real_base()
+        adam.ros.teleop_real_base()
         
-        point = adam.navigation.move_base_continuous(points[con],pos_tolerance=0.05,angle_tolerance=0.5,orient_tolerance=0.5,use_lidar=False,use_ros=False)
+        """ point = adam.navigation.move_base_continuous(points[con],pos_tolerance=0.05,angle_tolerance=0.5,orient_tolerance=0.5,use_lidar=False,use_ros=False)
         if point == False:
             con=con+1
         if con == 3:
-            step=False
-        adam.step() """
+            step=False """
+        adam.step()
     
     while step:
         # 1. Leer la cámara (¡ahora sí, en tiempo real!)

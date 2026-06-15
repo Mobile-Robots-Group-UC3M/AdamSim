@@ -1,0 +1,70 @@
+{
+    "arms": {
+        "right": [
+            "rb1_right_arm_shoulder_pan_joint",
+            "rb1_right_arm_shoulder_lift_joint",
+            "rb1_right_arm_elbow_joint",
+            "rb1_right_arm_wrist_1_joint",
+            "rb1_right_arm_wrist_2_joint",
+            "rb1_right_arm_wrist_3_joint"
+        ],
+        "left": [
+            "rb1_left_arm_shoulder_pan_joint",
+            "rb1_left_arm_shoulder_lift_joint",
+            "rb1_left_arm_elbow_joint",
+            "rb1_left_arm_wrist_1_joint",
+            "rb1_left_arm_wrist_2_joint",
+            "rb1_left_arm_wrist_3_joint"
+        ]
+    },
+    "hands": {
+        "right": [
+            "R_thumb_MCP_joint1",
+            "R_thumb_MCP_joint2",
+            "R_thumb_PIP_joint",
+            "R_thumb_DIP_joint",
+            "R_index_MCP_joint",
+            "R_index_DIP_joint",
+            "R_middle_MCP_joint",
+            "R_middle_DIP_joint",
+            "R_ring_MCP_joint",
+            "R_ring_DIP_joint",
+            "R_pinky_MCP_joint",
+            "R_pinky_DIP_joint"
+        ],
+        "left": [
+            "L_thumb_MCP_joint1",
+            "L_thumb_MCP_joint2",
+            "L_thumb_PIP_joint",
+            "L_thumb_DIP_joint",
+            "L_index_MCP_joint",
+            "L_index_DIP_joint",
+            "L_middle_MCP_joint",
+            "L_middle_DIP_joint",
+            "L_ring_MCP_joint",
+            "L_ring_DIP_joint",
+            "L_pinky_MCP_joint",
+            "L_pinky_DIP_joint"
+        ]
+    },
+    "torso": [
+        "rb1_torso_base_collision_link",
+        "rb1_torso_chest_collision_link",
+        "rb1_torso_shoulders_collision_link"
+    ],
+    "special_links": {
+        "right_ee": "rb1_right_arm_ee_link",
+        "left_ee": "rb1_left_arm_ee_link",
+        "right_hand_base": "R_hand_base_link",
+        "left_hand_base": "L_hand_base_link",
+        "right_dummy": "R_dummy_link",
+        "left_dummy": "L_dummy_link",
+        "camera_joint": "shoulder_to_support_joint",
+        "camera_link": "camera_link",
+        "laser_link": "rb1_front_laser_link"
+    },
+    "wheels": {
+        "right": "rb1_right_wheel_joint",
+        "left": "rb1_left_wheel_joint"
+    }
+}

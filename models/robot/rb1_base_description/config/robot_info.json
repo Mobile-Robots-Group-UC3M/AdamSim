@@ -1,0 +1,830 @@
+{
+    "links": {
+        "base_link": {
+            "id": -1,
+            "parent_id": null
+        },
+        "rb1_base_link": {
+            "id": 0,
+            "parent_id": -1
+        },
+        "rb1_front_cover_link": {
+            "id": 1,
+            "parent_id": 0
+        },
+        "rb1_base_docking_contact_link": {
+            "id": 2,
+            "parent_id": 1
+        },
+        "rb1_right_wheel_link": {
+            "id": 3,
+            "parent_id": 0
+        },
+        "rb1_left_wheel_link": {
+            "id": 4,
+            "parent_id": 0
+        },
+        "rb1_omni_backwheel_link": {
+            "id": 5,
+            "parent_id": 0
+        },
+        "rb1_omni_front_leftwheel_link": {
+            "id": 6,
+            "parent_id": 0
+        },
+        "rb1_omni_front_rightwheel_link": {
+            "id": 7,
+            "parent_id": 0
+        },
+        "rb1_front_laser_link": {
+            "id": 8,
+            "parent_id": 0
+        },
+        "rb1_front_laser_base_link": {
+            "id": 9,
+            "parent_id": 8
+        },
+        "rb1_imu_link": {
+            "id": 10,
+            "parent_id": 0
+        },
+        "rb1_front_rgbd_camera_rgb_base_link": {
+            "id": 11,
+            "parent_id": 0
+        },
+        "rb1_front_rgbd_camera_rgb_optical_frame": {
+            "id": 12,
+            "parent_id": 11
+        },
+        "rb1_front_rgbd_camera_link": {
+            "id": 13,
+            "parent_id": 11
+        },
+        "rb1_front_rgbd_camera_depth_frame": {
+            "id": 14,
+            "parent_id": 11
+        },
+        "rb1_front_rgbd_camera_depth_optical_frame": {
+            "id": 15,
+            "parent_id": 14
+        },
+        "rb1_top_cover_link": {
+            "id": 16,
+            "parent_id": -1
+        },
+        "rb1_torso_link": {
+            "id": 17,
+            "parent_id": -1
+        },
+        "rb1_torso_ur3_right_link": {
+            "id": 18,
+            "parent_id": 17
+        },
+        "rb1_right_arm_base_link": {
+            "id": 19,
+            "parent_id": 18
+        },
+        "rb1_right_arm_shoulder_link": {
+            "id": 20,
+            "parent_id": 19
+        },
+        "rb1_right_arm_upper_arm_link": {
+            "id": 21,
+            "parent_id": 20
+        },
+        "rb1_right_arm_forearm_link": {
+            "id": 22,
+            "parent_id": 21
+        },
+        "rb1_right_arm_wrist_1_link": {
+            "id": 23,
+            "parent_id": 22
+        },
+        "rb1_right_arm_wrist_2_link": {
+            "id": 24,
+            "parent_id": 23
+        },
+        "rb1_right_arm_wrist_3_link": {
+            "id": 25,
+            "parent_id": 24
+        },
+        "rb1_right_arm_ee_link": {
+            "id": 26,
+            "parent_id": 25
+        },
+        "rb1_right_arm_tool0": {
+            "id": 27,
+            "parent_id": 25
+        },
+        "R_hand_base_link": {
+            "id": 28,
+            "parent_id": 27
+        },
+        "R_dummy_link": {
+            "id": 29,
+            "parent_id": 28
+        },
+        "R_thumb_proximal_base": {
+            "id": 30,
+            "parent_id": 28
+        },
+        "R_thumb_proximal": {
+            "id": 31,
+            "parent_id": 30
+        },
+        "R_thumb_intermediate": {
+            "id": 32,
+            "parent_id": 31
+        },
+        "R_thumb_distal": {
+            "id": 33,
+            "parent_id": 32
+        },
+        "R_index_proximal": {
+            "id": 34,
+            "parent_id": 28
+        },
+        "R_index_distal": {
+            "id": 35,
+            "parent_id": 34
+        },
+        "R_middle_proximal": {
+            "id": 36,
+            "parent_id": 28
+        },
+        "R_middle_distal": {
+            "id": 37,
+            "parent_id": 36
+        },
+        "R_ring_proximal": {
+            "id": 38,
+            "parent_id": 28
+        },
+        "R_ring_distal": {
+            "id": 39,
+            "parent_id": 38
+        },
+        "R_pinky_proximal": {
+            "id": 40,
+            "parent_id": 28
+        },
+        "R_pinky_distal": {
+            "id": 41,
+            "parent_id": 40
+        },
+        "rb1_right_arm_base": {
+            "id": 42,
+            "parent_id": 19
+        },
+        "rb1_torso_ur3_left_link": {
+            "id": 43,
+            "parent_id": 17
+        },
+        "rb1_left_arm_base_link": {
+            "id": 44,
+            "parent_id": 43
+        },
+        "rb1_left_arm_shoulder_link": {
+            "id": 45,
+            "parent_id": 44
+        },
+        "rb1_left_arm_upper_arm_link": {
+            "id": 46,
+            "parent_id": 45
+        },
+        "rb1_left_arm_forearm_link": {
+            "id": 47,
+            "parent_id": 46
+        },
+        "rb1_left_arm_wrist_1_link": {
+            "id": 48,
+            "parent_id": 47
+        },
+        "rb1_left_arm_wrist_2_link": {
+            "id": 49,
+            "parent_id": 48
+        },
+        "rb1_left_arm_wrist_3_link": {
+            "id": 50,
+            "parent_id": 49
+        },
+        "rb1_left_arm_ee_link": {
+            "id": 51,
+            "parent_id": 50
+        },
+        "rb1_left_arm_tool0": {
+            "id": 52,
+            "parent_id": 50
+        },
+        "L_hand_base_link": {
+            "id": 53,
+            "parent_id": 52
+        },
+        "L_dummy_link": {
+            "id": 54,
+            "parent_id": 53
+        },
+        "L_thumb_proximal_base": {
+            "id": 55,
+            "parent_id": 53
+        },
+        "L_thumb_proximal": {
+            "id": 56,
+            "parent_id": 55
+        },
+        "L_thumb_intermediate": {
+            "id": 57,
+            "parent_id": 56
+        },
+        "L_thumb_distal": {
+            "id": 58,
+            "parent_id": 57
+        },
+        "L_index_proximal": {
+            "id": 59,
+            "parent_id": 53
+        },
+        "L_index_distal": {
+            "id": 60,
+            "parent_id": 59
+        },
+        "L_middle_proximal": {
+            "id": 61,
+            "parent_id": 53
+        },
+        "L_middle_distal": {
+            "id": 62,
+            "parent_id": 61
+        },
+        "L_ring_proximal": {
+            "id": 63,
+            "parent_id": 53
+        },
+        "L_ring_distal": {
+            "id": 64,
+            "parent_id": 63
+        },
+        "L_pinky_proximal": {
+            "id": 65,
+            "parent_id": 53
+        },
+        "L_pinky_distal": {
+            "id": 66,
+            "parent_id": 65
+        },
+        "rb1_left_arm_base": {
+            "id": 67,
+            "parent_id": 44
+        },
+        "shoulder_link": {
+            "id": 68,
+            "parent_id": -1
+        },
+        "joint_support_link": {
+            "id": 69,
+            "parent_id": 68
+        },
+        "support_end_link": {
+            "id": 70,
+            "parent_id": 69
+        },
+        "rgbd_link": {
+            "id": 71,
+            "parent_id": 70
+        },
+        "camera_link": {
+            "id": 72,
+            "parent_id": 71
+        },
+        "rb1_torso_base_collision_link": {
+            "id": 73,
+            "parent_id": -1
+        },
+        "rb1_torso_chest_collision_link": {
+            "id": 74,
+            "parent_id": -1
+        },
+        "rb1_torso_shoulders_collision_link": {
+            "id": 75,
+            "parent_id": -1
+        }
+    },
+    "joints": {
+        "rb1_base_footprint_joint": {
+            "id": 0,
+            "type": "Fixed"
+        },
+        "rb1_front_cover_joint": {
+            "id": 1,
+            "type": "Fixed"
+        },
+        "rb1_base_docking_joint": {
+            "id": 2,
+            "type": "Fixed"
+        },
+        "rb1_right_wheel_joint": {
+            "id": 3,
+            "type": "Revolute"
+        },
+        "rb1_left_wheel_joint": {
+            "id": 4,
+            "type": "Revolute"
+        },
+        "rb1_omni_backwheel_joint": {
+            "id": 5,
+            "type": "Revolute"
+        },
+        "rb1_omni_front_leftwheel_joint": {
+            "id": 6,
+            "type": "Revolute"
+        },
+        "rb1_omni_front_rightwheel_joint": {
+            "id": 7,
+            "type": "Revolute"
+        },
+        "rb1_front_laser_joint": {
+            "id": 8,
+            "type": "Fixed"
+        },
+        "rb1_front_laser_base_joint": {
+            "id": 9,
+            "type": "Fixed"
+        },
+        "rb1_imu_joint": {
+            "id": 10,
+            "type": "Fixed"
+        },
+        "rb1_front_rgbd_camera_rgb_joint": {
+            "id": 11,
+            "type": "Fixed"
+        },
+        "rb1_front_rgbd_camera_rgb_optical_joint": {
+            "id": 12,
+            "type": "Fixed"
+        },
+        "rb1_front_rgbd_camera_joint": {
+            "id": 13,
+            "type": "Fixed"
+        },
+        "rb1_front_rgbd_camera_depth_joint": {
+            "id": 14,
+            "type": "Fixed"
+        },
+        "rb1_front_rgbd_camera_depth_optical_joint": {
+            "id": 15,
+            "type": "Fixed"
+        },
+        "rb1_top_covert_joint": {
+            "id": 16,
+            "type": "Fixed"
+        },
+        "rb1_torso_joint": {
+            "id": 17,
+            "type": "Fixed"
+        },
+        "rb1_torso_ur3_right_joint": {
+            "id": 18,
+            "type": "Fixed"
+        },
+        "rb1_right_arm_base_joint": {
+            "id": 19,
+            "type": "Fixed"
+        },
+        "rb1_right_arm_shoulder_pan_joint": {
+            "id": 20,
+            "type": "Revolute"
+        },
+        "rb1_right_arm_shoulder_lift_joint": {
+            "id": 21,
+            "type": "Revolute"
+        },
+        "rb1_right_arm_elbow_joint": {
+            "id": 22,
+            "type": "Revolute"
+        },
+        "rb1_right_arm_wrist_1_joint": {
+            "id": 23,
+            "type": "Revolute"
+        },
+        "rb1_right_arm_wrist_2_joint": {
+            "id": 24,
+            "type": "Revolute"
+        },
+        "rb1_right_arm_wrist_3_joint": {
+            "id": 25,
+            "type": "Revolute"
+        },
+        "rb1_right_arm_ee_fixed_joint": {
+            "id": 26,
+            "type": "Fixed"
+        },
+        "rb1_right_arm_wrist_3_passive_joint": {
+            "id": 27,
+            "type": "Fixed"
+        },
+        "right_hand_base_joint": {
+            "id": 28,
+            "type": "Fixed"
+        },
+        "R_dummy_joint": {
+            "id": 29,
+            "type": "Fixed"
+        },
+        "R_thumb_MCP_joint1": {
+            "id": 30,
+            "type": "Revolute"
+        },
+        "R_thumb_MCP_joint2": {
+            "id": 31,
+            "type": "Revolute"
+        },
+        "R_thumb_PIP_joint": {
+            "id": 32,
+            "type": "Revolute"
+        },
+        "R_thumb_DIP_joint": {
+            "id": 33,
+            "type": "Revolute"
+        },
+        "R_index_MCP_joint": {
+            "id": 34,
+            "type": "Revolute"
+        },
+        "R_index_DIP_joint": {
+            "id": 35,
+            "type": "Revolute"
+        },
+        "R_middle_MCP_joint": {
+            "id": 36,
+            "type": "Revolute"
+        },
+        "R_middle_DIP_joint": {
+            "id": 37,
+            "type": "Revolute"
+        },
+        "R_ring_MCP_joint": {
+            "id": 38,
+            "type": "Revolute"
+        },
+        "R_ring_DIP_joint": {
+            "id": 39,
+            "type": "Revolute"
+        },
+        "R_pinky_MCP_joint": {
+            "id": 40,
+            "type": "Revolute"
+        },
+        "R_pinky_DIP_joint": {
+            "id": 41,
+            "type": "Revolute"
+        },
+        "rb1_right_arm_base_link-base_fixed_joint": {
+            "id": 42,
+            "type": "Fixed"
+        },
+        "rb1_torso_ur3_left_joint": {
+            "id": 43,
+            "type": "Fixed"
+        },
+        "rb1_left_arm_base_joint": {
+            "id": 44,
+            "type": "Fixed"
+        },
+        "rb1_left_arm_shoulder_pan_joint": {
+            "id": 45,
+            "type": "Revolute"
+        },
+        "rb1_left_arm_shoulder_lift_joint": {
+            "id": 46,
+            "type": "Revolute"
+        },
+        "rb1_left_arm_elbow_joint": {
+            "id": 47,
+            "type": "Revolute"
+        },
+        "rb1_left_arm_wrist_1_joint": {
+            "id": 48,
+            "type": "Revolute"
+        },
+        "rb1_left_arm_wrist_2_joint": {
+            "id": 49,
+            "type": "Revolute"
+        },
+        "rb1_left_arm_wrist_3_joint": {
+            "id": 50,
+            "type": "Revolute"
+        },
+        "rb1_left_arm_ee_fixed_joint": {
+            "id": 51,
+            "type": "Fixed"
+        },
+        "rb1_left_arm_wrist_3_passive_joint": {
+            "id": 52,
+            "type": "Fixed"
+        },
+        "left_hand_base_joint": {
+            "id": 53,
+            "type": "Fixed"
+        },
+        "L_dummy_joint": {
+            "id": 54,
+            "type": "Fixed"
+        },
+        "L_thumb_MCP_joint1": {
+            "id": 55,
+            "type": "Revolute"
+        },
+        "L_thumb_MCP_joint2": {
+            "id": 56,
+            "type": "Revolute"
+        },
+        "L_thumb_PIP_joint": {
+            "id": 57,
+            "type": "Revolute"
+        },
+        "L_thumb_DIP_joint": {
+            "id": 58,
+            "type": "Revolute"
+        },
+        "L_index_MCP_joint": {
+            "id": 59,
+            "type": "Revolute"
+        },
+        "L_index_DIP_joint": {
+            "id": 60,
+            "type": "Revolute"
+        },
+        "L_middle_MCP_joint": {
+            "id": 61,
+            "type": "Revolute"
+        },
+        "L_middle_DIP_joint": {
+            "id": 62,
+            "type": "Revolute"
+        },
+        "L_ring_MCP_joint": {
+            "id": 63,
+            "type": "Revolute"
+        },
+        "L_ring_DIP_joint": {
+            "id": 64,
+            "type": "Revolute"
+        },
+        "L_pinky_MCP_joint": {
+            "id": 65,
+            "type": "Revolute"
+        },
+        "L_pinky_DIP_joint": {
+            "id": 66,
+            "type": "Revolute"
+        },
+        "rb1_left_arm_base_link-base_fixed_joint": {
+            "id": 67,
+            "type": "Fixed"
+        },
+        "rb1_to_shoulder": {
+            "id": 68,
+            "type": "Fixed"
+        },
+        "shoulder_to_support_joint": {
+            "id": 69,
+            "type": "Revolute"
+        },
+        "support_joint_to_end": {
+            "id": 70,
+            "type": "Fixed"
+        },
+        "support_end_to_rgbd": {
+            "id": 71,
+            "type": "Fixed"
+        },
+        "rgbd_to_camera": {
+            "id": 72,
+            "type": "Fixed"
+        },
+        "rb1_torso_base_collision_joint": {
+            "id": 73,
+            "type": "Fixed"
+        },
+        "rb1_torso_chest_collision_joint": {
+            "id": 74,
+            "type": "Fixed"
+        },
+        "rb1_torso_shoulders_collision_joint": {
+            "id": 75,
+            "type": "Fixed"
+        }
+    },
+    "movable_joints": {
+        "rb1_right_wheel_joint": {
+            "dof_index": 0,
+            "joint_id": 3,
+            "type": "Revolute"
+        },
+        "rb1_left_wheel_joint": {
+            "dof_index": 1,
+            "joint_id": 4,
+            "type": "Revolute"
+        },
+        "rb1_omni_backwheel_joint": {
+            "dof_index": 2,
+            "joint_id": 5,
+            "type": "Revolute"
+        },
+        "rb1_omni_front_leftwheel_joint": {
+            "dof_index": 3,
+            "joint_id": 6,
+            "type": "Revolute"
+        },
+        "rb1_omni_front_rightwheel_joint": {
+            "dof_index": 4,
+            "joint_id": 7,
+            "type": "Revolute"
+        },
+        "rb1_right_arm_shoulder_pan_joint": {
+            "dof_index": 5,
+            "joint_id": 20,
+            "type": "Revolute"
+        },
+        "rb1_right_arm_shoulder_lift_joint": {
+            "dof_index": 6,
+            "joint_id": 21,
+            "type": "Revolute"
+        },
+        "rb1_right_arm_elbow_joint": {
+            "dof_index": 7,
+            "joint_id": 22,
+            "type": "Revolute"
+        },
+        "rb1_right_arm_wrist_1_joint": {
+            "dof_index": 8,
+            "joint_id": 23,
+            "type": "Revolute"
+        },
+        "rb1_right_arm_wrist_2_joint": {
+            "dof_index": 9,
+            "joint_id": 24,
+            "type": "Revolute"
+        },
+        "rb1_right_arm_wrist_3_joint": {
+            "dof_index": 10,
+            "joint_id": 25,
+            "type": "Revolute"
+        },
+        "R_thumb_MCP_joint1": {
+            "dof_index": 11,
+            "joint_id": 30,
+            "type": "Revolute"
+        },
+        "R_thumb_MCP_joint2": {
+            "dof_index": 12,
+            "joint_id": 31,
+            "type": "Revolute"
+        },
+        "R_thumb_PIP_joint": {
+            "dof_index": 13,
+            "joint_id": 32,
+            "type": "Revolute"
+        },
+        "R_thumb_DIP_joint": {
+            "dof_index": 14,
+            "joint_id": 33,
+            "type": "Revolute"
+        },
+        "R_index_MCP_joint": {
+            "dof_index": 15,
+            "joint_id": 34,
+            "type": "Revolute"
+        },
+        "R_index_DIP_joint": {
+            "dof_index": 16,
+            "joint_id": 35,
+            "type": "Revolute"
+        },
+        "R_middle_MCP_joint": {
+            "dof_index": 17,
+            "joint_id": 36,
+            "type": "Revolute"
+        },
+        "R_middle_DIP_joint": {
+            "dof_index": 18,
+            "joint_id": 37,
+            "type": "Revolute"
+        },
+        "R_ring_MCP_joint": {
+            "dof_index": 19,
+            "joint_id": 38,
+            "type": "Revolute"
+        },
+        "R_ring_DIP_joint": {
+            "dof_index": 20,
+            "joint_id": 39,
+            "type": "Revolute"
+        },
+        "R_pinky_MCP_joint": {
+            "dof_index": 21,
+            "joint_id": 40,
+            "type": "Revolute"
+        },
+        "R_pinky_DIP_joint": {
+            "dof_index": 22,
+            "joint_id": 41,
+            "type": "Revolute"
+        },
+        "rb1_left_arm_shoulder_pan_joint": {
+            "dof_index": 23,
+            "joint_id": 45,
+            "type": "Revolute"
+        },
+        "rb1_left_arm_shoulder_lift_joint": {
+            "dof_index": 24,
+            "joint_id": 46,
+            "type": "Revolute"
+        },
+        "rb1_left_arm_elbow_joint": {
+            "dof_index": 25,
+            "joint_id": 47,
+            "type": "Revolute"
+        },
+        "rb1_left_arm_wrist_1_joint": {
+            "dof_index": 26,
+            "joint_id": 48,
+            "type": "Revolute"
+        },
+        "rb1_left_arm_wrist_2_joint": {
+            "dof_index": 27,
+            "joint_id": 49,
+            "type": "Revolute"
+        },
+        "rb1_left_arm_wrist_3_joint": {
+            "dof_index": 28,
+            "joint_id": 50,
+            "type": "Revolute"
+        },
+        "L_thumb_MCP_joint1": {
+            "dof_index": 29,
+            "joint_id": 55,
+            "type": "Revolute"
+        },
+        "L_thumb_MCP_joint2": {
+            "dof_index": 30,
+            "joint_id": 56,
+            "type": "Revolute"
+        },
+        "L_thumb_PIP_joint": {
+            "dof_index": 31,
+            "joint_id": 57,
+            "type": "Revolute"
+        },
+        "L_thumb_DIP_joint": {
+            "dof_index": 32,
+            "joint_id": 58,
+            "type": "Revolute"
+        },
+        "L_index_MCP_joint": {
+            "dof_index": 33,
+            "joint_id": 59,
+            "type": "Revolute"
+        },
+        "L_index_DIP_joint": {
+            "dof_index": 34,
+            "joint_id": 60,
+            "type": "Revolute"
+        },
+        "L_middle_MCP_joint": {
+            "dof_index": 35,
+            "joint_id": 61,
+            "type": "Revolute"
+        },
+        "L_middle_DIP_joint": {
+            "dof_index": 36,
+            "joint_id": 62,
+            "type": "Revolute"
+        },
+        "L_ring_MCP_joint": {
+            "dof_index": 37,
+            "joint_id": 63,
+            "type": "Revolute"
+        },
+        "L_ring_DIP_joint": {
+            "dof_index": 38,
+            "joint_id": 64,
+            "type": "Revolute"
+        },
+        "L_pinky_MCP_joint": {
+            "dof_index": 39,
+            "joint_id": 65,
+            "type": "Revolute"
+        },
+        "L_pinky_DIP_joint": {
+            "dof_index": 40,
+            "joint_id": 66,
+            "type": "Revolute"
+        },
+        "shoulder_to_support_joint": {
+            "dof_index": 41,
+            "joint_id": 69,
+            "type": "Revolute"
+        }
+    }
+}
