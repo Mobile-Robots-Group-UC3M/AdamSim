@@ -5,8 +5,7 @@ from trajectory_msgs.msg import JointTrajectory, JointTrajectoryPoint
 import pybullet as p
 import time
 
-
-from inspire_hand.srv import * # this is the compiled service of the robotic hand with catkin_make
+from inspire_hand.srv import *
 
 
 class ROSConnection:
@@ -37,12 +36,7 @@ class ROSConnection:
         self.hand_timer = rospy.Timer(rospy.Duration(0.02), self.hand_services_callback)
         self.real_to_sim_timer = rospy.Timer(rospy.Duration(1/120), self.real_to_sim)
         
-        
-        self.real_to_sim_timer = rospy.Timer(rospy.Duration(1/120), self.real_to_sim)
-        self.hand_timer = rospy.Timer(rospy.Duration(0.02), self.hand_services_callback)
-        
-        
-        
+               
     def send_velocity(self, linear_speed=0.0, angular_speed=0.0):
         '''
         Send velocity commands to the robot's base.
@@ -193,17 +187,15 @@ class ROSConnection:
             arm (str): The arm to get the joint angles for ('left' or 'right').
         '''
         
-        service_get_angle_act = f'/robot/{arm}/inspire_hand/get_angle_set'
+        service_get_angle_act = f'/robot/{arm}/inspire_hand/get_angle_act'
         
         rospy.wait_for_service(service_get_angle_act)
-
+        
         try:
-            get_angle_set_service = rospy.ServiceProxy(service_get_angle_act, get_angle_set)
-            response = get_angle_set_service()
+            get_angle_act_service = rospy.ServiceProxy(service_get_angle_act, get_angle_act)
+            response = get_angle_act_service()
 
-            #print(f"Joint angles in {arm} arm from service:", list(response.curangle))
-
-            dofs = list(response.setangle)
+            dofs = list(response.curangle)
 
             # Store the latest hand dof states
             self.latest_hand_dof_states[arm] = dofs
@@ -244,7 +236,7 @@ class ROSConnection:
         '''
         Callback function for calling the hands services periodically.
         '''
-
+        
         self.call_get_angle_act('left')
         self.call_get_angle_act('right')
 

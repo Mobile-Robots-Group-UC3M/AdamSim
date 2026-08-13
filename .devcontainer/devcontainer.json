@@ -1,0 +1,35 @@
+{
+  "name": "AdamSim ROS Noetic (NVIDIA)",
+  "build": {
+    "dockerfile": "../Dockerfile"
+  },
+  "workspaceFolder": "/workspace",
+  "workspaceMount": "source=${localWorkspaceFolder},target=/workspace,type=bind",
+  
+  "runArgs": [
+    "--net=host",
+    "--ipc=host",
+    "--gpus=all",
+    "-e", "DISPLAY=${env:DISPLAY}",
+    "-v", "/tmp/.X11-unix:/tmp/.X11-unix:rw",
+    "-e", "__NV_PRIME_RENDER_OFFLOAD=1",
+    "-e", "__GLX_VENDOR_LIBRARY_NAME=nvidia",
+    "-e", "NVIDIA_VISIBLE_DEVICES=all",
+    "-e", "NVIDIA_DRIVER_CAPABILITIES=graphics,utility,compute"
+  ],
+  "containerEnv": {
+    "ROS_MASTER_URI": "http://localhost:11311",
+    "ROS_IP": "127.0.0.1"
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-iot.vscode-ros",
+        "ms-vscode.cpptools",
+        "ms-python.python",
+        "redhat.vscode-yaml"
+      ]
+    }
+  },
+  "postCreateCommand": "bash -c 'rosdep update && if [ -d /workspace/catkin_ws/src ]; then rosdep install --from-paths /workspace/catkin_ws/src --ignore-src -r -y; fi'"
+}

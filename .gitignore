@@ -1,8 +1,20 @@
-#Ignorar archivos/carpeta de instalación de Python
+# Python build and cache artifacts
 *.egg-info/
 *.egg
 *.pyc
 __pycache__/
+build/
+dist/
 
-# Configs de VSCode (si usas VSCode)
+# IDE / Editor configs (track .devcontainer, ignore local workspace settings)
 .vscode/
+
+# ROS / Catkin build outputs (keep source code in catkin_ws/src, ignore compiled binaries)
+catkin_ws/build/
+catkin_ws/devel/
+catkin_ws/logs/
+catkin_ws/.catkin_tools/
+catkin_ws/.catkin_workspace
+
+# OS generated files
+.DS_Store
