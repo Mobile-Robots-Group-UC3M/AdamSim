@@ -1,6 +1,5 @@
 import pybullet as p
 import numpy as np
-import math
 
 
 #Class for the sliders
@@ -35,7 +34,7 @@ class Teleop():
         # Crear sliders para las articulaciones del brazo izquierdo
         for arm in ['left', 'right']:
             for i in range(self.adam.hand_kinematics.num_dofs):
-                joint_name = self.adam.hand_kinematics.finger_names[i]
+                joint_name = self.adam.hand_kinematics.joint_names[i]
                 self.slider_ids.append(p.addUserDebugParameter(arm + ' ' + joint_name, 0, 1000, 0))
 
         self.slider_ids.append(p.addUserDebugParameter('Camera joint', -45, 45, 0))

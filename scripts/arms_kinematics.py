@@ -196,7 +196,7 @@ class ArmsKinematics:
                 # Check if collision is detected
                 self.adam.detect_autocollisions()
 
-                self.move_arm_to_pose(arm, poses_arm1, target_link=target_link, accurate=accurate, threshold=threshold)
+                self.move_arm_to_pose_continuous(arm, pose, target_link=target_link, accurate=accurate, threshold=threshold)
 
                 # Avanzar la simulación para que los movimientos se apliquen
                 if not self.adam.useRealTimeSimulation:
@@ -213,8 +213,8 @@ class ArmsKinematics:
                 # Check if collision is detected
                 self.adam.detect_autocollisions()
                 
-                self.move_arm_to_pose('right', pose_right, target_link=target_link, accurate=accurate, threshold=threshold)
-                self.move_arm_to_pose('left', pose_left, target_link=target_link, accurate=accurate, threshold=threshold)
+                self.move_arm_to_pose_continuous('right', pose_right, target_link=target_link, accurate=accurate, threshold=threshold)
+                self.move_arm_to_pose_continuous('left', pose_left, target_link=target_link, accurate=accurate, threshold=threshold)
 
                 # Avanzar la simulación para que los movimientos se apliquen
                 self.adam.wait(1)

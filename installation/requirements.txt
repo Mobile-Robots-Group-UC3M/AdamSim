@@ -3,3 +3,5 @@ numpy~=1.24.0
 urdf-parser-py
 pillow
 scipy
+rospkg
+pandas
