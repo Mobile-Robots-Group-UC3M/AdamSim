@@ -5,6 +5,7 @@ from scripts.arms_dynamics import ArmsDynamics
 from scripts.teleoperation import Teleop
 from scripts.arms_kinematics import ArmsKinematics
 from scripts.hands_kinematics import HandsKinematics
+from scripts.grippers import Grippers
 from scripts.sensors import Sensors
 from scripts.navigation import Navigation
 from scripts.planner import Planner
@@ -17,69 +18,86 @@ import os
 
 # Class for ADAM robot
 class ADAM:
-    def __init__(self, urdf_path=None, info_json_path=None, semantic_json_path=None, hand_json_path=None, useRealTimeSimulation=True, used_fixed_base=True, use_ros=True):
+    def __init__(self,
+                urdf_path=None,                  
+                use_realtime=True, 
+                use_fixed_base=True, 
+                use_ros=True,
+                use_plane=True,
+                end_effector = "inspire_hands", # Option 2: "grippers"
+                info_json_path = None, 
+                semantic_json_path = None,
+                hand_json_path = None):
         
         #Load JSON files
-        
         base_path = os.path.dirname(__file__)
         self.robot_pkg_path = os.path.join(base_path, "..", "models", "robot", "rb1_base_description")
         self.config_dir = os.path.join(self.robot_pkg_path, "config")
 
         # URDF Path
-        if urdf_path is None: self.urdf_path = os.path.join(self.robot_pkg_path, "robots", "robotDummy.urdf")
+        if urdf_path is None: self.urdf_path = os.path.join(self.robot_pkg_path, "robots", f"adam_{end_effector}.urdf")
         else: self.urdf_path = urdf_path
 
         # JSON Config Paths
-        if info_json_path is None: self.info_json_path = os.path.join(self.config_dir, "robot_info.json")
+        if info_json_path is None: self.info_json_path = os.path.join(self.config_dir, f"robot_info_{end_effector}.json")
         else: self.info_json_path = info_json_path
 
-        if semantic_json_path is None: self.semantic_json_path = os.path.join(self.config_dir, "semantic_groups.json")
+        if semantic_json_path is None: self.semantic_json_path = os.path.join(self.config_dir, f"semantic_groups_{end_effector}.json")
         else: self.semantic_json_path = semantic_json_path
 
-        if hand_json_path is None: self.hand_json_path = os.path.join(self.config_dir, "hand_kinematics.json")
-        else: self.hand_json_path = hand_json_path
         
         # Load environment
         self.physicsClient = p.connect(p.GUI)
         p.setAdditionalSearchPath(pybullet_data.getDataPath())
         p.setGravity(0, 0, -9.81)
-        if useRealTimeSimulation: p.setRealTimeSimulation(1)
+        if use_realtime: p.setRealTimeSimulation(1)
         else: p.setRealTimeSimulation(0)
 
         # Load world plane
-        self.plane_id = p.loadURDF("plane.urdf")
+        if use_plane: self.plane_id = p.loadURDF("plane.urdf")
         p.setPhysicsEngineParameter(enableConeFriction=1)
         
 
         # Spawn ADAM robot model
-        self.robot_id = p.loadURDF(self.urdf_path, useFixedBase=used_fixed_base, flags=p.URDF_USE_SELF_COLLISION)
-        
-        
+        self.robot_id = p.loadURDF(self.urdf_path, useFixedBase=use_fixed_base, flags=p.URDF_USE_SELF_COLLISION)
+
 
         # Change simulation mode
-        self.useRealTimeSimulation = useRealTimeSimulation
+        self.use_realtime = use_realtime
         self.use_ros = use_ros
         self.t = 0.01
 
+
         # Load indices from JSON
+        if not os.path.exists(self.info_json_path):
+            print(f"[INFO] '{self.info_json_path}' not found. Auto-generating from loaded URDF...")
+            self.print_robot_info(save=True, filename=self.info_json_path)
+
         self._load_dynamic_indices()
-        
-        
         
         
         # ADAM MODULES
         self.arm_dynamics = ArmsDynamics(self)
         self.arm_kinematics = ArmsKinematics(self)
-        self.hand_kinematics = HandsKinematics(self)
-        if not used_fixed_base: self.navigation = Navigation(self)
+        self.planner = Planner(self)
+        self.environments = Environment(self)
         self.teleop = Teleop(self)
         self.sensors = Sensors(self)
         self.utils = Utils(self)
+
+        if not use_fixed_base: 
+            self.navigation = Navigation(self)
+
+        if end_effector == "inspire_hands":
+            if hand_json_path is None: self.hand_json_path = os.path.join(self.config_dir, f"hand_kinematics_{end_effector}.json")
+            else: self.hand_json_path = hand_json_path
+            self.hand_kinematics = HandsKinematics(self)
+        elif end_effector == "grippers":
+            self.grippers = Grippers(self)
+        
         if use_ros: 
             from scripts.ros_connection import ROSConnection
             self.ros = ROSConnection(self)     
-        self.planner = Planner(self)
-        self.environments = Environment(self)
         
         
         # Null space definition
@@ -123,7 +141,7 @@ class ADAM:
         Sleeps for adam.t using rospy if enabled.
         '''
 
-        if not self.useRealTimeSimulation: p.stepSimulation()
+        if not self.use_realtime: p.stepSimulation()
 
         if self.use_ros: self.ros.sleep()
         else: time.sleep(self.t)
@@ -137,7 +155,7 @@ class ADAM:
         iter = round(secs / self.t, 0)
 
         if self.use_ros:
-            if not self.useRealTimeSimulation:
+            if not self.use_realtime:
                 for _ in range(iter):
                     p.stepSimulation()
                     self.ros.sleep()
@@ -146,8 +164,9 @@ class ADAM:
                     self.ros.sleep()
         else:
             for _ in range(int(iter)):
-                if not self.useRealTimeSimulation: p.stepSimulation()
+                if not self.use_realtime: p.stepSimulation()
                 time.sleep(self.t) """
+
     def wait(self, secs, callback_func=None):
         '''
         Wait for specified time in seconds. 
@@ -156,7 +175,7 @@ class ADAM:
         iter = round(secs / self.t, 0)
 
         if self.use_ros:
-            if not self.useRealTimeSimulation:
+            if not self.use_realtime:
                 for _ in range(int(iter)):
                     p.stepSimulation()
                     if callback_func: callback_func() 
@@ -167,7 +186,7 @@ class ADAM:
                     self.ros.sleep()
         else:
             for _ in range(int(iter)):
-                if not self.useRealTimeSimulation: 
+                if not self.use_realtime: 
                     p.stepSimulation()
                 
                 if callback_func: 
@@ -217,7 +236,6 @@ class ADAM:
                 if contact_points:
                     self.collision_right = True
                     print('Collision in link:', right_joint)
-
 
         return self.collision_left, self.collision_right
     
@@ -335,12 +353,15 @@ class ADAM:
 
         # --- SAVE TO JSON ---
         if save:
-            
-            save_path = os.path.join(self.config_dir, filename)
+            # If 'filename' is already an absolute/full path, use it directly; otherwise join with config_dir
+            if os.path.isabs(filename):
+                save_path = filename
+            else:
+                save_path = os.path.join(self.config_dir, filename)
 
             with open(save_path, "w", encoding="utf-8") as f:
                 json.dump(robot_data, f, indent=4)
-            print(f"\n[INFO] Robot structure successfully saved to '{filename}'.")
+            print(f"\n[INFO] Robot structure successfully saved to '{save_path}'.")
 
     def _load_dynamic_indices(self):
         '''
@@ -417,7 +438,7 @@ class ADAM:
         self.camera_joint_index = robot_info["joints"][semantics["special_links"]["camera_joint"]]["id"]
         self.camera_link_index = robot_info["links"][semantics["special_links"]["camera_link"]]["id"]
         self.laser_link_index = robot_info["links"][semantics["special_links"]["laser_link"]]["id"]
-        print("camera_joint_index", self.camera_joint_index)
-        print("camera_link_index", self.camera_link_index)
-        print("laser_link_index", self.laser_link_index)
+        # print("camera_joint_index", self.camera_joint_index)
+        # print("camera_link_index", self.camera_link_index)
+        # print("laser_link_index", self.laser_link_index)
 

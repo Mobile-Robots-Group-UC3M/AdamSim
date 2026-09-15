@@ -21,8 +21,6 @@
   <!-- *************** -->
   <!-- Here we create the robot elements using the xacro:macros imported at the beggining of this file -->
 
-
-
   <link name="rb1_base_footprint">
     <inertial>
       <mass value="1.0"/>
@@ -157,12 +155,6 @@
       <origin rpy="1.5707963267948966 0 0" xyz="0 0 0"/>
       <inertia ixx="0.0014960833333333334" ixy="0" ixz="0" iyy="0.0014960833333333334" iyz="0" izz="0.002888"/>
     </inertial>
-    <contact>
-      <lateral_friction value="1.0"/>
-      <rolling_friction value="0.0"/>
-      <stiffness value="30000000"/>
-      <damping value="1000"/>
-    </contact>
   </link>
   <joint name="rb1_right_wheel_joint" type="continuous">
     <parent link="rb1_base_link"/>
@@ -192,12 +184,6 @@
       <origin rpy="1.5707963267948966 0 0" xyz="0 0 0"/>
       <inertia ixx="0.0014960833333333334" ixy="0" ixz="0" iyy="0.0014960833333333334" iyz="0" izz="0.002888"/>
     </inertial>
-    <contact>
-      <lateral_friction value="1.0"/>
-      <rolling_friction value="0.0"/>
-      <stiffness value="30000000"/>
-      <damping value="1000"/>
-    </contact>
   </link>
   <joint name="rb1_left_wheel_joint" type="continuous">
     <parent link="rb1_base_link"/>
@@ -234,12 +220,6 @@
       <inertia ixx="0.00023507499999999998" ixy="0" ixz="0" iyy="0.00023507499999999998" iyz="0" izz="0.0003901499999999999"/>
       <!-- inertia  ixx="0.001" ixy="0.0"  ixz="0.0"  iyy="0.001"  iyz="0.0"  izz="0.001" / -->
     </inertial>
-    <contact>
-      <lateral_friction value="0.0"/>
-      <rolling_friction value="0.0"/>
-      <stiffness value="30000000"/>
-      <damping value="1000"/>
-    </contact>
   </link>
   <!-- joint name="joint_${name}_wheel" type="continuous" -->
   <joint name="rb1_omni_backwheel_joint" type="continuous">
@@ -277,12 +257,6 @@
       <inertia ixx="0.00023507499999999998" ixy="0" ixz="0" iyy="0.00023507499999999998" iyz="0" izz="0.0003901499999999999"/>
       <!-- inertia  ixx="0.001" ixy="0.0"  ixz="0.0"  iyy="0.001"  iyz="0.0"  izz="0.001" / -->
     </inertial>
-    <contact>
-      <lateral_friction value="0.0"/>
-      <rolling_friction value="0.0"/>
-      <stiffness value="30000000"/>
-      <damping value="1000"/>
-    </contact>
   </link>
   <joint name="rb1_omni_front_leftwheel_joint" type="continuous">
     <parent link="rb1_base_link"/>
@@ -319,12 +293,6 @@
       <inertia ixx="0.00023507499999999998" ixy="0" ixz="0" iyy="0.00023507499999999998" iyz="0" izz="0.0003901499999999999"/>
       <!-- inertia  ixx="0.001" ixy="0.0"  ixz="0.0"  iyy="0.001"  iyz="0.0"  izz="0.001" / -->
     </inertial>
-    <contact>
-      <lateral_friction value="0.0"/>
-      <rolling_friction value="0.0"/>
-      <stiffness value="30000000"/>
-      <damping value="1000"/>
-    </contact>
   </link>
   <joint name="rb1_omni_front_rightwheel_joint" type="continuous">
     <parent link="rb1_base_link"/>
@@ -1188,7 +1156,7 @@
                  not corrected wrt the real robot (ie: rotated over 180
                  degrees)
       -->
-    <origin rpy="0 0 -3.141592653589793" xyz="0 0 0"/>
+    <origin rpy="0 0 -3.141592653589793" xyz="0 0 0"/>0
     <parent link="rb1_left_arm_base_link"/>
     <child link="rb1_left_arm_base"/>
   </joint>
@@ -1207,866 +1175,854 @@
   </joint>
   <!--link name="world"/-->
   
-  <!--joint name="rb1_left_arm_hand_joint" type="fixed">
+  <joint name="rb1_left_arm_hand_joint" type="fixed">
     <parent link="rb1_left_arm_tool0"/>
-    <child link="R_hand_base_link"/>
-    <origin rpy="0 0 0" xyz="0.0 0.0 0.0"/>
+    <child link="left_gripper_base_link"/>
+    <origin rpy="0 0 0" xyz="0.0 0.0 0"/> <!-- 0.02 -->
   </joint>
   <joint name="rb1_right_arm_hand_joint" type="fixed">
     <parent link="rb1_right_arm_tool0"/>
-    <child link="L_hand_base_link"/>
-    <origin rpy="0 0 0" xyz="0.0 0.0 0.0"/>
-  </joint-->
+    <child link="right_gripper_base_link"/>
+    <origin rpy="0 0 0" xyz="0.0 0.0 0"/> <!-- 0.02 -->
+  </joint>
 
-
-  <!-- INSPIRE HANDS. Parte manos roboticas-->
-  <link name="R_hand_base_link">
+  <!-- DUCK GRIPPER. Parte pinzas roboticas-->
+  <!-- Right gripper-->
+  <link name="right_gripper_base_link">
     <inertial>
-      <origin rpy="0 0 0" xyz="-0.076223 -0.01701 0.24616"/>
-      <mass value="0.14143"/>
-      <inertia ixx="7.6663E-05" ixy="1.6551E-06" ixz="1.7709E-06" iyy="8.3832E-05" iyz="-2.1711E-06" izz="0.00012281"/>
+        <origin xyz="0.0006657295146249247 0.000675185676335238 0.01751786844837327" rpy="0 0 0"/>
+        <mass value="6.165375582670241e-07"/>
+        <inertia ixx="0.0" iyy="0.0" izz="0.0" ixy="0.0" iyz="0.0" ixz="0.0"/>
     </inertial>
     <visual>
-      <origin rpy="0 0 0" xyz="0.0783 0.2488 0.08306"/>
-      <!--origin rpy="0 0 0" xyz="0 0 0"/-->
-      <geometry>
-        <mesh filename="package://inspire_hands/inspire_hand_r/meshes/R_hand_base_link.STL"/>
-      </geometry>
-      <material name="">
-        <color rgba="1 1 1 1"/>
-      </material>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+        <mesh filename="package://models/robot/grippers/meshes/base_link.stl" scale="0.001 0.001 0.001"/> 
+        </geometry>
+        <material name=""/>
     </visual>
-    <collision>
-      <origin rpy="0 0 0" xyz="0.0783 0.2488 0.08306"/>
-      <!--origin rpy="0 0 0" xyz="0 0 0"/-->
-      <geometry>
-        <mesh filename="package://inspire_hands/inspire_hand_r/meshes/R_hand_base_link.STL"/>
-      </geometry>
-    </collision>
+    <!-- <collision>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+        <mesh filename="package://models/robot/grippers/meshes/base_link.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+    </collision> -->
   </link>
 
-  <link name="R_dummy_link">
+  <link name="right_gripper_chasis">
+    <inertial>
+        <origin xyz="-0.0019147508420116906 -0.0011680011828384225 0.03565732725751325" rpy="0 0 0"/>
+        <mass value="0.7358895650337893"/>
+        <inertia ixx="0.001408" iyy="0.000712" izz="0.000855" ixy="2e-06" iyz="4e-06" ixz="1.5e-05"/>
+    </inertial>
+    <visual>
+        <origin xyz="-0.000666 -0.000675 -0.017568" rpy="0 0 0"/>
+        <geometry>
+        <mesh filename="package://models/robot/grippers/meshes/Chasis_Nuevo_v1_1_1_1.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="Black">
+          <color rgba="0.0 0.0 0.0 1.0"/>
+        </material>
+    </visual>
+  </link>
+
+  <link name="right_gripper_right_guia">
+    <inertial>
+        <origin xyz="-0.004346965370210315 -0.03999981432366625 -1.3155171983691982e-07" rpy="0 0 0"/>
+        <mass value="0.061978529347409946"/>
+        <inertia ixx="5.2e-05" iyy="1e-06" izz="5.2e-05" ixy="0.0" iyz="-0.0" ixz="-0.0"/>
+    </inertial>
+    <visual>
+        <origin xyz="0.005684 -0.040675 -0.107568" rpy="0 0 0"/>
+        <geometry>
+        <mesh filename="package://models/robot/grippers/meshes/GuíaRight_1.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="Silver">
+          <color rgba="0.7725490196078432 0.788235294117647 0.7803921568627451 1.0"/>
+        </material>
+    </visual>
+  </link>
+
+  <link name="right_gripper_right_pieza_movil">
+    <inertial>
+        <origin xyz="0.1020822423794868 -0.005663903597295995 0.014692420354248753" rpy="0 0 0"/>
+        <mass value="0.026073243412509224"/>
+        <inertia ixx="3e-06" iyy="1e-06" izz="2e-06" ixy="0.0" iyz="0.0" ixz="0.0"/>
+    </inertial>
+    <visual>
+        <origin xyz="0.117752 -0.04135 -0.092884" rpy="0 0 0"/>
+        <geometry>
+        <mesh filename="package://models/robot/grippers/meshes/PiezaMovilRight_1.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="Black">
+          <color rgba="0.0 0.0 0.0 1.0"/>
+        </material>
+    </visual>
+  </link>
+
+  <link name="right_gripper_left_guia">
+    <inertial>
+        <origin xyz="0.0043464243993540305 0.04000018567633391 -1.3155153362476302e-07" rpy="0 0 0"/>
+        <mass value="0.061978529347409946"/>
+        <inertia ixx="5.2e-05" iyy="1e-06" izz="5.2e-05" ixy="-0.0" iyz="0.0" ixz="-0.0"/>
+    </inertial>
+    <visual>
+        <origin xyz="-0.007016 0.039325 -0.107568" rpy="0 0 0"/>
+        <geometry>
+        <mesh filename="package://models/robot/grippers/meshes/GuíaLeft_v1_1.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="Silver">
+          <color rgba="0.7725490196078432 0.788235294117647 0.7803921568627451 1.0"/>
+        </material>
+    </visual>
+  </link>
+
+  <link name="right_gripper_left_pieza_movil">
+    <inertial>
+        <origin xyz="-0.10208278335034306 0.004336096402704229 0.01600731654249779" rpy="0 0 0"/>
+        <mass value="0.026073243412509224"/>
+        <inertia ixx="3e-06" iyy="1e-06" izz="2e-06" ixy="-0.0" iyz="-0.0" ixz="0.0"/>
+    </inertial>
+    <visual>
+        <origin xyz="-0.119084 0.03865 -0.091552" rpy="0 0 0"/>
+        <geometry>
+        <mesh filename="package://models/robot/grippers/meshes/PiezaMovilLeft_1.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="Black">
+          <color rgba="0.0 0.0 0.0 1.0"/>
+        </material>
+    </visual>
+  </link>
+
+  <link name="right_gripper_servo">
   <inertial>
-    <origin rpy="0 0 0" xyz="-0.076223 -0.01701 0.24616"/>
-    <mass value="0.0"/> <!-- Masa 0, ya que es un dummy link -->
-    <inertia ixx="7.6663E-05" ixy="1.6551E-06" ixz="1.7709E-06" iyy="8.3832E-05" iyz="-2.1711E-06" izz="0.00012281"/>
+    <origin xyz="-0.005078505440639656 0.023444038025010997 -0.008716020374451572" rpy="0 0 0"/>
+    <mass value="0.027068171992842262"/>
+    <inertia ixx="6e-06" iyy="4e-06" izz="4e-06" ixy="0.0" iyz="0.0" ixz="0.0"/>
   </inertial>
-  <visual>
-    <origin rpy="0 0 0" xyz="0 0 0"/>
-    <geometry>
-      <box size="0.01 0.01 0.01"/> <!-- Tamaño pequeño solo para visualización -->
-    </geometry>
-    <material name="">
-      <color rgba="0.5 0.5 0.5 1"/>
-    </material>
-  </visual>
-  <collision>
-    <origin rpy="0 0 0" xyz="0 0 0"/>
-    <geometry>
-      <box size="0.01 0.01 0.01"/> <!-- Tamaño pequeño solo para visualización -->
-    </geometry>
-  </collision>
   </link>
 
-  <joint name="R_dummy_joint" type="fixed">
-    <parent link="R_hand_base_link"/>
-    <child link="R_dummy_link"/>
-    <origin rpy="0 0 0" xyz="0 0 0.1"/> <!-- Desplazado 10 cm en Z respecto al R_hand_base_link -->
-  </joint>
-
-
-  <link name="R_thumb_proximal_base">
-    <inertial>
-      <origin rpy="0 0 0" xyz="-0.0048772 -0.010163 0.00044069"/>
-      <mass value="0.0018869"/>
-      <inertia ixx="5.2002E-08" ixy="4.8353E-09" ixz="-6.6441E-09" iyy="6.7433E-08" iyz="5.4472E-10" izz="8.5319E-08"/>
-    </inertial>
-    <visual>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
-      <geometry>
-        <mesh filename="package://inspire_hands/inspire_hand_r/meshes/R_thumb_proximal_base.STL"/>
-      </geometry>
-      <material name="">
-        <color rgba="1 1 1 1"/>
-      </material>
-    </visual>
-    <collision>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
-      <geometry>
-        <mesh filename="package://inspire_hands/inspire_hand_r/meshes/R_thumb_proximal_base.STL"/>
-      </geometry>
-    </collision>
-  </link>
-  <joint name="R_thumb_MCP_joint1" type="revolute">
-    <origin rpy="1.5708 0 -0.48289" xyz="-0.020333 0.01707 0.071696"/>
-    <!--origin rpy="1.5708 0 -0.28289" xyz="-0.098633 -0.23173 -0.011364"/-->
-    <parent link="R_hand_base_link"/>
-    <child link="R_thumb_proximal_base"/>
-    <axis xyz="0 -1 0"/>
-    <limit effort="50" lower="0" upper="1.1" velocity="1"/>
-    <!--limit effort="50" lower="0.2" upper="1.3" velocity="1"/-->
-  </joint>
-  <link name="R_thumb_proximal">
-    <inertial>
-      <origin rpy="0 0 0" xyz="-3.8592E-05 0.02533 -0.0017007"/>
-      <mass value="0.0066075"/>
-      <inertia ixx="2.786E-06" ixy="1.673E-10" ixz="-1.3436E-09" iyy="8.9422E-07" iyz="-2.1394E-07" izz="2.4097E-06"/>
-    </inertial>
-    <visual>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
-      <geometry>
-        <mesh filename="package://inspire_hands/inspire_hand_r/meshes/R_thumb_proximal.STL"/>
-      </geometry>
-      <material name="">
-        <color rgba="1 1 1 1"/>
-      </material>
-    </visual>
-    <collision>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
-      <geometry>
-        <mesh filename="package://inspire_hands/inspire_hand_r/meshes/R_thumb_proximal.STL"/>
-      </geometry>
-    </collision>
-  </link>
-  <joint name="R_thumb_MCP_joint2" type="revolute">
-    <origin rpy="-0.82401 1.5708 0" xyz="-0.0115 -0.011843 0"/>
-    <!--origin rpy="0.97599 1.5708 0" xyz="-0.0115 -0.011843 0"/-->
-    <parent link="R_thumb_proximal_base"/>
-    <child link="R_thumb_proximal"/>
-    <axis xyz="1 0 0"/>
-    <!--axis xyz="-1 0 0"/-->
-    <limit effort="50" lower="0" upper="0.5" velocity="1"/>
-    <!--limit effort="50" lower="1.3" upper="1.8" velocity="1"/-->
-  </joint>
-  <link name="R_thumb_intermediate">
-    <inertial>
-      <origin rpy="0 0 0" xyz="2.8437E-07 0.0072526 -0.0064293"/>
-      <mass value="0.0037847"/>
-      <inertia ixx="4.6531E-07" ixy="-3.454E-12" ixz="3.4344E-12" iyy="2.6858E-07" iyz="-6.414E-08" izz="4.2517E-07"/>
-    </inertial>
-    <visual>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
-      <geometry>
-        <mesh filename="package://inspire_hands/inspire_hand_r/meshes/R_thumb_intermediate.STL"/>
-      </geometry>
-      <material name="">
-        <color rgba="1 1 1 1"/>
-      </material>
-    </visual>
-    <collision>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
-      <geometry>
-        <mesh filename="package://inspire_hands/inspire_hand_r/meshes/R_thumb_intermediate.STL"/>
-      </geometry>
-    </collision>
-  </link>
-  <joint name="R_thumb_PIP_joint" type="revolute">
-    <origin rpy="-0.038299 0 0" xyz="0 0.055863 0.0039241"/>
-    <parent link="R_thumb_proximal"/>
-    <child link="R_thumb_intermediate"/>
-    <axis xyz="1 0 0"/>
-    <limit effort="50" lower="0" upper="1" velocity="1"/>
-  </joint>
-  <link name="R_thumb_distal">
-    <inertial>
-      <origin rpy="0 0 0" xyz="-3.3054E-06 0.010511 -0.00057863"/>
-      <mass value="0.0033441"/>
-      <inertia ixx="2.0026E-07" ixy="-1.4303E-10" ixz="-5.6945E-11" iyy="8.711E-08" iyz="-2.4416E-08" izz="1.8974E-07"/>
-    </inertial>
-    <visual>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
-      <geometry>
-        <mesh filename="package://inspire_hands/inspire_hand_r/meshes/R_thumb_distal.STL"/>
-      </geometry>
-      <material name="">
-        <color rgba="1 1 1 1"/>
-      </material>
-    </visual>
-    <collision>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
-      <geometry>
-        <mesh filename="package://inspire_hands/inspire_hand_r/meshes/R_thumb_distal.STL"/>
-      </geometry>
-    </collision>
-  </link>
-  <joint name="R_thumb_DIP_joint" type="revolute">
-    <origin rpy="-0.011642 0 0" xyz="0 0.022558 -0.0020717"/>
-    <parent link="R_thumb_intermediate"/>
-    <child link="R_thumb_distal"/>
-    <axis xyz="1 0 0"/>
-    <limit effort="50" lower="0" upper="1.2" velocity="1"/>
-  </joint>
-  <link name="R_index_proximal">
-    <inertial>
-      <origin rpy="0 0 0" xyz="0.0099008 0.011884 0.0016958"/>
-      <mass value="0.0042403"/>
-      <inertia ixx="6.9398E-07" ixy="-4.4846E-12" ixz="-3.0248E-12" iyy="2.3039E-07" iyz="-9.1779E-08" izz="6.434E-07"/>
-    </inertial>
-    <visual>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
-      <geometry>
-        <mesh filename="package://inspire_hands/inspire_hand_r/meshes/R_index_proximal.STL"/>
-      </geometry>
-      <material name="">
-        <color rgba="1 1 1 1"/>
-      </material>
-    </visual>
-    <collision>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
-      <geometry>
-        <mesh filename="package://inspire_hands/inspire_hand_r/meshes/R_index_proximal.STL"/>
-      </geometry>
-    </collision>
-  </link>
-  <joint name="R_index_MCP_joint" type="revolute">
-    <origin rpy="1.3268 0.034907 3.1416" xyz="-0.016259 -0.00017 0.137085"/>
-    <!--origin rpy="1.3268 0.034907 3.1416" xyz="-0.094559 -0.24897 0.054025"/-->
-    <parent link="R_hand_base_link"/>
-    <child link="R_index_proximal"/>
-    <axis xyz="1 0 0"/>
-    <limit effort="50" lower="0" upper="1.7" velocity="1"/>
-  </joint>
-  <link name="R_index_distal">
-    <inertial>
-      <origin rpy="0 0 0" xyz="0.0083258 0.019591 0.0019565"/>
-      <mass value="0.0045683"/>
-      <inertia ixx="7.8179E-07" ixy="9.0022E-13" ixz="5.6729E-13" iyy="1.5635E-07" iyz="-2.1007E-07" izz="7.0084E-07"/>
-    </inertial>
-    <visual>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
-      <geometry>
-        <mesh filename="package://inspire_hands/inspire_hand_r/meshes/R_index_distal.STL"/>
-      </geometry>
-      <material name="">
-        <color rgba="1 1 1 1"/>
-      </material>
-    </visual>
-    <collision>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
-      <geometry>
-        <mesh filename="package://inspire_hands/inspire_hand_r/meshes/R_index_distal.STL"/>
-      </geometry>
-    </collision>
-  </link>
-  <joint name="R_index_DIP_joint" type="revolute">
-    <origin rpy="0.044288 0 0" xyz="0.001575 0.030445 0.010275"/>
-    <parent link="R_index_proximal"/>
-    <child link="R_index_distal"/>
-    <axis xyz="1 0 0"/>
-    <limit effort="50" lower="0" upper="1.6" velocity="1"/>
-  </joint>
-  <link name="R_middle_proximal">
-    <inertial>
-      <origin rpy="0 0 0" xyz="0.008065 0.011884 0.0016958"/>
-      <mass value="0.0042403"/>
-      <inertia ixx="6.9397E-07" ixy="-6.0276E-12" ixz="-3.3971E-12" iyy="2.3039E-07" iyz="-9.1777E-08" izz="6.4339E-07"/>
-    </inertial>
-    <visual>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
-      <geometry>
-        <mesh filename="package://inspire_hands/inspire_hand_r/meshes/R_middle_proximal.STL"/>
-      </geometry>
-      <material name="">
-        <color rgba="1 1 1 1"/>
-      </material>
-    </visual>
-    <collision>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
-      <geometry>
-        <mesh filename="package://inspire_hands/inspire_hand_r/meshes/R_middle_proximal.STL"/>
-      </geometry>
-    </collision>
-  </link>
-  <joint name="R_middle_MCP_joint" type="revolute">
-    <origin rpy="1.3208 0 3.1416" xyz="0.001232 -0.00017 0.137102"/>
-    <!--origin rpy="1.3208 0 3.1416" xyz="-0.077068 -0.24897 0.054042"/-->
-    <parent link="R_hand_base_link"/>
-    <child link="R_middle_proximal"/>
-    <axis xyz="1 0 0"/>
-    <limit effort="50" lower="0" upper="1.7" velocity="1"/>
-  </joint>
-  <link name="R_middle_distal">
-    <inertial>
-      <origin rpy="0 0 0" xyz="0.0063978 0.020807 0.0018039"/>
-      <mass value="0.0050396"/>
-      <inertia ixx="9.8384E-07" ixy="5.3828E-12" ixz="3.4908E-12" iyy="1.7328E-07" iyz="-2.5594E-07" izz="8.914E-07"/>
-    </inertial>
-    <visual>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
-      <geometry>
-        <mesh filename="package://inspire_hands/inspire_hand_r/meshes/R_middle_distal.STL"/>
-      </geometry>
-      <material name="">
-        <color rgba="1 1 1 1"/>
-      </material>
-    </visual>
-    <collision>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
-      <geometry>
-        <mesh filename="package://inspire_hands/inspire_hand_r/meshes/R_middle_distal.STL"/>
-      </geometry>
-    </collision>
-  </link>
-  <joint name="R_middle_DIP_joint" type="revolute">
-    <origin rpy="0.071413 0 0" xyz="0.0016673 0.030445 0.010275"/>
-    <parent link="R_middle_proximal"/>
-    <child link="R_middle_distal"/>
-    <axis xyz="1 0 0"/>
-    <limit effort="50" lower="0" upper="1.6" velocity="1"/>
-  </joint>
-  <link name="R_ring_proximal">
-    <inertial>
-      <origin rpy="0 0 0" xyz="0.0080207 0.011884 0.0016959"/>
-      <mass value="0.0042403"/>
-      <inertia ixx="6.9397E-07" ixy="-6.088E-12" ixz="-3.1846E-12" iyy="2.3039E-07" iyz="-9.1776E-08" izz="6.4339E-07"/>
-    </inertial>
-    <visual>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
-      <geometry>
-        <mesh filename="package://inspire_hands/inspire_hand_r/meshes/R_ring_proximal.STL"/>
-      </geometry>
-      <material name="">
-        <color rgba="1 1 1 1"/>
-      </material>
-    </visual>
-    <collision>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
-      <geometry>
-        <mesh filename="package://inspire_hands/inspire_hand_r/meshes/R_ring_proximal.STL"/>
-      </geometry>
-    </collision>
-  </link>
-  <joint name="R_ring_MCP_joint" type="revolute">
-    <origin rpy="1.3208 -0.05236 3.1416" xyz="0.020406 -0.00017 0.136179"/>
-    <!--origin rpy="1.3208 -0.05236 3.1416" xyz="-0.057894 -0.24897 0.053119"/-->
-    <parent link="R_hand_base_link"/>
-    <child link="R_ring_proximal"/>
-    <axis xyz="1 0 0"/>
-    <limit effort="50" lower="0" upper="1.7" velocity="1"/>
-  </joint>
-  <link name="R_ring_distal">
-    <inertial>
-      <origin rpy="0 0 0" xyz="0.0080209 0.019591 0.0019565"/>
-      <mass value="0.0045683"/>
-      <inertia ixx="7.8177E-07" ixy="4.448E-13" ixz="7.2441E-13" iyy="1.5635E-07" iyz="-2.1007E-07" izz="7.0082E-07"/>
-    </inertial>
-    <visual>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
-      <geometry>
-        <mesh filename="package://inspire_hands/inspire_hand_r/meshes/R_ring_distal.STL"/>
-      </geometry>
-      <material name="">
-        <color rgba="1 1 1 1"/>
-      </material>
-    </visual>
-    <collision>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
-      <geometry>
-        <mesh filename="package://inspire_hands/inspire_hand_r/meshes/R_ring_distal.STL"/>
-      </geometry>
-    </collision>
-  </link>
-  <joint name="R_ring_DIP_joint" type="revolute">
-    <origin rpy="0.039748 0 0" xyz="0 0.030445 0.010275"/>
-    <parent link="R_ring_proximal"/>
-    <child link="R_ring_distal"/>
-    <axis xyz="1 0 0"/>
-    <limit effort="50" lower="0" upper="1.6" velocity="1"/>
-  </joint>
-  <link name="R_pinky_proximal">
-    <inertial>
-      <origin rpy="0 0 0" xyz="0.0078887 0.011884 0.0016959"/>
-      <mass value="0.0042403"/>
-      <inertia ixx="6.9397E-07" ixy="-6.2993E-12" ixz="-3.3535E-12" iyy="2.3039E-07" iyz="-9.1776E-08" izz="6.4339E-07"/>
-    </inertial>
-    <visual>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
-      <geometry>
-        <mesh filename="package://inspire_hands/inspire_hand_r/meshes/R_pinky_proximal.STL"/>
-      </geometry>
-      <material name="">
-        <color rgba="1 1 1 1"/>
-      </material>
-    </visual>
-    <collision>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
-      <geometry>
-        <mesh filename="package://inspire_hands/inspire_hand_r/meshes/R_pinky_proximal.STL"/>
-      </geometry>
-    </collision>
-  </link>
-  <joint name="R_pinky_MCP_joint" type="revolute">
-    <origin rpy="1.3208 -0.10472 -3.1416" xyz="0.039418 -0.00017 0.134265"/>
-    <!--origin rpy="1.3208 -0.10472 -3.1416" xyz="-0.038882 -0.24897 0.051205"/-->
-    <parent link="R_hand_base_link"/>
-    <child link="R_pinky_proximal"/>
-    <axis xyz="1 0 0"/>
-    <limit effort="50" lower="0" upper="1.7" velocity="1"/>
-  </joint>
-  <link name="R_pinky_distal">
-    <inertial>
-      <origin rpy="0 0 0" xyz="0.0078857 0.016239 0.0022243"/>
-      <mass value="0.0035996"/>
-      <inertia ixx="4.4867E-07" ixy="6.675E-11" ixz="-1.9009E-11" iyy="1.2248E-07" iyz="-1.3511E-07" izz="3.8689E-07"/>
-    </inertial>
-    <visual>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
-      <geometry>
-        <mesh filename="package://inspire_hands/inspire_hand_r/meshes/R_pinky_distal.STL"/>
-      </geometry>
-      <material name="">
-        <color rgba="1 1 1 1"/>
-      </material>
-    </visual>
-    <collision>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
-      <geometry>
-        <mesh filename="package://inspire_hands/inspire_hand_r/meshes/R_pinky_distal.STL"/>
-      </geometry>
-    </collision>
-  </link>
-  <joint name="R_pinky_DIP_joint" type="revolute">
-    <origin rpy="-0.037691 0 0" xyz="0 0.030445 0.010275"/>
-    <parent link="R_pinky_proximal"/>
-    <child link="R_pinky_distal"/>
-    <axis xyz="1 0 0"/>
-    <limit effort="50" lower="0" upper="1.6" velocity="1"/>
-  </joint>
-  <joint name="right_hand_base_joint" type="fixed">
-    <origin rpy="0 0 0" xyz="0 0 0.009"/> <!--OFFSET DE 0.9 CM DEL SOPORTE DE ROBOTNIK-->
-    <!--origin rpy="0 0 0" xyz="0.0783 0.2488 0.08306"/-->
-    <parent link="rb1_right_arm_tool0"/>
-    <child link="R_hand_base_link"/>
-  </joint>
-
-  <!--INSPIRE HAND: LEFT-->
-  <link name="L_hand_base_link">
-    <inertial>
-      <origin rpy="0 0 0" xyz="-0.076247 -0.1691 0.24613"/>
-      <mass value="0.14143"/>
-      <inertia ixx="7.7231E-05" ixy="-1.5968E-06" ixz="1.7694E-06" iyy="8.3835E-05" iyz="2.1995E-06" izz="0.0001234"/>
-    </inertial>
-    <visual>
-      <origin rpy="3.141592653589793 0 3.141592653589793" xyz="-0.078 0.2488 -0.10303"/>
-      <!--origin rpy="0 0 0" xyz="0 0 0"/-->
-      <geometry>
-        <mesh filename="package://inspire_hands/inspire_hand_l/meshes/L_hand_base_link.STL"/>
-      </geometry>
-      <material name="">
-        <color rgba="1 1 1 1"/>
-      </material>
-    </visual>
-    <collision>
-      <origin rpy="3.141592653589793 0 3.141592653589793" xyz="-0.078 0.2488 -0.10303"/>
-      <!--origin rpy="0 0 0" xyz="0 0 0"/-->
-      <geometry>
-        <mesh filename="package://inspire_hands/inspire_hand_l/meshes/L_hand_base_link.STL"/>
-      </geometry>
-    </collision>
-  </link>
-
-  <link name="L_dummy_link">
+  <link name="right_gripper_fsh-6w">
   <inertial>
-    <origin rpy="0 0 0" xyz="-0.076223 -0.01701 0.24616"/>
-    <mass value="0.0"/> <!-- Masa 0, ya que es un dummy link -->
-    <inertia ixx="7.6663E-05" ixy="1.6551E-06" ixz="1.7709E-06" iyy="8.3832E-05" iyz="-2.1711E-06" izz="0.00012281"/>
+    <origin xyz="-0.00011790676028237154 0.00044070794053033247 -0.00044579812930929663" rpy="0 0 0"/>
+    <mass value="0.005462946868763102"/>
+    <inertia ixx="0.0" iyy="0.0" izz="0.0" ixy="-0.0" iyz="0.0" ixz="0.0"/>
   </inertial>
-  <visual>
-    <origin rpy="0 0 0" xyz="0 0 0"/>
-    <geometry>
-      <box size="0.01 0.01 0.01"/> <!-- Tamaño pequeño solo para visualización -->
-    </geometry>
-    <material name="">
-      <color rgba="0.5 0.5 0.5 1"/>
-    </material>
-  </visual>
-  <collision>
-    <origin rpy="0 0 0" xyz="0 0 0"/>
-    <geometry>
-      <box size="0.01 0.01 0.01"/> <!-- Tamaño pequeño solo para visualización -->
-    </geometry>
-  </collision>
   </link>
 
-  <joint name="L_dummy_joint" type="fixed">
-    <parent link="L_hand_base_link"/>
-    <child link="L_dummy_link"/>
-    <origin rpy="0 0 0" xyz="0 0 0.1"/> <!-- Desplazado 10 cm en Z respecto al L_hand_base_link -->
+  <link name="right_gripper_healical_gear">
+    <inertial>
+        <origin xyz="-0.0076178837585054665 0.00044071421630159635 0.023833838085050893" rpy="0 0 0"/>
+        <mass value="0.06579799533400067"/>
+        <inertia ixx="1.4e-05" iyy="1.4e-05" izz="5e-06" ixy="0.0" iyz="0.0" ixz="-0.0"/>
+    </inertial>
+    <visual>
+        <origin xyz="-0.008401 0.000206 -0.086833" rpy="0 0 0"/>
+        <geometry>
+        <mesh filename="package://models/robot/grippers/meshes/Healical_Gear__6R@0.00_m=4.0__v1_1_1_1.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="Gray">
+          <color rgba="0.5725490196078431 0.5843137254901961 0.5686274509803921 1.0"/>
+        </material>
+    </visual>
+  </link>
+
+  <link name="right_gripper_left_case">
+    <inertial>
+        <origin xyz="0.0004620295348260993 -3.0538934911396223e-06 0.03708270623517407" rpy="0 0 0"/>
+        <mass value="0.10856430346764456"/>
+        <inertia ixx="0.000159" iyy="6.2e-05" izz="0.000114" ixy="0.0" iyz="-0.0" ixz="-2e-06"/>
+    </inertial>
+    <visual>
+        <origin xyz="-0.026366 -0.000675 -0.027568" rpy="0 0 0"/>
+        <geometry>
+        <mesh filename="package://models/robot/grippers/meshes/Carcasa_v1_1.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="White">
+          <color rgba="1.0 1.0 1.0 1.0"/>
+        </material>
+    </visual>
+  </link>
+
+  <link name="right_gripper_right_case">
+    <inertial>
+        <origin xyz="-0.00046258801629453505 3.426371720253161e-06 0.03708272343537003" rpy="0 0 0"/>
+        <mass value="0.10856430346765521"/>
+        <inertia ixx="0.000159" iyy="6.2e-05" izz="0.000114" ixy="0.0" iyz="0.0" ixz="2e-06"/>
+    </inertial>
+    <visual>
+        <origin xyz="0.025034 -0.000675 -0.027568" rpy="0 0 0"/>
+        <geometry>
+        <mesh filename="package://models/robot/grippers/meshes/Carcasa_v1__1__1_1_1.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="White">
+          <color rgba="1.0 1.0 1.0 1.0"/>
+        </material>
+    </visual>
+  </link>
+
+  <link name="right_gripper_right_cover">
+    <inertial>
+        <origin xyz="-2.701519900968549e-07 -0.001712836616074083 -0.0202001315449363" rpy="0 0 0"/>
+        <mass value="0.009556048689960938"/>
+        <inertia ixx="2e-06" iyy="4e-06" izz="2e-06" ixy="-0.0" iyz="0.0" ixz="-0.0"/>
+    </inertial>
+    <visual>
+        <origin xyz="0.001734 -0.0638 -0.198818" rpy="0 0 0"/>
+        <geometry>
+        <mesh filename="package://models/robot/grippers/meshes/Cubrimiento_v1_1_1_1.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="LightGray">
+          <color rgba="0.7 0.7 0.7 1.0"/>
+        </material>
+    </visual>
+    <collision>
+        <origin xyz="0.001734 -0.0638 -0.198818" rpy="0 0 0"/>
+        <geometry>
+        <mesh filename="package://models/robot/grippers/meshes/Cubrimiento_v1_1_1_1.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+    </collision>
+  </link>
+
+  <link name="right_gripper_left_sensor">
+  <inertial>
+    <origin xyz="-2.7015164315432813e-07 -0.0002224255430176153 -0.02432467850062109" rpy="0 0 0"/>
+    <mass value="0.007344505396044044"/>
+    <inertia ixx="2e-06" iyy="3e-06" izz="1e-06" ixy="0.0" iyz="0.0" ixz="0.0"/>
+  </inertial>
+  </link>
+
+  <link name="right_gripper_right_sensor">
+  <inertial>
+    <origin xyz="-2.7081921331103403e-07 0.00022179689568571637 -0.024324678500620617" rpy="0 0 0"/>
+    <mass value="0.007344505396044034"/>
+    <inertia ixx="2e-06" iyy="3e-06" izz="1e-06" ixy="0.0" iyz="-0.0" ixz="0.0"/>
+  </inertial>
+  </link>
+
+  <link name="right_gripper_right_zip">
+    <inertial>
+        <origin xyz="-0.00636496092263452 -0.023474216979132344 0.0017881005644936054" rpy="0 0 0"/>
+        <mass value="0.1674750199260278"/>
+        <inertia ixx="4.9e-05" iyy="2.2e-05" izz="4.7e-05" ixy="4e-06" iyz="4e-06" ixz="2e-06"/>
+    </inertial>
+    <visual>
+        <origin xyz="0.018934 -0.050675 -0.117818" rpy="0 0 0"/>
+        <geometry>
+        <mesh filename="package://models/robot/grippers/meshes/CremalleraRight_v1_1.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="DarkGray">
+          <color rgba="0.21176470588235294 0.21568627450980393 0.21568627450980393 1.0"/>
+        </material>
+    </visual>
+  </link>
+
+  <link name="right_gripper_left_zip">
+    <inertial>
+        <origin xyz="0.006364419951778243 0.0234745883318001 0.0017881005644944103" rpy="0 0 0"/>
+        <mass value="0.1674750199260278"/>
+        <inertia ixx="4.9e-05" iyy="2.2e-05" izz="4.7e-05" ixy="4e-06" iyz="-4e-06" ixz="-2e-06"/>
+    </inertial>
+    <visual>
+        <origin xyz="-0.020266 0.049325 -0.117818" rpy="0 0 0"/>
+        <geometry>
+        <mesh filename="package://models/robot/grippers/meshes/CremalleraLeft_1.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="DarkGray">
+          <color rgba="0.21176470588235294 0.21568627450980393 0.21568627450980393 1.0"/>
+        </material>
+    </visual>
+  </link>
+
+  <link name="right_gripper_left_paddle">
+    <inertial>
+        <origin xyz="-0.023748095176504152 -0.018191411309244364 0.026797537734581406" rpy="0 0 0"/>
+        <mass value="0.3072105701261476"/>
+        <inertia ixx="0.000219" iyy="0.000271" izz="0.000149" ixy="-3.9e-05" iyz="4.8e-05" ixz="9.7e-05"/>
+    </inertial>
+    <visual>
+        <origin xyz="-0.040466 0.042399 -0.129818" rpy="0 0 0"/>
+        <geometry>
+        <mesh filename="package://models/robot/grippers/meshes/Conjunto_Herramientas_v2_1_1_1.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="DarkGray">
+          <color rgba="0.21176470588235294 0.21568627450980393 0.21568627450980393 1.0"/>
+        </material>
+    </visual>
+  </link>
+
+  <link name="right_gripper_right_paddle">
+    <inertial>
+        <origin xyz="0.02374755420564724 0.01819078266191282 0.02679753773458035" rpy="0 0 0"/>
+        <mass value="0.30721057012614517"/>
+        <inertia ixx="0.000219" iyy="0.000271" izz="0.000149" ixy="-3.9e-05" iyz="-4.8e-05" ixz="-9.7e-05"/>
+    </inertial>
+    <visual>
+        <origin xyz="0.039134 -0.04375 -0.129818" rpy="0 0 0"/>
+        <geometry>
+        <mesh filename="package://models/robot/grippers/meshes/Conjunto_Herramientas_v2__1__1_1_1.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="DarkGray">
+          <color rgba="0.21176470588235294 0.21568627450980393 0.21568627450980393 1.0"/>
+        </material>
+    </visual>
+  </link>
+
+  <link name="right_gripper_left_cover">
+    <inertial>
+        <origin xyz="-2.70819310323276e-07 0.001712220978038019 -0.022800131552071917" rpy="0 0 0"/>
+        <mass value="0.009556121937797202"/>
+        <inertia ixx="2e-06" iyy="4e-06" izz="2e-06" ixy="-0.0" iyz="-0.0" ixz="0.0"/>
+    </inertial>
+    <visual>
+        <origin xyz="-0.003066 0.062449 -0.198818" rpy="0 0 0"/>
+        <geometry>
+        <mesh filename="package://models/robot/grippers/meshes/Cubrimiento_v1__1__1_1_1.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="LightGray">
+          <color rgba="0.7 0.7 0.7 1.0"/>
+        </material>
+    </visual>
+    <collision>
+        <origin xyz="-0.003066 0.062449 -0.198818" rpy="0 0 0"/>
+        <geometry>
+        <mesh filename="package://models/robot/grippers/meshes/Cubrimiento_v1__1__1_1_1.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+    </collision>
+  </link>
+
+  <joint name="right_gripper_base_link_to_body" type="fixed">
+    <origin xyz="0.000666 0.000675 0.0" rpy="0 0 0"/>
+    <parent link="right_gripper_base_link"/>
+    <child link="right_gripper_chasis"/>
   </joint>
 
+  <joint name="right_gripper_RigidRight" type="fixed">
+    <origin xyz="-0.00635 0.04 0.09" rpy="0 0 0"/>
+    <parent link="right_gripper_chasis"/>
+    <child link="right_gripper_right_guia"/>
+  </joint>
 
-  <link name="L_thumb_proximal_base">
+  <joint name="right_gripper_RightPaddle" type="prismatic">
+    <origin xyz="-0.112068 0.000675 -0.014684" rpy="0 0 0"/>
+    <parent link="right_gripper_right_guia"/>
+    <child link="right_gripper_right_pieza_movil"/>
+    <axis xyz="0.0 -1.0 0.0"/>
+    <limit upper="0.035" lower="0.0" effort="100" velocity="100"/>
+  </joint>
+
+  <joint name="right_gripper_RigidLeft" type="fixed">
+    <origin xyz="0.00635 -0.04 0.09" rpy="0 0 0"/>
+    <parent link="right_gripper_chasis"/>
+    <child link="right_gripper_left_guia"/>
+  </joint>
+
+  <joint name="right_gripper_LeftPaddle" type="prismatic">
+    <origin xyz="0.112068 0.000675 -0.016016" rpy="0 0 0"/>
+    <parent link="right_gripper_left_guia"/>
+    <child link="right_gripper_left_pieza_movil"/>
+    <axis xyz="-0.0 -1.0 -0.0"/>
+    <limit upper="0.0" lower="-0.035" effort="100" velocity="100"/>
+  </joint>
+
+  <joint name="right_gripper_Rigid 119" type="fixed">
+    <origin xyz="0.005 -0.0148 0.053" rpy="0 0 0"/>
+    <parent link="right_gripper_chasis"/>
+    <child link="right_gripper_servo"/>
+  </joint>
+
+  <joint name="right_gripper_Rigid 120" type="fixed">
+    <origin xyz="-0.004765 0.013919 0.014055" rpy="0 0 0"/>
+    <parent link="right_gripper_servo"/>
+    <child link="right_gripper_fsh-6w"/>
+  </joint>
+
+  <joint name="right_gripper_Rigid 121" type="fixed">
+    <origin xyz="0.0075 0.0 0.00221" rpy="0 0 0"/>
+    <parent link="right_gripper_fsh-6w"/>
+    <child link="right_gripper_healical_gear"/>
+  </joint>
+
+  <joint name="right_gripper_Rigid 122" type="fixed">
+    <origin xyz="0.0257 0.0 0.01" rpy="0 0 0"/>
+    <parent link="right_gripper_chasis"/>
+    <child link="right_gripper_left_case"/>
+  </joint>
+
+  <joint name="right_gripper_Rigid 123" type="fixed">
+    <origin xyz="-0.0257 0.0 0.01" rpy="0 0 0"/>
+    <parent link="right_gripper_chasis"/>
+    <child link="right_gripper_right_case"/>
+  </joint>
+
+  <joint name="right_gripper_Rigid 129" type="fixed">
+    <origin xyz="0.0374 0.02005 0.069" rpy="0 0 0"/>
+    <parent link="right_gripper_right_paddle"/>
+    <child link="right_gripper_right_cover"/>
+  </joint>
+
+  <joint name="right_gripper_Rigid 130" type="fixed">
+    <origin xyz="0.0374 0.02005 0.069" rpy="0 0 0"/>
+    <parent link="right_gripper_right_paddle"/>
+    <child link="right_gripper_right_sensor"/>
+  </joint>
+
+  <joint name="right_gripper_Rigid 131" type="fixed">
+    <origin xyz="-0.0374 -0.02005 0.069" rpy="0 0 0"/>
+    <parent link="right_gripper_left_paddle"/>
+    <child link="right_gripper_left_sensor"/>
+  </joint>
+
+  <joint name="right_gripper_Rigid 132" type="fixed">
+    <origin xyz="0.098818 0.009325 0.024934" rpy="0 0 0"/>
+    <parent link="right_gripper_right_pieza_movil"/>
+    <child link="right_gripper_right_zip"/>
+  </joint>
+
+  <joint name="right_gripper_Rigid 133" type="fixed">
+    <origin xyz="-0.098818 -0.010675 0.026266" rpy="0 0 0"/>
+    <parent link="right_gripper_left_pieza_movil"/>
+    <child link="right_gripper_left_zip"/>
+  </joint>
+
+  <joint name="right_gripper_Rigid 134" type="fixed">
+    <origin xyz="0.0202 0.006926 0.012" rpy="0 0 0"/>
+    <parent link="right_gripper_left_zip"/>
+    <child link="right_gripper_left_paddle"/>
+  </joint>
+
+  <joint name="right_gripper_Rigid 135" type="fixed">
+    <origin xyz="-0.0202 -0.006925 0.012" rpy="0 0 0"/>
+    <parent link="right_gripper_right_zip"/>
+    <child link="right_gripper_right_paddle"/>
+  </joint>
+
+  <joint name="right_gripper_Rigid 136" type="fixed">
+    <origin xyz="-0.0374 -0.02005 0.069" rpy="0 0 0"/>
+    <parent link="right_gripper_left_paddle"/>
+    <child link="right_gripper_left_cover"/>
+  </joint>
+
+  <!-- Left Gripper-->
+  <link name="left_gripper_base_link">
     <inertial>
-      <origin rpy="0 0 0" xyz="-0.0048772 0.00668 -0.00044071"/>
-      <mass value="0.0018869"/>
-      <inertia ixx="5.2003E-08" ixy="4.8353E-09" ixz="6.6444E-09" iyy="6.7434E-08" iyz="-5.4476E-10" izz="8.5319E-08"/>
+        <origin xyz="0.0006657295146249247 0.000675185676335238 0.01751786844837327" rpy="0 0 0"/>
+        <mass value="6.165375582670241e-07"/>
+        <inertia ixx="0.0" iyy="0.0" izz="0.0" ixy="0.0" iyz="0.0" ixz="0.0"/>
     </inertial>
     <visual>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
-      <geometry>
-        <mesh filename="package://inspire_hands/inspire_hand_l/meshes/L_thumb_proximal_base.STL"/>
-      </geometry>
-      <material name="">
-        <color rgba="1 1 1 1"/>
-      </material>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+        <mesh filename="package://models/robot/grippers/meshes/base_link.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="silver"/>
     </visual>
     <collision>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
-      <geometry>
-        <mesh filename="package://inspire_hands/inspire_hand_l/meshes/L_thumb_proximal_base.STL"/>
-      </geometry>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+        <mesh filename="package://models/robot/grippers/meshes/base_link.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
     </collision>
   </link>
-  <joint name="L_thumb_MCP_joint1" type="revolute">
-    <origin rpy="-4.71238898 0 -2.672202654" xyz="0.020633 0.01707 0.05523"/>
-    <!--origin rpy="-1.5708 0 -0.16939" xyz="-0.098633 -0.23173 -0.15826"/-->
-    <parent link="L_hand_base_link"/>
-    <child link="L_thumb_proximal_base"/>
-    <axis xyz="0 1 0"/>
-    <limit effort="50" lower="0" upper="1.1" velocity="1"/>
-    <!--limit effort="50" lower="0.3" upper="1.4" velocity="1"/-->
-  </joint>
-  <link name="L_thumb_proximal">
+
+  <link name="left_gripper_chasis">
     <inertial>
-      <origin rpy="0 0 0" xyz="-3.8578E-05 0.025335 0.0016982"/>
-      <mass value="0.0066101"/>
-      <inertia ixx="2.787E-06" ixy="1.3042E-10" ixz="1.3413E-09" iyy="8.9435E-07" iyz="2.1426E-07" izz="2.4105E-06"/>
+        <origin xyz="-0.0019147508420116906 -0.0011680011828384225 0.03565732725751325" rpy="0 0 0"/>
+        <mass value="0.7358895650337893"/>
+        <inertia ixx="0.001408" iyy="0.000712" izz="0.000855" ixy="2e-06" iyz="4e-06" ixz="1.5e-05"/>
     </inertial>
     <visual>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
-      <geometry>
-        <mesh filename="package://inspire_hands/inspire_hand_l/meshes/L_thumb_proximal.STL"/>
-      </geometry>
-      <material name="">
-        <color rgba="1 1 1 1"/>
-      </material>
+        <origin xyz="-0.000666 -0.000675 -0.017568" rpy="0 0 0"/>
+        <geometry>
+        <mesh filename="package://models/robot/grippers/meshes/Chasis_Nuevo_v1_1_1_1.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="Black">
+          <color rgba="0.0 0.0 0.0 1.0"/>
+        </material>
     </visual>
-    <collision>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
-      <geometry>
-        <mesh filename="package://inspire_hands/inspire_hand_l/meshes/L_thumb_proximal.STL"/>
-      </geometry>
-    </collision>
   </link>
-  <joint name="L_thumb_MCP_joint2" type="revolute">
-    <origin rpy="0.82401 -1.5708 0" xyz="-0.0115 0.005 0"/>
-    <!--origin rpy="2.1656 -1.5708 0" xyz="-0.0115 0.005 0"/-->
-    <parent link="L_thumb_proximal_base"/>
-    <child link="L_thumb_proximal"/>
-    <axis xyz="-1 0 0"/>
-    <limit effort="50" lower="0" upper="0.5" velocity="1"/>
-    <!--limit effort="50" lower="1.5" upper="2" velocity="1"/-->
-  </joint>
-  <link name="L_thumb_intermediate">
+
+  <link name="left_gripper_right_guia">
     <inertial>
-      <origin rpy="0 0 0" xyz="-1.7401E-07 0.0072516 0.0064286"/>
-      <mass value="0.0037844"/>
-      <inertia ixx="4.6532E-07" ixy="-9.1152E-13" ixz="-3.8682E-12" iyy="2.6856E-07" iyz="6.4144E-08" izz="4.252E-07"/>
+        <origin xyz="-0.004346965370210315 -0.03999981432366625 -1.3155171983691982e-07" rpy="0 0 0"/>
+        <mass value="0.061978529347409946"/>
+        <inertia ixx="5.2e-05" iyy="1e-06" izz="5.2e-05" ixy="0.0" iyz="-0.0" ixz="-0.0"/>
     </inertial>
     <visual>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
-      <geometry>
-        <mesh filename="package://inspire_hands/inspire_hand_l/meshes/L_thumb_intermediate.STL"/>
-      </geometry>
-      <material name="">
-        <color rgba="1 1 1 1"/>
-      </material>
+        <origin xyz="0.005684 -0.040675 -0.107568" rpy="0 0 0"/>
+        <geometry>
+        <mesh filename="package://models/robot/grippers/meshes/GuíaRight_1.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="Silver">
+          <color rgba="0.7725490196078432 0.788235294117647 0.7803921568627451 1.0"/>
+        </material>
     </visual>
-    <collision>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
-      <geometry>
-        <mesh filename="package://inspire_hands/inspire_hand_l/meshes/L_thumb_intermediate.STL"/>
-      </geometry>
-    </collision>
   </link>
-  <joint name="L_thumb_PIP_joint" type="revolute">
-    <origin rpy="0.038299 0 0" xyz="0 0.055863 -0.0039241"/>
-    <parent link="L_thumb_proximal"/>
-    <child link="L_thumb_intermediate"/>
-    <axis xyz="-1 0 0"/>
-    <limit effort="50" lower="0" upper="1" velocity="1"/>
-  </joint>
-  <link name="L_thumb_distal">
+
+  <link name="left_gripper_right_pieza_movil">
     <inertial>
-      <origin rpy="0 0 0" xyz="-3.3076E-06 0.010511 0.00057861"/>
-      <mass value="0.003344"/>
-      <inertia ixx="2.0026E-07" ixy="-1.4157E-10" ixz="5.6213E-11" iyy="8.7108E-08" iyz="2.4414E-08" izz="1.8974E-07"/>
+        <origin xyz="0.1020822423794868 -0.005663903597295995 0.014692420354248753" rpy="0 0 0"/>
+        <mass value="0.026073243412509224"/>
+        <inertia ixx="3e-06" iyy="1e-06" izz="2e-06" ixy="0.0" iyz="0.0" ixz="0.0"/>
     </inertial>
     <visual>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
-      <geometry>
-        <mesh filename="package://inspire_hands/inspire_hand_l/meshes/L_thumb_distal.STL"/>
-      </geometry>
-      <material name="">
-        <color rgba="1 1 1 1"/>
-      </material>
+        <origin xyz="0.117752 -0.04135 -0.092884" rpy="0 0 0"/>
+        <geometry>
+        <mesh filename="package://models/robot/grippers/meshes/PiezaMovilRight_1.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="Black">
+          <color rgba="0.0 0.0 0.0 1.0"/>
+        </material>
     </visual>
-    <collision>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
-      <geometry>
-        <mesh filename="package://inspire_hands/inspire_hand_l/meshes/L_thumb_distal.STL"/>
-      </geometry>
-    </collision>
   </link>
-  <joint name="L_thumb_DIP_joint" type="revolute">
-    <origin rpy="0.011642 0 0" xyz="0 0.022558 0.0020717"/>
-    <parent link="L_thumb_intermediate"/>
-    <child link="L_thumb_distal"/>
-    <axis xyz="-1 0 0"/>
-    <limit effort="50" lower="0" upper="1.2" velocity="1"/>
-  </joint>
-  <link name="L_index_proximal">
+
+  <link name="left_gripper_left_guia">
     <inertial>
-      <origin rpy="0 0 0" xyz="0.0080456 0.011884 -0.0016957"/>
-      <mass value="0.0042405"/>
-      <inertia ixx="6.9402E-07" ixy="1.4654E-11" ixz="-2.3231E-12" iyy="2.3041E-07" iyz="9.1802E-08" izz="6.4342E-07"/>
+        <origin xyz="0.0043464243993540305 0.04000018567633391 -1.3155153362476302e-07" rpy="0 0 0"/>
+        <mass value="0.061978529347409946"/>
+        <inertia ixx="5.2e-05" iyy="1e-06" izz="5.2e-05" ixy="-0.0" iyz="0.0" ixz="-0.0"/>
     </inertial>
     <visual>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
-      <geometry>
-        <mesh filename="package://inspire_hands/inspire_hand_l/meshes/L_index_proximal.STL"/>
-      </geometry>
-      <material name="">
-        <color rgba="1 1 1 1"/>
-      </material>
+        <origin xyz="-0.007016 0.039325 -0.107568" rpy="0 0 0"/>
+        <geometry>
+        <mesh filename="package://models/robot/grippers/meshes/GuíaLeft_v1_1.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="Silver">
+          <color rgba="0.7725490196078432 0.788235294117647 0.7803921568627451 1.0"/>
+        </material>
     </visual>
-    <collision>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
-      <geometry>
-        <mesh filename="package://inspire_hands/inspire_hand_l/meshes/L_index_proximal.STL"/>
-      </geometry>
-    </collision>
   </link>
-  <joint name="L_index_MCP_joint" type="revolute">
-    <origin rpy="-4.462392654 0.034907 0" xyz="0.018414 -0.00017 0.13704"/>
-    <!--origin rpy="-1.3208 -0.034907 3.1416" xyz="-0.096414 -0.24897 -0.24007"/-->
-    <parent link="L_hand_base_link"/>
-    <child link="L_index_proximal"/>
-    <axis xyz="-1 0 0"/>
-    <limit effort="50" lower="0" upper="1.7" velocity="1"/>
-  </joint>
-  <link name="L_index_distal">
+
+  <link name="left_gripper_left_pieza_movil">
     <inertial>
-      <origin rpy="0 0 0" xyz="0.0063917 0.01959 -0.0019564"/>
-      <mass value="0.0045682"/>
-      <inertia ixx="7.8176E-07" ixy="-7.7162E-14" ixz="3.9272E-13" iyy="1.5634E-07" iyz="2.1006E-07" izz="7.0081E-07"/>
+        <origin xyz="-0.10208278335034306 0.004336096402704229 0.01600731654249779" rpy="0 0 0"/>
+        <mass value="0.026073243412509224"/>
+        <inertia ixx="3e-06" iyy="1e-06" izz="2e-06" ixy="-0.0" iyz="-0.0" ixz="0.0"/>
     </inertial>
     <visual>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
-      <geometry>
-        <mesh filename="package://inspire_hands/inspire_hand_l/meshes/L_index_distal.STL"/>
-      </geometry>
-      <material name="">
-        <color rgba="1 1 1 1"/>
-      </material>
+        <origin xyz="-0.119084 0.03865 -0.091552" rpy="0 0 0"/>
+        <geometry>
+        <mesh filename="package://models/robot/grippers/meshes/PiezaMovilLeft_1.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="Black">
+          <color rgba="0.0 0.0 0.0 1.0"/>
+        </material>
     </visual>
-    <collision>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
-      <geometry>
-        <mesh filename="package://inspire_hands/inspire_hand_l/meshes/L_index_distal.STL"/>
-      </geometry>
-    </collision>
   </link>
-  <joint name="L_index_DIP_joint" type="revolute">
-    <origin rpy="-0.039748 0 0" xyz="0.0016538 0.030445 -0.010275"/>
-    <parent link="L_index_proximal"/>
-    <child link="L_index_distal"/>
-    <axis xyz="-1 0 0"/>
-    <limit effort="50" lower="0" upper="1.6" velocity="1"/>
-  </joint>
-  <link name="L_middle_proximal">
+
+  <link name="left_gripper_servo">
+  <inertial>
+    <origin xyz="-0.005078505440639656 0.023444038025010997 -0.008716020374451572" rpy="0 0 0"/>
+    <mass value="0.027068171992842262"/>
+    <inertia ixx="6e-06" iyy="4e-06" izz="4e-06" ixy="0.0" iyz="0.0" ixz="0.0"/>
+  </inertial>
+  </link>
+
+  <link name="left_gripper_fsh-6w">
+  <inertial>
+    <origin xyz="-0.00011790676028237154 0.00044070794053033247 -0.00044579812930929663" rpy="0 0 0"/>
+    <mass value="0.005462946868763102"/>
+    <inertia ixx="0.0" iyy="0.0" izz="0.0" ixy="-0.0" iyz="0.0" ixz="0.0"/>
+  </inertial>
+  </link>
+
+  <link name="left_gripper_healical_gear">
     <inertial>
-      <origin rpy="0 0 0" xyz="0.0080653 0.011884 -0.0016957"/>
-      <mass value="0.0042405"/>
-      <inertia ixx="6.9402E-07" ixy="1.4338E-11" ixz="-2.3917E-12" iyy="2.3041E-07" iyz="9.1802E-08" izz="6.4342E-07"/>
+        <origin xyz="-0.0076178837585054665 0.00044071421630159635 0.023833838085050893" rpy="0 0 0"/>
+        <mass value="0.06579799533400067"/>
+        <inertia ixx="1.4e-05" iyy="1.4e-05" izz="5e-06" ixy="0.0" iyz="0.0" ixz="-0.0"/>
     </inertial>
     <visual>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
-      <geometry>
-        <mesh filename="package://inspire_hands/inspire_hand_l/meshes/L_middle_proximal.STL"/>
-      </geometry>
-      <material name="">
-        <color rgba="1 1 1 1"/>
-      </material>
+        <origin xyz="-0.008401 0.000206 -0.086833" rpy="0 0 0"/>
+        <geometry>
+        <mesh filename="package://models/robot/grippers/meshes/Healical_Gear__6R@0.00_m=4.0__v1_1_1_1.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="Gray">
+          <color rgba="0.5725490196078431 0.5843137254901961 0.5686274509803921 1.0"/>
+        </material>
     </visual>
-    <collision>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
-      <geometry>
-        <mesh filename="package://inspire_hands/inspire_hand_l/meshes/L_middle_proximal.STL"/>
-      </geometry>
-    </collision>
   </link>
-  <joint name="L_middle_MCP_joint" type="revolute">
-    <origin rpy="-4.462392654 0 0" xyz="-0.000932 -0.00017 0.13713"/>
-    <!--origin rpy="-1.3208 0 3.1416" xyz="-0.077068 -0.24897 -0.24016"/-->
-    <parent link="L_hand_base_link"/>
-    <child link="L_middle_proximal"/>
-    <axis xyz="-1 0 0"/>
-    <limit effort="50" lower="0" upper="1.7" velocity="1"/>
-  </joint>
-  <link name="L_middle_distal">
+
+  <link name="left_gripper_left_case">
     <inertial>
-      <origin rpy="0 0 0" xyz="0.0063955 0.020807 -0.0018039"/>
-      <mass value="0.0050397"/>
-      <inertia ixx="9.8385E-07" ixy="-4.0683E-12" ixz="-1.7233E-12" iyy="1.7328E-07" iyz="2.5594E-07" izz="8.9141E-07"/>
+        <origin xyz="0.0004620295348260993 -3.0538934911396223e-06 0.03708270623517407" rpy="0 0 0"/>
+        <mass value="0.10856430346764456"/>
+        <inertia ixx="0.000159" iyy="6.2e-05" izz="0.000114" ixy="0.0" iyz="-0.0" ixz="-2e-06"/>
     </inertial>
     <visual>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
-      <geometry>
-        <mesh filename="package://inspire_hands/inspire_hand_l/meshes/L_middle_distal.STL"/>
-      </geometry>
-      <material name="">
-        <color rgba="1 1 1 1"/>
-      </material>
+        <origin xyz="-0.026366 -0.000675 -0.027568" rpy="0 0 0"/>
+        <geometry>
+        <mesh filename="package://models/robot/grippers/meshes/Carcasa_v1_1.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="White">
+          <color rgba="1.0 1.0 1.0 1.0"/>
+        </material>
     </visual>
-    <collision>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
-      <geometry>
-        <mesh filename="package://inspire_hands/inspire_hand_l/meshes/L_middle_distal.STL"/>
-      </geometry>
-    </collision>
   </link>
-  <joint name="L_middle_DIP_joint" type="revolute">
-    <origin rpy="-0.071413 0 0" xyz="0.0016698 0.030445 -0.010275"/>
-    <parent link="L_middle_proximal"/>
-    <child link="L_middle_distal"/>
-    <axis xyz="-1 0 0"/>
-    <limit effort="50" lower="0" upper="1.6" velocity="1"/>
-  </joint>
-  <link name="L_ring_proximal">
+
+  <link name="left_gripper_right_case">
     <inertial>
-      <origin rpy="0 0 0" xyz="0.010821 0.011884 -0.0016957"/>
-      <mass value="0.0042405"/>
-      <inertia ixx="6.9402E-07" ixy="1.3923E-11" ixz="-2.5637E-12" iyy="2.3041E-07" iyz="9.1802E-08" izz="6.4342E-07"/>
+        <origin xyz="-0.00046258801629453505 3.426371720253161e-06 0.03708272343537003" rpy="0 0 0"/>
+        <mass value="0.10856430346765521"/>
+        <inertia ixx="0.000159" iyy="6.2e-05" izz="0.000114" ixy="0.0" iyz="0.0" ixz="2e-06"/>
     </inertial>
     <visual>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
-      <geometry>
-        <mesh filename="package://inspire_hands/inspire_hand_l/meshes/L_ring_proximal.STL"/>
-      </geometry>
-      <material name="">
-        <color rgba="1 1 1 1"/>
-      </material>
+        <origin xyz="0.025034 -0.000675 -0.027568" rpy="0 0 0"/>
+        <geometry>
+        <mesh filename="package://models/robot/grippers/meshes/Carcasa_v1__1__1_1_1.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="White">
+          <color rgba="1.0 1.0 1.0 1.0"/>
+        </material>  
     </visual>
-    <collision>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
-      <geometry>
-        <mesh filename="package://inspire_hands/inspire_hand_l/meshes/L_ring_proximal.STL"/>
-      </geometry>
-    </collision>
   </link>
-  <joint name="L_ring_MCP_joint" type="revolute">
-    <origin rpy="-4.462392654 -0.05236 0" xyz="-0.022902 -0.00017 0.13606"/>
-    <!--origin rpy="-1.3208 0.05236 3.1416" xyz="-0.055098 -0.24897 -0.23909"/-->
-    <parent link="L_hand_base_link"/>
-    <child link="L_ring_proximal"/>
-    <axis xyz="-1 0 0"/>
-    <limit effort="50" lower="0" upper="1.7" velocity="1"/>
-  </joint>
-  <link name="L_ring_distal">
+
+  <link name="left_gripper_right_cover">
     <inertial>
-      <origin rpy="0 0 0" xyz="0.009285 0.019591 -0.0019565"/>
-      <mass value="0.0045682"/>
-      <inertia ixx="7.8176E-07" ixy="4.4486E-13" ixz="-6.071E-14" iyy="1.5634E-07" iyz="2.1006E-07" izz="7.0081E-07"/>
+        <origin xyz="-2.701519900968549e-07 -0.001712836616074083 -0.0202001315449363" rpy="0 0 0"/>
+        <mass value="0.009556048689960938"/>
+        <inertia ixx="2e-06" iyy="4e-06" izz="2e-06" ixy="-0.0" iyz="0.0" ixz="-0.0"/>
     </inertial>
     <visual>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
-      <geometry>
-        <mesh filename="package://inspire_hands/inspire_hand_l/meshes/L_ring_distal.STL"/>
-      </geometry>
-      <material name="">
-        <color rgba="1 1 1 1"/>
-      </material>
+        <origin xyz="0.001734 -0.0638 -0.198818" rpy="0 0 0"/>
+        <geometry>
+        <mesh filename="package://models/robot/grippers/meshes/Cubrimiento_v1_1_1_1.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="LightGray">
+          <color rgba="0.7 0.7 0.7 1.0"/>
+        </material> 
     </visual>
     <collision>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
-      <geometry>
-        <mesh filename="package://inspire_hands/inspire_hand_l/meshes/L_ring_distal.STL"/>
-      </geometry>
+        <origin xyz="0.001734 -0.0638 -0.198818" rpy="0 0 0"/>
+        <geometry>
+        <mesh filename="package://models/robot/grippers/meshes/Cubrimiento_v1_1_1_1.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
     </collision>
   </link>
-  <joint name="L_ring_DIP_joint" type="revolute">
-    <origin rpy="-0.039748 0 0" xyz="0.0015355 0.030445 -0.010275"/>
-    <parent link="L_ring_proximal"/>
-    <child link="L_ring_distal"/>
-    <axis xyz="-1 0 0"/>
-    <limit effort="50" lower="0" upper="1.6" velocity="1"/>
-  </joint>
-  <link name="L_pinky_proximal">
+
+  <link name="left_gripper_left_sensor">
+  <inertial>
+    <origin xyz="-2.7015164315432813e-07 -0.0002224255430176153 -0.02432467850062109" rpy="0 0 0"/>
+    <mass value="0.007344505396044044"/>
+    <inertia ixx="2e-06" iyy="3e-06" izz="1e-06" ixy="0.0" iyz="0.0" ixz="0.0"/>
+  </inertial>
+  </link>
+
+  <link name="left_gripper_right_sensor">
+  <inertial>
+    <origin xyz="-2.7081921331103403e-07 0.00022179689568571637 -0.024324678500620617" rpy="0 0 0"/>
+    <mass value="0.007344505396044034"/>
+    <inertia ixx="2e-06" iyy="3e-06" izz="1e-06" ixy="0.0" iyz="-0.0" ixz="0.0"/>
+  </inertial>
+  </link>
+
+  <link name="left_gripper_right_zip">
     <inertial>
-      <origin rpy="0 0 0" xyz="0.013546 0.011884 -0.0016957"/>
-      <mass value="0.0042405"/>
-      <inertia ixx="6.9402E-07" ixy="1.4088E-11" ixz="-2.5363E-12" iyy="2.3041E-07" iyz="9.1802E-08" izz="6.4342E-07"/>
+        <origin xyz="-0.00636496092263452 -0.023474216979132344 0.0017881005644936054" rpy="0 0 0"/>
+        <mass value="0.1674750199260278"/>
+        <inertia ixx="4.9e-05" iyy="2.2e-05" izz="4.7e-05" ixy="4e-06" iyz="4e-06" ixz="2e-06"/>
     </inertial>
     <visual>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
-      <geometry>
-        <mesh filename="package://inspire_hands/inspire_hand_l/meshes/L_pinky_proximal.STL"/>
-      </geometry>
-      <material name="">
-        <color rgba="1 1 1 1"/>
-      </material>
+        <origin xyz="0.018934 -0.050675 -0.117818" rpy="0 0 0"/>
+        <geometry>
+        <mesh filename="package://models/robot/grippers/meshes/CremalleraRight_v1_1.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="DarkGray">
+          <color rgba="0.21176470588235294 0.21568627450980393 0.21568627450980393 1.0"/>
+        </material>
     </visual>
-    <collision>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
-      <geometry>
-        <mesh filename="package://inspire_hands/inspire_hand_l/meshes/L_pinky_proximal.STL"/>
-      </geometry>
-    </collision>
   </link>
-  <joint name="L_pinky_MCP_joint" type="revolute">
-    <origin rpy="-4.462392654 -0.10472 0" xyz="-0.044744 -0.00017 0.1337"/>
-    <!--origin rpy="-1.3208 0.10472 3.1416" xyz="-0.033256 -0.24897 -0.23673"/-->
-    <parent link="L_hand_base_link"/>
-    <child link="L_pinky_proximal"/>
-    <axis xyz="-1 0 0"/>
-    <limit effort="50" lower="0" upper="1.7" velocity="1"/>
-  </joint>
-  <link name="L_pinky_distal">
+
+  <link name="left_gripper_left_zip">
     <inertial>
-      <origin rpy="0 0 0" xyz="0.013546 0.016245 -0.0022219"/>
-      <mass value="0.0036036"/>
-      <inertia ixx="4.4881E-07" ixy="-2.6544E-12" ixz="2.0643E-12" iyy="1.2252E-07" iyz="1.3507E-07" izz="3.8703E-07"/>
+        <origin xyz="0.006364419951778243 0.0234745883318001 0.0017881005644944103" rpy="0 0 0"/>
+        <mass value="0.1674750199260278"/>
+        <inertia ixx="4.9e-05" iyy="2.2e-05" izz="4.7e-05" ixy="4e-06" iyz="-4e-06" ixz="-2e-06"/>
     </inertial>
     <visual>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
-      <geometry>
-        <mesh filename="package://inspire_hands/inspire_hand_l/meshes/L_pinky_distal.STL"/>
-      </geometry>
-      <material name="">
-        <color rgba="1 1 1 1"/>
-      </material>
+        <origin xyz="-0.020266 0.049325 -0.117818" rpy="0 0 0"/>
+        <geometry>
+        <mesh filename="package://models/robot/grippers/meshes/CremalleraLeft_1.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="DarkGray">
+          <color rgba="0.21176470588235294 0.21568627450980393 0.21568627450980393 1.0"/>
+        </material>
+    </visual>
+  </link>
+
+  <link name="left_gripper_left_paddle">
+    <inertial>
+        <origin xyz="-0.023748095176504152 -0.018191411309244364 0.026797537734581406" rpy="0 0 0"/>
+        <mass value="0.3072105701261476"/>
+        <inertia ixx="0.000219" iyy="0.000271" izz="0.000149" ixy="-3.9e-05" iyz="4.8e-05" ixz="9.7e-05"/>
+    </inertial>
+    <visual>
+        <origin xyz="-0.040466 0.042399 -0.129818" rpy="0 0 0"/>
+        <geometry>
+        <mesh filename="package://models/robot/grippers/meshes/Conjunto_Herramientas_v2_1_1_1.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="DarkGray">
+          <color rgba="0.21176470588235294 0.21568627450980393 0.21568627450980393 1.0"/>
+        </material>
+    </visual>
+  </link>
+
+  <link name="left_gripper_right_paddle">
+    <inertial>
+        <origin xyz="0.02374755420564724 0.01819078266191282 0.02679753773458035" rpy="0 0 0"/>
+        <mass value="0.30721057012614517"/>
+        <inertia ixx="0.000219" iyy="0.000271" izz="0.000149" ixy="-3.9e-05" iyz="-4.8e-05" ixz="-9.7e-05"/>
+    </inertial>
+    <visual>
+        <origin xyz="0.039134 -0.04375 -0.129818" rpy="0 0 0"/>
+        <geometry>
+        <mesh filename="package://models/robot/grippers/meshes/Conjunto_Herramientas_v2__1__1_1_1.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="DarkGray">
+          <color rgba="0.21176470588235294 0.21568627450980393 0.21568627450980393 1.0"/>
+        </material>
+    </visual>
+  </link>
+
+  <link name="left_gripper_left_cover">
+    <inertial>
+        <origin xyz="-2.70819310323276e-07 0.001712220978038019 -0.022800131552071917" rpy="0 0 0"/>
+        <mass value="0.009556121937797202"/>
+        <inertia ixx="2e-06" iyy="4e-06" izz="2e-06" ixy="-0.0" iyz="-0.0" ixz="0.0"/>
+    </inertial>
+    <visual>
+        <origin xyz="-0.003066 0.062449 -0.198818" rpy="0 0 0"/>
+        <geometry>
+        <mesh filename="package://models/robot/grippers/meshes/Cubrimiento_v1__1__1_1_1.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="LightGray">
+          <color rgba="0.7 0.7 0.7 1.0"/>
+        </material>
     </visual>
     <collision>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
-      <geometry>
-        <mesh filename="package://inspire_hands/inspire_hand_l/meshes/L_pinky_distal.STL"/>
-      </geometry>
+        <origin xyz="-0.003066 0.062449 -0.198818" rpy="0 0 0"/>
+        <geometry>
+        <mesh filename="package://models/robot/grippers/meshes/Cubrimiento_v1__1__1_1_1.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
     </collision>
   </link>
-  <joint name="L_pinky_DIP_joint" type="revolute">
-    <origin rpy="0.037691 0 0" xyz="0 0.030445 -0.010275"/>
-    <parent link="L_pinky_proximal"/>
-    <child link="L_pinky_distal"/>
-    <axis xyz="-1 0 0"/>
-    <limit effort="50" lower="0" upper="1.6" velocity="1"/>
+
+  <joint name="left_gripper_base_link_to_body" type="fixed">
+    <origin xyz="0.000666 0.000675 0.0" rpy="0 0 0"/>
+    <parent link="left_gripper_base_link"/>
+    <child link="left_gripper_chasis"/>
   </joint>
-  <joint name="left_hand_base_joint" type="fixed">
-    
-    <origin rpy="0 0 0" xyz="0 0 0.0"/> <!--OFFSET DE 0.9 CM DEL SOPORTE DE ROBOTNIK-->
-    <!--origin rpy="3.141592653589793 0 3.141592653589793" xyz="-0.0783 0.2488 -0.10305"/-->
-    <parent link="rb1_left_arm_tool0"/>
-    <child link="L_hand_base_link"/>
+
+  <joint name="left_gripper_RigidRight" type="fixed">
+    <origin xyz="-0.00635 0.04 0.09" rpy="0 0 0"/>
+    <parent link="left_gripper_chasis"/>
+    <child link="left_gripper_right_guia"/>
   </joint>
-  <!--Fin Parte Manos-->
+
+  <joint name="left_gripper_RightPaddle" type="prismatic">
+    <origin xyz="-0.112068 0.000675 -0.014684" rpy="0 0 0"/>
+    <parent link="left_gripper_right_guia"/>
+    <child link="left_gripper_right_pieza_movil"/>
+    <axis xyz="0.0 -1.0 0.0"/>
+    <limit upper="0.035" lower="0.0" effort="100" velocity="100"/>
+  </joint>
+
+  <joint name="left_gripper_RigidLeft" type="fixed">
+    <origin xyz="0.00635 -0.04 0.09" rpy="0 0 0"/>
+    <parent link="left_gripper_chasis"/>
+    <child link="left_gripper_left_guia"/>
+  </joint>
+
+  <joint name="left_gripper_LeftPaddle" type="prismatic">
+    <origin xyz="0.112068 0.000675 -0.016016" rpy="0 0 0"/>
+    <parent link="left_gripper_left_guia"/>
+    <child link="left_gripper_left_pieza_movil"/>
+    <axis xyz="-0.0 -1.0 -0.0"/>
+    <limit upper="0.0" lower="-0.035" effort="100" velocity="100"/>
+  </joint>
+
+  <joint name="left_gripper_Rigid 119" type="fixed">
+    <origin xyz="0.005 -0.0148 0.053" rpy="0 0 0"/>
+    <parent link="left_gripper_chasis"/>
+    <child link="left_gripper_servo"/>
+  </joint>
+
+  <joint name="left_gripper_Rigid 120" type="fixed">
+    <origin xyz="-0.004765 0.013919 0.014055" rpy="0 0 0"/>
+    <parent link="left_gripper_servo"/>
+    <child link="left_gripper_fsh-6w"/>
+  </joint>
+
+  <joint name="left_gripper_Rigid 121" type="fixed">
+    <origin xyz="0.0075 0.0 0.00221" rpy="0 0 0"/>
+    <parent link="left_gripper_fsh-6w"/>
+    <child link="left_gripper_healical_gear"/>
+  </joint>
+
+  <joint name="left_gripper_Rigid 122" type="fixed">
+    <origin xyz="0.0257 0.0 0.01" rpy="0 0 0"/>
+    <parent link="left_gripper_chasis"/>
+    <child link="left_gripper_left_case"/>
+  </joint>
+
+  <joint name="left_gripper_Rigid 123" type="fixed">
+    <origin xyz="-0.0257 0.0 0.01" rpy="0 0 0"/>
+    <parent link="left_gripper_chasis"/>
+    <child link="left_gripper_right_case"/>
+  </joint>
+
+  <joint name="left_gripper_Rigid 129" type="fixed">
+    <origin xyz="0.0374 0.02005 0.069" rpy="0 0 0"/>
+    <parent link="left_gripper_right_paddle"/>
+    <child link="left_gripper_right_cover"/>
+  </joint>
+
+  <joint name="left_gripper_Rigid 130" type="fixed">
+    <origin xyz="0.0374 0.02005 0.069" rpy="0 0 0"/>
+    <parent link="left_gripper_right_paddle"/>
+    <child link="left_gripper_right_sensor"/>
+  </joint>
+
+  <joint name="left_gripper_Rigid 131" type="fixed">
+    <origin xyz="-0.0374 -0.02005 0.069" rpy="0 0 0"/>
+    <parent link="left_gripper_left_paddle"/>
+    <child link="left_gripper_left_sensor"/>
+  </joint>
+
+  <joint name="left_gripper_Rigid 132" type="fixed">
+    <origin xyz="0.098818 0.009325 0.024934" rpy="0 0 0"/>
+    <parent link="left_gripper_right_pieza_movil"/>
+    <child link="left_gripper_right_zip"/>
+  </joint>
+
+  <joint name="left_gripper_Rigid 133" type="fixed">
+    <origin xyz="-0.098818 -0.010675 0.026266" rpy="0 0 0"/>
+    <parent link="left_gripper_left_pieza_movil"/>
+    <child link="left_gripper_left_zip"/>
+  </joint>
+
+  <joint name="left_gripper_Rigid 134" type="fixed">
+    <origin xyz="0.0202 0.006926 0.012" rpy="0 0 0"/>
+    <parent link="left_gripper_left_zip"/>
+    <child link="left_gripper_left_paddle"/>
+  </joint>
+
+  <joint name="left_gripper_Rigid 135" type="fixed">
+    <origin xyz="-0.0202 -0.006925 0.012" rpy="0 0 0"/>
+    <parent link="left_gripper_right_zip"/>
+    <child link="left_gripper_right_paddle"/>
+  </joint>
+
+  <joint name="left_gripper_Rigid 136" type="fixed">
+    <origin xyz="-0.0374 -0.02005 0.069" rpy="0 0 0"/>
+    <parent link="left_gripper_left_paddle"/>
+    <child link="left_gripper_left_cover"/>
+  </joint>
+  
+  <!--Fin Parte Gripper-->
 
   <!-- 1. From rb1_base_footprint to shoulder_link -->
   <link name="shoulder_link">
-    <inertial>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
-      <mass value="0.0"/>
-      <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/>
-    </inertial>
     <visual>
       <origin rpy="0 0 1.57079632" xyz="0.115 0 0"/>
       <geometry>
@@ -2085,20 +2041,15 @@
 
   <!-- 2. From shoulder_link to joint_support_link -->
   <link name="joint_support_link">
-  <inertial>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
-      <mass value="0.0"/>
-      <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/>
-    </inertial>
     <visual>
-        <origin rpy="1.57079632 0 0" xyz="0 0.02 0"/>
-        <geometry>
-          <mesh filename="package://rb1_base_description/meshes/others/camera_support3.stl" scale="0.0254 0.0254 0.0254"/>
-        </geometry>
-        <material name="">
-          <color rgba="1 1 1 1"/>
-        </material>
-      </visual>
+      <origin rpy="1.57079632 0 0" xyz="0 0.02 0"/>
+      <geometry>
+        <mesh filename="package://rb1_base_description/meshes/others/camera_support3.stl" scale="0.0254 0.0254 0.0254"/>
+      </geometry>
+      <material name="">
+        <color rgba="1 1 1 1"/>
+      </material>
+    </visual>
   </link>
   <joint name="shoulder_to_support_joint" type="revolute">
     <origin xyz="0.115 0 0.030" rpy="0 0.785398 0" /> <!-- π/4 = 0.785398 -->
@@ -2110,11 +2061,6 @@
 
   <!-- 3. From joint_support_link to support_end_link -->
   <link name="support_end_link">
-  <inertial>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
-      <mass value="0.0"/>
-      <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/>
-    </inertial>
     <visual>
       <origin rpy="1.57079632 0 -1.57079632" xyz="-0.01 0 0"/>
       <geometry>
@@ -2132,27 +2078,15 @@
   </joint>
 
   <!-- 4. From support_end_link to camera_link -->
-  <link name="rgbd_link">
-    <inertial>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
-      <mass value="0.0"/>
-      <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/>
-    </inertial>
-  </link>
+  <link name="rgbd_link"/>
   <joint name="support_end_to_rgbd" type="fixed">
     <parent link="support_end_link"/>
     <child link="rgbd_link"/>
     <origin xyz="0.01803 0.0175 0" rpy="-1.5708 0 -1.5708"/> <!-- -π/2 -->
   </joint>
 
-
   <!-- 5. From support_end_link to camera_link -->
   <link name="camera_link">
-    <inertial>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
-      <mass value="0.0"/>
-      <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/>
-    </inertial>
     <visual>
       <origin rpy="0 0 0" xyz="-0.01803 0 -0.0027"/>
       <geometry>
@@ -2258,5 +2192,33 @@
     <axis rpy="0 0 0" xyz="0 0 1"/>
   </joint>
 
-</robot>
+<!-- Gripper TCP-->
+  <link name="left_gripper_tool0">
+    <inertial>
+      <mass value="0.00"/>
+      <origin rpy="0 0 0" xyz="0.0 0.0 0.0"/>
+      <inertia ixx="0.0" ixy="0.0" ixz="0.0" iyy="0.0" iyz="0.0" izz="0.0"/>
+    </inertial>
+  </link>
 
+  <link name="right_gripper_tool0">
+    <inertial>
+      <mass value="0.00"/>
+      <origin rpy="0 0 0" xyz="0.0 0.0 0.0"/>
+      <inertia ixx="0.0" ixy="0.0" ixz="0.0" iyy="0.0" iyz="0.0" izz="0.0"/>
+    </inertial>
+  </link>
+  
+  <joint name="left_gripper_base_joint" type="fixed">
+    <origin rpy="0.0 0.0 0.0" xyz="0.0 0.0 0.159"/>
+    <parent link="left_gripper_base_link"/>
+    <child link="left_gripper_tool0"/>
+  </joint>
+
+    <joint name="right_gripper_base_joint" type="fixed">
+    <origin rpy="0.0 0.0 0.0" xyz="0.0 0.0 0.159"/>
+    <parent link="right_gripper_base_link"/>
+    <child link="right_gripper_tool0"/>
+  </joint>
+
+</robot>

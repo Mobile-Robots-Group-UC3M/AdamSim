@@ -1,19 +1,11 @@
 #!/usr/bin/env python3
 
 import rospy
-import pybullet as p
 from scripts.adam import ADAM
 import os
-import time
 
-# URDF robot path and create ADAM instance
-base_path = os.path.dirname(__file__)
-robot_urdf_path = os.path.join(base_path,"..","models","robot", "rb1_base_description", "robots", "robotDummy.urdf")
-adam = ADAM(robot_urdf_path, useRealTimeSimulation=True, used_fixed_base=True)
-
-# Print robot information
-#adam.print_robot_info()
-
+# Create ADAM instance
+adam = ADAM(end_effector="inspire_hands", use_realtime=True, use_fixed_base=True, use_ros=True)
 
 # Simulation loop
 while not rospy.is_shutdown():

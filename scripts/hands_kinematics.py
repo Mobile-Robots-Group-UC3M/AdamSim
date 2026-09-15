@@ -18,6 +18,7 @@ class HandsKinematics():
         self.num_hand_joints = len(self.joint_names)
         self.num_dofs = 6
         self.dof_range = [0, 1000]
+        self.finger_names = ['pinky', 'ring', 'middle', 'index', 'thumb', 'thumb_abd']
 
         # Process hand link information to create mappings for contact checking
         self.links_in_dofs = {'right': {}, 'left': {}}
