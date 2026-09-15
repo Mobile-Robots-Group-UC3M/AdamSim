@@ -1,3 +1,6 @@
+> [!IMPORTANT]
+> **UPDATE:** Grippers module is now available in `dev-gon` branch. Merge to `main` branch coming soon!
+
 # **ADAMSim: PyBullet-Based Simulation Environment for Research on Domestic Mobile Manipulator Robots**
 
 <p align="center">
