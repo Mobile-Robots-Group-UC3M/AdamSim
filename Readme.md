@@ -91,7 +91,7 @@ Do not forget to source!:
  ```
 
 
-### 3. First-Time ROS Workspace Compilation
+### First-Time ROS Workspace Compilation
 Upon launching the container for the first time, compile the embedded ROS 1 `catkin_ws` (which contains services for the Inspire Hands RH56DFX):
 
 ```bash
