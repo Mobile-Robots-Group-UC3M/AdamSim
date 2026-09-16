@@ -34,45 +34,61 @@ Using Docker allows running ROS 1 Noetic seamlessly on modern systems (e.g., Ubu
    cd AdamSim
    ```
 
-### 1. Build the Docker Image
-
-From the repository root, build the Docker image:
-  
-   ```bash
-   docker build -t adamsim .
-   ```
-
-### 2. Launching the Container
-
-You can launch the container using **VS Code Dev Containers** or via the **Terminal using `rocker`**.
-
-#### **Method 1: VS Code Dev Containers (One-Click)**
+### Method 1: VS Code Dev Containers (One-Click) (Recommended)
 
 1. Install the **Dev Containers** extension in VS Code (`ms-vscode-remote.remote-containers`).
 2. Open the `AdamSim` project folder in VS Code.
 3. Click on the notification in the bottom right corner **"Reopen in Container"** (or press `F1` and select `Dev Containers: Reopen in Container`).
 4. VS Code will automatically start the container with full GUI/NVIDIA support and open an integrated terminal inside `/workspace`.
+5. (If you update the `Dockerfile`): Press `F1` and select `Dev Containers: Rebuild and Reopen in Container` to apply your changes.
 
-#### **Method 2: Terminal using `rocker`**
-If you prefer running from the command line, install [`rocker`](https://github.com/ros-infrastructure/rocker) (`pip install rocker`) to handle X11 GUI forwarding and NVIDIA GPU acceleration automatically:
+### Method 2: Terminal method with alias
 
-```bash
-rocker --x11 --nvidia auto --network host \
-  --volume $(pwd):/workspace \
-  --env __NV_PRIME_RENDER_OFFLOAD=1 \
-  --env __GLX_VENDOR_LIBRARY_NAME=nvidia \
-  -- adamsim
-```
+#### 1. Build the Docker Image
 
-> **Tip (Recommended Alias):** To avoid typing the full command every time, add an alias to your host machine's `~/.bashrc`:
-> ```bash
-> echo "alias adamsim='rocker --x11 --nvidia auto --network host --volume \$(pwd):/workspace --env __NV_PRIME_RENDER_OFFLOAD=1 --env __GLX_VENDOR_LIBRARY_NAME=nvidia -- adamsim'" >> ~/.bashrc
-> source ~/.bashrc
-> ```
-> Once configured, you can launch the container from inside your `AdamSim` repository directory simply by running:
-> ```bash
-> adamsim
-> ```
+From the repository root, build the Docker image:
+  
+   ```bash
+   cd Adamsim
+   docker build -t adamsim .
+   ```
+
+#### 2. Create the alias
+
+To avoid typing the full command every time, add an alias to your host machine's `~/.bashrc`:
+
+ ```bash
+ alias adamsim='xhost +local:root > /dev/null && docker run -it --rm \
+ --net=host \
+ --ipc=host \
+ --gpus=all \
+ -e DISPLAY=$DISPLAY \
+ -v /tmp/.X11-unix:/tmp/.X11-unix:rw \
+ -e __NV_PRIME_RENDER_OFFLOAD=1 \
+ -e __GLX_VENDOR_LIBRARY_NAME=nvidia \
+ -e NVIDIA_VISIBLE_DEVICES=all \
+ -e NVIDIA_DRIVER_CAPABILITIES=graphics,utility,compute \
+ -e ROS_MASTER_URI=http://localhost:11311 \
+ -e ROS_IP=127.0.0.1 \
+ -e PYTHONPATH=/workspace \
+ -v "$(pwd)":/workspace \
+ -w /workspace \
+ adamsim bash -c "rosdep update && if [ -d /workspace/catkin_ws/src ]; then rosdep install --from-paths /workspace/catkin_ws/src --ignore-src -r -y; fi; exec bash"'
+ ```
+Do not forget to source!:
+
+ ```bash
+ source ~/.bashrc
+ ```
+
+#### 3. Run the docker
+
+ Once configured, you can launch the container from inside your `AdamSim` repository directory simply by running:
+ 
+ ```bash
+ cd Adamsim
+ adamsim
+ ```
 
 
 ### 3. First-Time ROS Workspace Compilation
