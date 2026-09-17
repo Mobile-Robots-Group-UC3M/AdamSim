@@ -1,5 +1,5 @@
 > [!IMPORTANT]
-> **UPDATE:** Grippers module is now available in `dev-gon` branch. Merge to `main` branch coming soon!
+> **UPDATE:** Grippers module is now available! Check `examples/example_grippers.py` that tests the new ADAM URDF model with the Duck Grippers.
 
 # **ADAMSim: PyBullet-Based Simulation Environment for Research on Domestic Mobile Manipulator Robots**
 
