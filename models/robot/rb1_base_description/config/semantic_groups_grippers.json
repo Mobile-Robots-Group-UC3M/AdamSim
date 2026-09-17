@@ -1,0 +1,50 @@
+{
+    "arms": {
+        "right": [
+            "rb1_right_arm_shoulder_pan_joint",
+            "rb1_right_arm_shoulder_lift_joint",
+            "rb1_right_arm_elbow_joint",
+            "rb1_right_arm_wrist_1_joint",
+            "rb1_right_arm_wrist_2_joint",
+            "rb1_right_arm_wrist_3_joint"
+        ],
+        "left": [
+            "rb1_left_arm_shoulder_pan_joint",
+            "rb1_left_arm_shoulder_lift_joint",
+            "rb1_left_arm_elbow_joint",
+            "rb1_left_arm_wrist_1_joint",
+            "rb1_left_arm_wrist_2_joint",
+            "rb1_left_arm_wrist_3_joint"
+        ]
+    },
+    "hands": {
+        "right": [
+            "right_gripper_RightPaddle",
+            "right_gripper_LeftPaddle"
+        ],
+        "left": [
+            "left_gripper_RightPaddle",
+            "left_gripper_LeftPaddle"
+        ]
+    },
+    "torso": [
+        "rb1_torso_base_collision_link",
+        "rb1_torso_chest_collision_link",
+        "rb1_torso_shoulders_collision_link"
+    ],
+    "special_links": {
+        "right_ee": "rb1_right_arm_ee_link",
+        "left_ee": "rb1_left_arm_ee_link",
+        "right_hand_base": "right_gripper_base_link",
+        "left_hand_base": "left_gripper_base_link",
+        "right_dummy": "right_gripper_tool0",
+        "left_dummy": "left_gripper_tool0",
+        "camera_joint": "shoulder_to_support_joint",
+        "camera_link": "camera_link",
+        "laser_link": "rb1_front_laser_link"
+    },
+    "wheels": {
+        "right": "rb1_right_wheel_joint",
+        "left": "rb1_left_wheel_joint"
+    }
+}

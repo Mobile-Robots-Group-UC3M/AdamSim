@@ -1,16 +1,9 @@
 import os
 from scripts.adam import ADAM
 
-
-# URDF robot path
-base_path = os.path.dirname(__file__)
-robot_urdf_path = os.path.join(base_path,"..","models","robot", "rb1_base_description", "robots", "robotDummy.urdf")
-
 # Create ADAM instance
-adam = ADAM(robot_urdf_path, useRealTimeSimulation=True, used_fixed_base=True, use_ros=False)
+adam = ADAM(end_effector="grippers", use_realtime=True, use_fixed_base=True, use_ros=False)
 
-# Print robot information
-# adam.print_robot_info()
 
 # Define right arm poses
 pose_r0 = [[0.1747363805770874, -0.5190918445587158, 1.5269604921340942], [0.13088582456111908, 0.13149239122867584, -0.6327640414237976, 0.7517901062965393]]
@@ -32,9 +25,8 @@ adam.utils.draw_frame(pose_l0, axis_length=0.1, line_width=4)
 adam.utils.draw_frame(pose_l1, axis_length=0.1, line_width=4)
 adam.utils.draw_frame(pose_l2, axis_length=0.1, line_width=4)
 
-# Initialise hands
-adam.hand_kinematics.move_hand_to_dofs('right', [1000, 1000, 1000, 1000, 1000, 0])
-adam.hand_kinematics.move_hand_to_dofs('left', [1000, 1000, 1000, 1000, 1000, 0])
+# Initialise grippers
+adam.grippers.set_pos('both', target_pos=0.0, normalised=True)
 adam.wait(1)
 
 
@@ -42,21 +34,24 @@ while True:
 
     # INSERT YOUR SIMULATION LOOP CODE HERE
 
-    adam.arm_kinematics.move_arm_to_multiple_poses(arm='both',
-                                                   target_link='hand',
-                                                   poses_arm1=[pose_r0, pose_r1, pose_r2],
-                                                   poses_arm2=[pose_l0, pose_l1, pose_l2])
-    
+    adam.arm_kinematics.move_arm_to_pose_continuous(arm='right', target_pose=pose_r0, target_link='hand')
+    adam.arm_kinematics.move_arm_to_pose_continuous(arm='left', target_pose=pose_l0, target_link='hand')
     adam.wait(1)
 
-    # Close hands
-    adam.hand_kinematics.move_hand_to_dofs('right', [500, 500, 500, 500, 500, 0])
-    adam.hand_kinematics.move_hand_to_dofs('left', [500, 500, 500, 500, 500, 0])
+    adam.arm_kinematics.move_arm_to_pose_continuous(arm='right', target_pose=pose_r1, target_link='hand')
+    adam.arm_kinematics.move_arm_to_pose_continuous(arm='left', target_pose=pose_l1, target_link='hand')
     adam.wait(1)
 
-    # Open hands
-    adam.hand_kinematics.move_hand_to_dofs('right', [1000, 1000, 1000, 1000, 1000, 0])
-    adam.hand_kinematics.move_hand_to_dofs('left', [1000, 1000, 1000, 1000, 1000, 0])
+    adam.arm_kinematics.move_arm_to_pose_continuous(arm='right', target_pose=pose_r2, target_link='hand')
+    adam.arm_kinematics.move_arm_to_pose_continuous(arm='left', target_pose=pose_l2, target_link='hand')
+    adam.wait(1)
+
+    # Close grippers
+    adam.grippers.set_pos('both', target_pos=1.0, normalised=True)
+    adam.wait(1)
+
+    # Open grippers
+    adam.grippers.set_pos('both', target_pos=0.0, normalised=True)
     adam.wait(1)
 
     adam.step()

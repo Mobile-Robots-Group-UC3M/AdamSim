@@ -3,6 +3,9 @@
   "build": {
     "dockerfile": "../Dockerfile"
   },
+
+  "initializeCommand": "xhost +local:root",
+
   "workspaceFolder": "/workspace",
   "workspaceMount": "source=${localWorkspaceFolder},target=/workspace,type=bind",
   

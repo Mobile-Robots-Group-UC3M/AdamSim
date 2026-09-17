@@ -18,3 +18,6 @@ catkin_ws/.catkin_workspace
 
 # OS generated files
 .DS_Store
+
+# Object files
+models/objects/

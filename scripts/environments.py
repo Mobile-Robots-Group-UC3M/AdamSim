@@ -22,9 +22,9 @@ class Environment:
 
         #STL PATH
         if obj_dir is None:
-            obj_dir = os.path.join(os.path.expanduser("~"), "tfg-carmen/TFGenvironmentsAdamSim", "models", "objects")
-            #obj_dir = os.path.join(os.path.expanduser("~"), "AdamSim", "models", "objects")
-            print(obj_dir)
+            base_path = os.path.dirname(os.path.abspath(__file__))
+            obj_dir = os.path.join(base_path,"..","models", "objects")
+
         self.OBJ_DIR = obj_dir
 
         #self.WALL_STL = os.path.join(self.OBJ_DIR, "wall.2.stl")
@@ -1277,16 +1277,16 @@ class Environment:
         offset = self.step * 0.25
         current_pos, _ = p.getBasePositionAndOrientation(self.adam.robot_id)
         if front_side == "N":
-            robot_pos = [room_center[0], room_center[1] - offset, current_pos[2]]
+            robot_pos = [room_center[0], room_center[1] - offset, 0.05]
             robot_orn = self.qdeg(0, 0, 270)
         elif front_side == "S":
-            robot_pos = [room_center[0], room_center[1] + offset, current_pos[2]]
+            robot_pos = [room_center[0], room_center[1] + offset, 0.05]
             robot_orn = self.qdeg(0, 0, 180)
         elif front_side == "E":
-            robot_pos = [room_center[0] - offset, room_center[1], current_pos[2]]
+            robot_pos = [room_center[0] - offset, room_center[1], 0.05]
             robot_orn = self.qdeg(0, 0, 90)
         else: #W
-            robot_pos = [room_center[0]+ offset, room_center[1], current_pos[2]]
+            robot_pos = [room_center[0]+ offset, room_center[1], 0.05]
             robot_orn = self.qdeg(0, 0, 0)
         p.resetBasePositionAndOrientation(self.adam.robot_id, robot_pos, robot_orn)
         
@@ -1306,38 +1306,3 @@ class Environment:
         #p.loadURDF(os.path.join(self.OBJ_DIR, "kitchen/chica/FemaleVisitor.urdf"), basePosition=[4.0, 7.0, 0], baseOrientation=self.qdeg(0, 0, 0), useFixedBase=True)
 
         return self.data
-    
-
-
-if __name__ == "__main__":
-    env = Environment()
-    
-    env.generate_home(
-        seed=None, 
-        max_home_regens=300, 
-        room_config={
-            "kitchen"   :1,
-            "bathrooms" :1,
-            "bedroom1"  :1,
-            "bedroom2"  :1,
-            "dining"    :1
-
-        },
-        floor_color=None, 
-        wall_color=None, 
-        show_info=True
-    )
-
-    env.generate_objects (
-        urdf_file="bedroom1/vaso/vaso.urdf",
-        room_name="Bedroom1",
-        position= [-0.2, 1.1, 0.0],
-        orientation_deg= (0, 0, 0),
-        support="Table1",
-        clearance=-0.005
-    )
-    while True:
-        p.stepSimulation()
-        time.sleep(1.0 / 240.0)
-
-        

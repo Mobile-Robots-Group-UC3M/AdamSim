@@ -9,20 +9,18 @@ class Sensors():
     def __init__(self, adam):
         self.adam = adam
         self.camera_angle = 0
-        self.camera_joint_index = 69
-        self.link_index = 72
-        self.laser_joint_index = 8
         
-        self.ray_ids = []
-        self.num_rays = int(270/0.25)
-
         self.move_camera_angle(self.camera_angle)
 
 
-    def start_lidar(self):
+    def start_lidar(self, num_rays=int(270/0.25)):
         '''
         Start Lidar rays
         '''
+
+        self.num_rays = num_rays
+        self.ray_ids = []
+
         for _ in range(self.num_rays): self.ray_ids.append(p.addUserDebugLine([0, 0, 0], [0, 0, 0], [0, 1, 0]))
 
 
@@ -41,7 +39,7 @@ class Sensors():
         '''
 
         # Get link world position and orientation
-        link_state = p.getLinkState(self.adam.robot_id, self.link_index)
+        link_state = p.getLinkState(self.adam.robot_id, self.adam.camera_link_index)
         cam_pos = link_state[0]
         cam_ori = link_state[1]
 
@@ -97,19 +95,24 @@ class Sensors():
         Args:
             angle (float): The camera angle in degrees. Must be between -45 and 45 degrees.
         '''
-
-        # Save camera angle
         self.camera_angle = angle
-
         angle_rad = np.deg2rad(self.camera_angle)
 
-        if angle_rad > np.pi/4 or angle_rad < -np.pi/4: raise ValueError("Angle must be between -pi/4 and pi/4")
+        if angle_rad > np.pi/4 or angle_rad < -np.pi/4: 
+            raise ValueError("Angle must be between -pi/4 and pi/4")
 
-        # Move camera joint to the specified angle
-        p.setJointMotorControl2(self.adam.robot_id, self.camera_joint_index, p.POSITION_CONTROL, (np.pi/4 + angle_rad))
-        p.stepSimulation()
+        # Se añaden force y maxVelocity para garantizar el movimiento del motor
+        p.setJointMotorControl2(
+            bodyUniqueId=self.adam.robot_id, 
+            jointIndex=self.adam.camera_joint_index, 
+            controlMode=p.POSITION_CONTROL, 
+            targetPosition=(np.pi/4 + angle_rad),
+            force=50.0,
+            maxVelocity=2.0
+        )
+        if not self.adam.use_realtime:
+            p.stepSimulation()
         time.sleep(self.adam.t)
-
 
     def get_camera_angle(self):
         '''
@@ -117,9 +120,7 @@ class Sensors():
         Returns:
             camera_angle (float): The camera angle in degrees.
         '''
-
-        joint_state = p.getJointState(self.adam.robot_id, self.camera_joint_index)
-
+        joint_state = p.getJointState(self.adam.robot_id, self.adam.camera_joint_index)
         return np.rad2deg(joint_state[0]) - 45
     
     def simulated_lidar(self,ray_length=10):
@@ -128,13 +129,16 @@ class Sensors():
         Args:
             ray_length (float): The length of the rays in meters.
         '''
+
+        if not self.num_rays: raise ValueError("LiDAR not initialized. Call start_lidar() first.")
+
         self.ray_length = ray_length
         self.ray_hit_color = [1, 0, 0]
         self.ray_miss_color = [0, 1, 0]
 
         p.stepSimulation()
 
-        link_state = p.getLinkState(self.adam.robot_id,self.laser_joint_index)
+        link_state = p.getLinkState(self.adam.robot_id, self.adam.laser_link_index  )
 
         laser_pos = link_state[0]
         laser_ori = link_state[1]

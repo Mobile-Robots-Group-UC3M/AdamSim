@@ -1,12 +1,8 @@
-import os
 from scripts.adam import ADAM
-import pybullet as p
 
 # Create ADAM instance
-adam = ADAM(useRealTimeSimulation=True, used_fixed_base=False, use_ros=False)
-
-# Print robot information
-adam.print_robot_info(save=True, filename='robot_info.json')
+# adam = ADAM(end_effector="grippers", use_realtime=True, use_fixed_base=False, use_ros=False)
+adam = ADAM(end_effector="inspire_hands", use_realtime=True, use_fixed_base=False, use_ros=False) # With inspire hands
 
 
 while True:

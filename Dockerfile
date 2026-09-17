@@ -14,7 +14,8 @@ RUN apt-get update && apt-get install -y \
     ros-noetic-serial \
     && rm -rf /var/lib/apt/lists/*
 
-# 2. Instalar paquetes de Python necesarios
+# 2. Copiar e instalar librerías desde el requirements.txt
+
 RUN pip3 install --no-cache-dir \
     pybullet \
     -U "numpy<2.0" \
@@ -22,14 +23,19 @@ RUN pip3 install --no-cache-dir \
     pillow \
     scipy
 
+COPY installation/requirements.txt /tmp/requirements.txt
+RUN pip3 install --no-cache-dir -r /tmp/requirements.txt
+
 # 3. Variable global de Python
 ENV PYTHONPATH="${PYTHONPATH}:/workspace"
 
 # 4. Configurar el ~/.bashrc interno del contenedor
+# 4. Configurar el ~/.bashrc interno del contenedor
 RUN sed -i 's/#force_color_prompt=yes/force_color_prompt=yes/' ~/.bashrc && \
     echo "source /opt/ros/noetic/setup.bash" >> ~/.bashrc && \
     echo 'if [ -f /workspace/catkin_ws/devel/setup.bash ]; then source /workspace/catkin_ws/devel/setup.bash; fi' >> ~/.bashrc && \
-    echo 'if [ -f /workspace/setup.py ] || [ -f /workspace/pyproject.toml ]; then pip install --no-build-isolation -e /workspace >/dev/null 2>&1; fi' >> ~/.bashrc
+    echo 'if [ -f /workspace/setup.py ] || [ -f /workspace/pyproject.toml ]; then pip install --no-build-isolation -e /workspace >/dev/null 2>&1; fi' >> ~/.bashrc && \
+    echo 'export PYTHONPATH="${PYTHONPATH}:/workspace"' >> ~/.bashrc
 
 WORKDIR /workspace
 CMD ["bash"]

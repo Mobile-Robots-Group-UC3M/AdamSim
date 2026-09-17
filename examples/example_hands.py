@@ -25,21 +25,16 @@ def import_object(path, obj_pose):
                                         baseOrientation=obj_pose[1])    # Cambia la posición
 
 
-# URDF robot path
-base_path = os.path.dirname(__file__)
-robot_urdf_path = os.path.join(base_path,"..","models","robot", "rb1_base_description", "robots", "robotDummy.urdf")
-
 # Create ADAM instance
-adam = ADAM(robot_urdf_path, useRealTimeSimulation=True, used_fixed_base=True, use_ros=False)
-
-# Print robot information
-# adam.print_robot_info()
+adam = ADAM(end_effector="inspire_hands", use_realtime=True, use_fixed_base=True, use_ros=False)
+# adam = ADAM(end_effector="inspire_hands", use_realtime=True, use_fixed_base=True, use_ros=False) # With inspire hands
 
 # Load table located in pybullet_data/table
 table_path = os.path.join(pybullet_data.getDataPath(), "table", "table.urdf")
 p.loadURDF(table_path, basePosition=[0.8, 0, 0.1], baseOrientation=p.getQuaternionFromEuler([0, 0, 1.54]))
 
 # Import object
+base_path = os.path.dirname(os.path.abspath(__file__))
 object_path = os.path.join(base_path,"..","data", "models", "milk.stl")
 import_object(object_path, [[0.5, 0, 0.85], p.getQuaternionFromEuler([0,0,0])])
 
@@ -51,7 +46,7 @@ adam.utils.draw_frame(grasp_pose, axis_length=0.1, line_width=4)
 adam.utils.draw_frame(pregrasp_pose, axis_length=0.1, line_width=4)
 
 # Open hands
-adam.hand_kinematics.close_hand('right')
+adam.hand_kinematics.move_hand_to_dofs('right', [1000, 1000, 1000, 1000, 1000, 0])
 
 adam.wait(1)
 

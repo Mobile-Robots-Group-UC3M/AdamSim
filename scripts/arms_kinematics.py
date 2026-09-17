@@ -131,7 +131,7 @@ class ArmsKinematics:
         target_link_index = self.get_arm_link_index(arm, target_link)
 
         # Compute IK (iterations depend on accuracy need)
-        iterations = 1000 if accurate else 100000
+        iterations = 100000 if accurate else 1000
         ik_solution = self.calculate_arm_inverse_kinematics(self.adam.robot_id, target_link_index, target_pose, iterations=iterations)
         arm_solution = [ik_solution[i] for i in rev_joint_indices]
 
@@ -196,7 +196,7 @@ class ArmsKinematics:
                 # Check if collision is detected
                 self.adam.detect_autocollisions()
 
-                self.move_arm_to_pose_continuous(arm, pose, target_link=target_link, accurate=accurate, threshold=threshold)
+                self.move_arm_to_pose_continuous(arm, poses_arm1, target_link=target_link, accurate=accurate, threshold=threshold)
 
                 # Avanzar la simulación para que los movimientos se apliquen
                 if not self.adam.useRealTimeSimulation:
