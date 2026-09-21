@@ -209,7 +209,6 @@ Then you are ready to start controlling ADAM! Use the `adam` object to call the 
 grasp_pose = [[0.55, -0.23, 0.86], [0,0,0,1]]
 
 adam.utils.draw_grame(grasp_pose) # Visualialize pose
-
 adam.arm_kinematics.move_arm_to_pose_continuous(arm='right', grasp_pose)
 adam.wait(3) # Wait 3 seconds
 
@@ -217,7 +216,6 @@ adam.wait(3) # Wait 3 seconds
 while True:
 
   object_grasped = adam.hand_kinematics.close_hand('right')
-
   if object_grasped: break
 
   adam.step() # Continue simulation
