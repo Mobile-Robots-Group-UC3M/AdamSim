@@ -11,6 +11,25 @@
 
 This repository introduces ADAMSim, a PyBullet-based simulation environment tailored for Ambidextrous Domestic Autonomous Manipulator (ADAM), developed to support research in navigation, manipulation, and learning for domestic robotics. The simulator accurately replicates the structure and behavior of the physical robot, enabling robust sim-to-real and real-to-sim algorithm transfer. ADAMSim follows a modular design, including navigation, arm and hand kinematics, perception, and ROS communication. This architecture allows synchronized operation between the real robot and its digital twin. Several example applications were developed, ranging from vision and grasping tasks to navigation and teleoperation, including experiments running both simulated and real robots simultaneously. Its open-source and flexible design makes ADAMSim a powerful tool for safe and reproducible algorithm development and experimentation in household robotics. The platform is also intended to support future research in indoor mapping, advanced manipulation learning, and educational projects, serving as a test bed.
 
+## 📋 Table of Contents
+- [Website](#website)
+- [Installation](#installation)
+  - [Option A: Docker Setup](#option-a-docker-setup)
+    - [Prerequisites](#prerequisites)
+    - [Method 1: VS Code Dev Containers (Recommended)](#method-1-vs-code-dev-containers-one-click-recommended)
+    - [Method 2: Terminal Method with Alias](#method-2-terminal-method-with-alias)
+    - [First-Time ROS Workspace Compilation](#first-time-ros-workspace-compilation)
+  - [Option B: Native Installation](#option-b-native-installation-ubuntu-2004--ros-1-noetic)
+    - [1. Install Miniconda](#1-install-miniconda-highly-recommended)
+    - [2. Install Repository](#2-install-repository)
+    - [3. Installation of Third-Party Programs](#3-installation-of-third-party-programs)
+- [Examples & Usage](#examples--usage)
+- [TO DO](#to-do)
+- [Citation](#citation)
+  - [Acknowledgement](#acknowledgement)
+
+---
+
 # Website
 On our website, you can access video examples as well as images that showcase some of the functionalities of this simulator.
 For more information, visit our website: [ADAMSim webpage](https://mobile-robots-group-uc3m.github.io/AdamSim/)
@@ -150,7 +169,63 @@ Additionally, in case you want to use the robotic hands with the ADAM robot in t
 ```bash
 sudo apt-get install ros-<your distro>-serial
 ```
-## **TO DO**
+
+# Examples & Usage
+
+ADAMSim provides pre-built scripts in the `examples/` directory to test robot kinematics, end-effector control, and ROS integration. 
+
+> [!NOTE]  
+> If running via Docker, make sure you execute these commands inside the container terminal (either via VS Code Dev Containers or after launching the `adamsim` alias
+
+### Running the examples
+
+Test the ADAM URDF model configured with the Duck Grippers:
+```bash
+python3 examples/example_grippers.py
+```
+
+### Quickstart
+
+To quickly start simulating the robot you simply need to instantiate the `ADAM` class with the desired configuration parameters:
+
+```python
+from scripts.adam import ADAM
+
+# Initializa ADAM with Inspire Hands
+adam = ADAM(
+  end_effector = 'inspire_hands',
+  use_realtime = True,
+  use_fixed_base = True,
+  use_ros = False,
+  use_plane = True
+)
+```
+
+Then you are ready to start controlling ADAM! Use the `adam` object to call the functions in each model. The function `adam.step()` maganes the simulation loop rate automatically:
+
+```python
+# INSERT YOUR PRE-SIMULATION LOOP CODE
+
+grasp_pose = [[0.55, -0.23, 0.86], [0,0,0,1]]
+
+adam.utils.draw_grame(grasp_pose) # Visualialize pose
+
+adam.arm_kinematics.move_arm_to_pose_continuous(arm='right', grasp_pose)
+adam.wait(3) # Wait 3 seconds
+
+# SIMULATION LOOP
+while True:
+
+  object_grasped = adam.hand_kinematics.close_hand('right')
+
+  if object_grasped: break
+
+  adam.step() # Continue simulation
+
+```
+
+
+# **TO DO**
 * Add documentation of the functions
 * Add more examples
 * Add more functionalities
