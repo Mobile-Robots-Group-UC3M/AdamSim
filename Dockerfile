@@ -1,9 +1,6 @@
 FROM osrf/ros:noetic-desktop-full
 
-ENV DEBIAN_FRONTEND=noninteractive
-ENV DISPLAY=:0
-
-# 1. Instalar dependencias de ROS, Python, utilidades del sistema y noVNC/GUI
+# 1. Instalar dependencias de ROS, Python y utilidades del sistema
 RUN apt-get update && apt-get install -y \
     git \
     nano \
@@ -15,16 +12,10 @@ RUN apt-get update && apt-get install -y \
     python3-pykdl \
     ros-noetic-kdl-parser-py \
     ros-noetic-serial \
-    xvfb \
-    x11vnc \
-    novnc \
-    websockify \
-    fluxbox \
-    libgl1-mesa-glx \
-    libgl1-mesa-dri \
     && rm -rf /var/lib/apt/lists/*
 
 # 2. Copiar e instalar librerías desde el requirements.txt
+
 RUN pip3 install --no-cache-dir \
     pybullet \
     -U "numpy<2.0" \
@@ -39,20 +30,12 @@ RUN pip3 install --no-cache-dir -r /tmp/requirements.txt
 ENV PYTHONPATH="${PYTHONPATH}:/workspace"
 
 # 4. Configurar el ~/.bashrc interno del contenedor
+# 4. Configurar el ~/.bashrc interno del contenedor
 RUN sed -i 's/#force_color_prompt=yes/force_color_prompt=yes/' ~/.bashrc && \
     echo "source /opt/ros/noetic/setup.bash" >> ~/.bashrc && \
     echo 'if [ -f /workspace/catkin_ws/devel/setup.bash ]; then source /workspace/catkin_ws/devel/setup.bash; fi' >> ~/.bashrc && \
     echo 'if [ -f /workspace/setup.py ] || [ -f /workspace/pyproject.toml ]; then pip install --no-build-isolation -e /workspace >/dev/null 2>&1; fi' >> ~/.bashrc && \
     echo 'export PYTHONPATH="${PYTHONPATH}:/workspace"' >> ~/.bashrc
 
-# 5. Copiar y configurar el script de entrada para noVNC
-COPY entrypoint_novnc.sh /entrypoint_novnc.sh
-RUN chmod +x /entrypoint_novnc.sh
-
 WORKDIR /workspace
-
-# Puerto del servidor web noVNC
-EXPOSE 6080
-
-ENTRYPOINT ["/entrypoint_novnc.sh"]
 CMD ["bash"]
