@@ -25,6 +25,7 @@ class ADAM:
                 use_ros=True,
                 use_plane=True,
                 end_effector = "inspire_hands", # Option 2: "grippers"
+                display_fps=True,
                 info_json_path = None, 
                 semantic_json_path = None,
                 hand_json_path = None):
@@ -53,6 +54,13 @@ class ADAM:
         if use_realtime: p.setRealTimeSimulation(1)
         else: p.setRealTimeSimulation(0)
 
+        # Measure execution speed variables
+        self.t_last_step = time.perf_counter()
+        self.last_gui_update = time.perf_counter()
+        self.hz_smoothed = 0.0
+        self.rtf = 0.0
+        self.debug_text_id = -1
+
         # Load world plane
         if use_plane: self.plane_id = p.loadURDF("plane.urdf")
         p.setPhysicsEngineParameter(enableConeFriction=1)
@@ -65,6 +73,7 @@ class ADAM:
         # Change simulation mode
         self.use_realtime = use_realtime
         self.use_ros = use_ros
+        self.display_fps = display_fps
         self.t = 0.01
 
 
@@ -134,67 +143,92 @@ class ADAM:
         p.setCollisionFilterGroupMask(self.robot_id, -1, 0, 0)
 
 
+    def measure_execution_speed(self):
+        '''
+        Calcula la frecuencia instantánea (Hz) y el Factor de Tiempo Real (RTF).
+        Muestra la información en la GUI 3D de PyBullet si self.display_fps es True.
+        '''
+        t_now = time.perf_counter()
+        dt_real = t_now - self.t_last_step
+        self.t_last_step = t_now
+
+        if dt_real > 0:
+            hz_instant = 1.0 / dt_real
+            self.hz_smoothed = (0.1 * hz_instant) + (0.9 * self.hz_smoothed)
+            self.rtf = self.hz_smoothed * self.t
+
+            # Mostrar en la GUI solo si verbose se activó al instanciar ADAM
+            if self.display_fps and (t_now - self.last_gui_update > 0.2):
+                self.last_gui_update = t_now
+                debug_str = f"Freq: {self.hz_smoothed:.1f} Hz | RTF: {self.rtf:.2f}x"
+                self.debug_text_id = p.addUserDebugText(
+                    text=debug_str,
+                    textPosition=[0, 0, 2.0],
+                    textColorRGB=[0, 1, 0] if self.rtf >= 0.95 else [1, 0.5, 0],
+                    textSize=1.2,
+                    replaceItemUniqueId=self.debug_text_id
+                )
+
+
     def step(self):
         '''
         Simulation step.
         Executes p.stepSimulation() in non real time simulations.
         Sleeps for adam.t using rospy if enabled.
         '''
+        t_start = time.perf_counter()
 
-        if not self.use_realtime: p.stepSimulation()
+        if not self.use_realtime: 
+            p.stepSimulation()
 
-        if self.use_ros: self.ros.sleep()
-        else: time.sleep(self.t)
+        # Measure execution speed and update GUI if verbose is enabled
+        self.measure_execution_speed()
 
-
-    """ def wait(self, secs):
-        '''
-        Wait for specified time in seconds
-        '''
-
-        iter = round(secs / self.t, 0)
-
-        if self.use_ros:
-            if not self.use_realtime:
-                for _ in range(iter):
-                    p.stepSimulation()
-                    self.ros.sleep()
-            else:
-                for _ in range(int(secs * 120)):
-                    self.ros.sleep()
+        if self.use_ros: 
+            self.ros.sleep()
         else:
-            for _ in range(int(iter)):
-                if not self.use_realtime: p.stepSimulation()
-                time.sleep(self.t) """
+            # Sleep to maintain the desired time step
+            t_work = time.perf_counter() - t_start
+            time_to_sleep = max(0.0, self.t - t_work)
+            time.sleep(time_to_sleep)
+
 
     def wait(self, secs, callback_func=None):
         '''
         Wait for specified time in seconds. 
         If callback_func is provided, it runs in every step of the wait loop.
         '''
-        iter = round(secs / self.t, 0)
+        iter = int(round(secs / self.t))
 
         if self.use_ros:
             if not self.use_realtime:
-                for _ in range(int(iter)):
+                for _ in range(iter):
                     p.stepSimulation()
+                    self.measure_execution_speed()
                     if callback_func: callback_func() 
                     self.ros.sleep()
             else:
                 for _ in range(int(secs * 120)):
+                    self.measure_execution_speed()
                     if callback_func: callback_func()
                     self.ros.sleep()
         else:
-            for _ in range(int(iter)):
+            for _ in range(iter):
+                t_start = time.perf_counter()
                 if not self.use_realtime: 
                     p.stepSimulation()
                 
+                self.measure_execution_speed()
+                
                 if callback_func: 
                     callback_func() 
-                
-                time.sleep(self.t)
 
-    #Collisions
+                # Sleep to maintain the desired time step
+                t_work = time.perf_counter() - t_start
+                time_to_sleep = max(0.0, self.t - t_work)
+                time.sleep(time_to_sleep)
+
+
     def detect_autocollisions(self):
         '''
         Detect self-collisions between the left and right arms of the robot.
